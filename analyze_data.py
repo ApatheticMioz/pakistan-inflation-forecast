@@ -9,22 +9,25 @@ import warnings
 
 # --- Configuration ---
 METADATA_FILE = 'datasets_info.md'
-OUTPUT_FILE = 'data_summary.md'
+OUTPUT_FILE = 'data_summary_original_format.md' # Changed output filename
 DATA_SUBDIRECTORY = 'Data'
-NUM_RANDOM_COLS = 1000  # Updated limit
+NUM_RANDOM_COLS = 1000  # Keep the limit for column sampling
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR_PATH = os.path.join(CURRENT_DIR, DATA_SUBDIRECTORY)
 
 # --- Setup Logging ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-# Suppress specific warnings if needed (e.g., from regex or pandas)
 warnings.filterwarnings("ignore", category=UserWarning, module='re')
+# Ignore DtypeWarning from pandas read_csv if it occurs
+warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
+warnings.filterwarnings("ignore", category=FutureWarning) # Ignore future warnings for now
+
 
 # --- Helper Function to Capture df.info() ---
 def get_df_info_string(df):
     """Captures the output of df.info() into a string."""
     buffer = io.StringIO()
-    # Show memory usage, important for potentially large transposed data
+    # Keep deep memory usage calculation as it's valuable info, though can be slow
     df.info(buf=buffer, verbose=True, show_counts=True, memory_usage='deep')
     return buffer.getvalue()
 
@@ -48,7 +51,8 @@ def parse_metadata(metadata_filepath):
         for filename, meta_text in matches:
             clean_filename = filename.lower().strip()
             metadata_map[clean_filename] = meta_text.strip()
-            logging.info(f"Parsed metadata for: {clean_filename}")
+            # No need to log parsing here if it's too verbose
+            # logging.info(f"Parsed metadata for: {clean_filename}")
         if not metadata_map:
              logging.warning(f"Could not extract any metadata from {metadata_filepath}. Check formatting.")
     except Exception as e:
@@ -58,20 +62,19 @@ def parse_metadata(metadata_filepath):
 
 # --- Main Processing Function ---
 def process_csv_files(script_dir, data_dir, metadata_map):
-    """ Processes CSV files, transposing them assuming wide format. """
+    """ Processes CSV files in their original format for speed. """
     markdown_output = []
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z")
-    markdown_output.append(f"# Data Summary Report (Transposed Wide Format)")
+    # Updated Title
+    markdown_output.append(f"# Data Summary Report (Original Format)")
     markdown_output.append(f"Generated on: {current_time}")
     markdown_output.append("\n---\n")
     markdown_output.append("## Overview")
     markdown_output.append(f"This report summarizes CSV datasets from the subdirectory: `{os.path.basename(data_dir)}`.")
-    markdown_output.append(f"**Important:** Based on the likely 'wide' format (rows=series, columns=time), the script **transposes** each dataset after reading.")
-    markdown_output.append(f"  * Original rows (series identifiers) become the new columns.")
-    markdown_output.append(f"  * Original columns (time points/attributes) become the new index.")
-    markdown_output.append(f"Summaries below reflect this **transposed** structure.")
+    markdown_output.append(f"**Note:** Datasets are analyzed in their **original format** (rows=series, columns=time/attributes).")
+    markdown_output.append(f"  * No transposition or explicit data type conversion has been performed by this script.")
     markdown_output.append(f"Metadata sourced from `{METADATA_FILE}` in `{script_dir}`.")
-    markdown_output.append(f"For datasets with >{NUM_RANDOM_COLS} series (original rows), a random sample of {NUM_RANDOM_COLS} series is shown.")
+    markdown_output.append(f"For datasets with >{NUM_RANDOM_COLS} columns (time/attributes), a random sample of {NUM_RANDOM_COLS} columns is shown.")
     markdown_output.append("\n---\n")
 
     if not os.path.isdir(data_dir):
@@ -87,7 +90,7 @@ def process_csv_files(script_dir, data_dir, metadata_map):
         markdown_output.append(f"**Error:** Could not list files in `{data_dir}`: {e}")
         return "\n".join(markdown_output)
 
-    logging.info(f"Found {len(found_csv_files)} CSV files: {found_csv_files}")
+    logging.info(f"Found {len(found_csv_files)} CSV files.") # Simplified log
 
     if not found_csv_files:
         markdown_output.append(f"No CSV files found in directory: `{data_dir}`")
@@ -95,9 +98,9 @@ def process_csv_files(script_dir, data_dir, metadata_map):
 
     for filename in found_csv_files:
         filepath = os.path.join(data_dir, filename)
-        logging.info(f"Processing file: {filepath}")
+        logging.info(f"Processing file: {filename}") # Log only filename for brevity
         markdown_output.append(f"\n## Analysis for: `{filename}` (in `{os.path.basename(data_dir)}` directory)\n")
-        markdown_output.append(f"**Note:** Data below is shown after transposing the original file.\n") # Add transposition note per file
+        # No transposition note needed here
 
         # Add Metadata
         if metadata_map:
@@ -107,89 +110,63 @@ def process_csv_files(script_dir, data_dir, metadata_map):
                 metadata_block = "> " + metadata_map[metadata_key].replace("\n", "\n> ")
                 markdown_output.append(metadata_block)
                 markdown_output.append("\n")
-            else:
-                 markdown_output.append(f"*\tNo specific metadata found for `{filename}`.*\n")
-        else:
-            markdown_output.append(f"*\tMetadata file `{METADATA_FILE}` not found or parsed.*\n")
+            # else: # Reduce verbosity by not mentioning missing metadata unless necessary
+            #      markdown_output.append(f"*\tNo specific metadata found for `{filename}`.*\n")
+        # else: # Reduce verbosity
+        #     markdown_output.append(f"*\tMetadata file `{METADATA_FILE}` not found or parsed.*\n")
 
         try:
-            # Read CSV
+            # Read CSV - keep encoding fallback
             try:
-                df_orig = pd.read_csv(filepath)
+                # Use low_memory=False to potentially reduce DtypeWarnings, may use more RAM initially
+                df = pd.read_csv(filepath, low_memory=False)
             except UnicodeDecodeError:
                 logging.warning(f"UTF-8 decoding failed for {filename}. Trying 'latin1'.")
-                df_orig = pd.read_csv(filepath, encoding='latin1')
-            # Store original shape for reference
-            original_shape = df_orig.shape
+                df = pd.read_csv(filepath, encoding='latin1', low_memory=False)
 
-            if df_orig.empty or original_shape[1] == 0:
-                 logging.warning(f"File {filename} is empty or has no columns. Skipping transposition and detailed analysis.")
+            original_shape = df.shape
+
+            if df.empty:
+                 logging.warning(f"File {filename} is empty. Skipping analysis.")
                  markdown_output.append("### Basic Information\n")
-                 markdown_output.append(f"* **Original Shape:** {original_shape} (rows, columns)")
-                 markdown_output.append("* File appears empty or lacks columns. Cannot transpose or analyze further.*\n")
+                 markdown_output.append(f"* **Shape:** {original_shape} (rows, columns)")
+                 markdown_output.append("* File appears empty. Skipping detailed analysis.*\n")
                  markdown_output.append("\n---\n")
                  continue
 
-            # --- Transposition Logic ---
-            transposed = False
-            identifier_col_name = None
-            df = df_orig # Start with original df
-            try:
-                # Assume first column is the identifier
-                identifier_col_name = df_orig.columns[0]
-                logging.info(f"Assuming '{identifier_col_name}' as identifier column for {filename}.")
-                df = df_orig.set_index(identifier_col_name)
-
-                # Transpose
-                df = df.T
-                transposed = True
-                logging.info(f"Successfully transposed {filename}.")
-
-                # Attempt numeric conversion (important after T)
-                logging.info(f"Attempting numeric conversion for columns (original rows) of {filename}.")
-                df = df.apply(pd.to_numeric, errors='ignore') # 'ignore' keeps non-numeric as object
-
-            except Exception as e_transpose:
-                logging.error(f"Failed to set index or transpose {filename}: {e_transpose}. Analyzing original structure.")
-                markdown_output.append(f"**Warning:** Failed to transpose the data (Error: {e_transpose}). Displaying analysis of the *original* structure.\n")
-                df = df_orig # Revert to original if transpose failed
-                transposed = False
-            # --- End Transposition Logic ---
-
-
-            # --- Analysis (on potentially transposed df) ---
+            # --- Analysis (Original Format) ---
             markdown_output.append("### Basic Information\n")
-            markdown_output.append(f"* **Original Shape:** {original_shape} (rows, columns)")
-            if transposed:
-                 markdown_output.append(f"* Identifier Column Assumed: `{identifier_col_name}` (used as new columns)")
-                 markdown_output.append(f"* **Shape after Transpose:** {df.shape} (time points/attributes, series)")
-                 markdown_output.append(f"* **Index:** Represents original columns (likely time points)")
-                 markdown_output.append(f"* **Columns:** Represent original rows (series identifiers)")
-            else:
-                 markdown_output.append(f"* **Shape (Original):** {df.shape} (rows, columns)")
-
+            markdown_output.append(f"* **Shape:** {df.shape} (rows, columns)") # Rows = series, Columns = time/attributes
             markdown_output.append(f"* **Total Cells:** {df.size}")
             dtype_counts = df.dtypes.value_counts().to_dict()
-            markdown_output.append(f"* **Data Type Counts {'(after transpose & conversion)' if transposed else ''}:** {dtype_counts}")
+            markdown_output.append(f"* **Data Type Counts (Pandas detected):** {dtype_counts}")
 
             markdown_output.append("\n### DataFrame Info Summary\n")
-            markdown_output.append(f"```\n{get_df_info_string(df)}\n```\n")
+            markdown_output.append(f"```\n{get_df_info_string(df)}\n```\n") # Still potentially slow but valuable
 
-            markdown_output.append(f"### Missing Values Summary {'(per Series)' if transposed else '(per Column)'}\n")
+            markdown_output.append(f"### Missing Values Summary (per Column)\n") # Summarize per original column
             missing_values = df.isnull().sum()
             missing_total = missing_values.sum()
             missing_values = missing_values[missing_values > 0]
             if not missing_values.empty:
                 markdown_output.append(f"Total missing values: {missing_total}")
-                markdown_output.append(f"{'Series' if transposed else 'Columns'} with missing values:")
-                markdown_output.append(f"```\n{missing_values.to_string()}\n```\n")
+                markdown_output.append(f"Columns (time/attributes) with missing values:")
+                # Limit display if too many columns have missing values
+                if len(missing_values) > 50:
+                    markdown_output.append("```")
+                    markdown_output.append(missing_values.head(25).to_string())
+                    markdown_output.append("\n...\n")
+                    markdown_output.append(missing_values.tail(25).to_string())
+                    markdown_output.append(f"\n(Showing first/last 25 of {len(missing_values)} columns with missing values)")
+                    markdown_output.append("```\n")
+                else:
+                    markdown_output.append(f"```\n{missing_values.to_string()}\n```\n")
             else:
                 markdown_output.append("* No missing values found.*\n")
 
-            # Unique Values - Less useful after transpose maybe, but keep for now
-            markdown_output.append(f"### Unique Values per {'Series' if transposed else 'Column'} (Sample)\n")
+            markdown_output.append(f"### Unique Values per Column (Sample)\n") # Per original column
             unique_counts = df.nunique()
-            markdown_output.append(f"Showing unique counts for first/last 5 {'series' if transposed else 'columns'} (Total: {len(df.columns)}):")
+            markdown_output.append(f"Showing unique counts for first/last 5 columns (Total columns: {len(df.columns)}):")
             markdown_output.append("```")
             if len(unique_counts) > 10:
                  markdown_output.append(unique_counts.head(5).to_string())
@@ -199,59 +176,65 @@ def process_csv_files(script_dir, data_dir, metadata_map):
                  markdown_output.append(unique_counts.to_string())
             markdown_output.append("```\n")
 
-            markdown_output.append(f"### Descriptive Statistics {'per Series (over Time)' if transposed else 'per Column'}\n")
+            # Use include='all' for broader summary on original format
+            markdown_output.append(f"### Descriptive Statistics per Column (Time/Attribute)\n")
             try:
-                # Rely on numeric conversion attempt before describe
-                desc_stats = df.describe(include='number') # Focus on numeric after potential conversion
-                if desc_stats.empty:
-                     # Try including object if numeric failed / non-existent
-                     desc_stats = df.describe(include=['object', 'category'])
-                     if not desc_stats.empty:
-                         markdown_output.append("*(Numeric statistics could not be generated. Showing stats for object/category types)*\n")
-                     else:
-                          markdown_output.append("* No descriptive statistics could be generated.*\n")
-
+                desc_stats = df.describe(include='all')
                 if not desc_stats.empty:
                     markdown_output.append("```markdown")
-                    markdown_output.append(desc_stats.to_markdown())
+                    # Limit columns shown in describe if excessively wide
+                    if desc_stats.shape[1] > 50:
+                         markdown_output.append(f"*(Showing statistics for first/last 25 of {desc_stats.shape[1]} columns)*\n\n")
+                         # Display first 25 columns
+                         markdown_output.append(desc_stats.iloc[:, :25].to_markdown())
+                         markdown_output.append("\n\n...\n\n")
+                         # Display last 25 columns
+                         markdown_output.append(desc_stats.iloc[:, -25:].to_markdown())
+                    else:
+                         markdown_output.append(desc_stats.to_markdown())
                     markdown_output.append("```\n")
+                else:
+                     markdown_output.append("* No descriptive statistics could be generated.*\n")
 
             except Exception as e_desc:
+                 # Broader catch as include='all' can sometimes fail
                  logging.error(f"Could not generate descriptive statistics for {filename}: {e_desc}")
-                 markdown_output.append("* Could not generate descriptive statistics.*\n")
+                 markdown_output.append(f"* Could not generate descriptive statistics (Error: {e_desc}).*\n")
 
-            # --- Column (Series) Sampling ---
-            markdown_output.append(f"### Data Sample ({'Series' if transposed else 'Columns'})\n")
-            all_columns = df.columns.tolist() # These are series if transposed
+
+            # --- Column (Time/Attribute) Sampling ---
+            markdown_output.append(f"### Data Sample (Columns: Time/Attributes)\n")
+            all_columns = df.columns.tolist()
             num_cols = len(all_columns)
             sampled_columns = []
             df_sample_display = pd.DataFrame()
 
             if num_cols == 0:
-                 markdown_output.append(f"* The DataFrame has 0 {'series' if transposed else 'columns'}.*\n")
+                 markdown_output.append(f"* The DataFrame has 0 columns.*\n")
             elif num_cols > NUM_RANDOM_COLS:
-                markdown_output.append(f"* Sampling {NUM_RANDOM_COLS} random {'series' if transposed else 'columns'} (out of {num_cols}).*\n")
+                markdown_output.append(f"* Sampling {NUM_RANDOM_COLS} random columns (time/attributes) (out of {num_cols}).*\n")
                 try:
                     sampled_columns = random.sample(all_columns, NUM_RANDOM_COLS)
-                    df_sample_display = df[sampled_columns].head() # Show first few time points/rows
+                    # Select rows (head) and sampled columns
+                    df_sample_display = df.loc[:, sampled_columns].head()
                 except Exception as e_sample:
                     logging.error(f"Error sampling columns for {filename}: {e_sample}")
                     markdown_output.append(f"* Error during sampling: {e_sample}. Showing head of unsampled data instead.*\n")
                     df_sample_display = df.head() # Fallback
 
             else:
-                markdown_output.append(f"* Showing all {num_cols} {'series' if transposed else 'columns'}.*\n")
+                markdown_output.append(f"* Showing all {num_cols} columns.*\n")
                 sampled_columns = all_columns
                 df_sample_display = df.head()
 
             if not df_sample_display.empty:
-                 markdown_output.append(f"*\tShowing first 5 {'time points / attributes (index)' if transposed else 'rows'} for the selected {'series' if transposed else 'columns'}.*\n")
+                 # Display rows (series) index
+                 markdown_output.append(f"*\tShowing first 5 rows (series) for the selected {len(df_sample_display.columns)} columns (time/attributes).*\n")
                  markdown_output.append("```markdown")
-                 # Display index (time points if transposed)
                  markdown_output.append(df_sample_display.to_markdown(index=True))
                  markdown_output.append("```\n")
             elif num_cols > 0:
-                 markdown_output.append(f"* The DataFrame has {num_cols} {'series' if transposed else 'columns'} but appears to have 0 rows (time points).*\n")
+                 markdown_output.append(f"* The DataFrame has {num_cols} columns but appears to have 0 rows (series).*\n")
 
 
             markdown_output.append("\n---\n") # Separator between files
@@ -266,7 +249,7 @@ def process_csv_files(script_dir, data_dir, metadata_map):
              markdown_output.append(f"### Information\n* File `{filename}` is empty.*\n")
              markdown_output.append("\n---\n")
         except Exception as e:
-            logging.error(f"Unexpected error processing {filename}: {e}", exc_info=True) # Log traceback
+            logging.error(f"Unexpected error processing {filename}: {e}", exc_info=True)
             markdown_output.append(f"### Error During Processing\n")
             markdown_output.append(f"An unexpected error occurred for `{filename}`. Check logs.\n")
             markdown_output.append(f"```\n{e}\n```\n")
@@ -276,12 +259,12 @@ def process_csv_files(script_dir, data_dir, metadata_map):
 
 # --- Main Execution ---
 if __name__ == "__main__":
-    logging.info("Starting CSV analysis script (with transposition).")
+    logging.info("Starting CSV analysis script (Original Format - Optimized for Speed).") # Updated message
     logging.info(f"Script location: {CURRENT_DIR}")
     logging.info(f"Data directory: {DATA_DIR_PATH}")
     logging.info(f"Metadata file: {os.path.join(CURRENT_DIR, METADATA_FILE)}")
     logging.info(f"Output file: {os.path.join(CURRENT_DIR, OUTPUT_FILE)}")
-    logging.info(f"Column/Series sampling limit: {NUM_RANDOM_COLS}")
+    logging.info(f"Column sampling limit: {NUM_RANDOM_COLS}")
 
     metadata_filepath = os.path.join(CURRENT_DIR, METADATA_FILE)
     metadata = parse_metadata(metadata_filepath)
