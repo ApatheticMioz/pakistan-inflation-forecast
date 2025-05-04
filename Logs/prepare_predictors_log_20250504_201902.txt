@@ -1,0 +1,12 @@
+[2025-05-04 20:19:02.01907] [INFO] --- Loading Necessary Libraries ---
+[2025-05-04 20:19:02.024535] [DEBUG] Defined common NA values list.
+[2025-05-04 20:19:02.025339] [INFO] --- Loading Pre-processed DataFrames List ---
+[2025-05-04 20:19:02.765668] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds
+[2025-05-04 20:19:02.766429] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv
+[2025-05-04 20:19:02.767267] [INFO] --- Configuring Target and Predictor Variables ---
+[2025-05-04 20:19:02.773801] [INFO] --- Defining Helper Functions ---
+[2025-05-04 20:19:02.907971] [INFO] --- Processing Target Variable ---
+[2025-05-04 20:19:02.909419] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list.
+[2025-05-04 20:19:02.910072] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name
+[2025-05-04 20:19:02.910539] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value
+[2025-05-04 20:19:02.919527] [DEBUG] Extracted 106 valid observations for target variable.

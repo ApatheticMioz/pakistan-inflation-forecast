@@ -1,0 +1,10 @@
+[2025-05-04 19:41:20.645442] [INFO] --- Loading Necessary Libraries ---
+[2025-05-04 19:41:20.651934] [DEBUG] Defined common NA values list.
+[2025-05-04 19:41:20.652777] [INFO] --- Loading Pre-processed DataFrames List ---
+[2025-05-04 19:41:21.451834] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds
+[2025-05-04 19:41:21.453613] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv
+[2025-05-04 19:41:21.454455] [INFO] --- Configuring Target and Predictor Variables ---
+[2025-05-04 19:41:21.46116] [INFO] --- Defining Helper Functions ---
+[2025-05-04 19:41:21.706595] [INFO] --- Processing Target Variable ---
+[2025-05-04 19:41:21.707702] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list.
+[2025-05-04 19:41:21.708429] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Indicator, Date, Value. Check target_config.

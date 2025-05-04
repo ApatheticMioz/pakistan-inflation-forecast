@@ -1,0 +1,29 @@
+[2025-05-04 20:12:59.487387] [INFO] --- Loading Necessary Libraries ---
+[2025-05-04 20:12:59.493181] [DEBUG] Defined common NA values list.
+[2025-05-04 20:12:59.493917] [INFO] --- Loading Pre-processed DataFrames List ---
+[2025-05-04 20:13:00.246109] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds
+[2025-05-04 20:13:00.267998] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv
+[2025-05-04 20:13:00.268827] [INFO] --- Configuring Target and Predictor Variables ---
+[2025-05-04 20:13:00.275195] [INFO] --- Defining Helper Functions ---
+[2025-05-04 20:13:00.412775] [INFO] --- Processing Target Variable ---
+[2025-05-04 20:13:00.413944] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list.
+[2025-05-04 20:13:00.414538] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name
+[2025-05-04 20:13:00.415058] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value
+[2025-05-04 20:13:00.527158] [DEBUG] Extracted 106 valid observations for target variable.
+[2025-05-04 20:13:00.529304] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date
+[2025-05-04 20:13:00.529784] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date
+[2025-05-04 20:13:00.533639] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025
+[2025-05-04 20:13:00.534466] [INFO] Total months in target range: 106
+[2025-05-04 20:13:00.650697] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) )
+[2025-05-04 20:13:00.651403] [INFO]   Source Dataset: inflation_base_2015.csv
+[2025-05-04 20:13:00.651965] [DEBUG]     Raw data dimensions: 6360x10
+[2025-05-04 20:13:00.652415] [DEBUG]     Handling long format...
+[2025-05-04 20:13:00.654551] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis)
+[2025-05-04 20:13:00.659495] [DEBUG]      Found unique series: National CPI, an Inflation Measure (Year-on-Year basis)
+[2025-05-04 20:13:00.659915] [DEBUG]     Cleaning and converting types...
+[2025-05-04 20:13:00.671404] [DEBUG]      Cleaned data points: 106
+[2025-05-04 20:13:00.67195] [DEBUG]      Date range: 2016-07-31 to 2025-04-30
+[2025-05-04 20:13:00.672494] [DEBUG]     Converting to zoo object...
+[2025-05-04 20:13:00.673055] [DEBUG]      Initial zoo object created with 106 points.
+[2025-05-04 20:13:00.72799] [DEBUG] Aligning frequency from M to Monthly using method: mean

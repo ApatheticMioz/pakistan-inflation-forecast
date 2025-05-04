@@ -1,0 +1,1119 @@
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:20:53.140827 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_192053.txt 
+
+--- Loading Libraries ---
+
+--- Loading Raw Data ---
+Loading data from: loaded_dataframes.rds 
+Data loaded successfully.
+
+--- Configuring Variables ---
+
+--- Processing All Variables ---
+--------------------------------------------------
+  Preparing: CPI_YoY_National (ID: CPI_YoY_National )
+  Source Dataset: inflation_base_2015.csv 
+    Raw data dimensions: 6360x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 10 
+    Original Frequency: M 
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 102x2 
+    Head:
+        Date CPI_YoY_National
+1 2016-07-01             3.17
+2 2016-08-01             2.80
+3 2016-09-01             3.23
+4 2016-10-01             4.19
+5 2016-11-01             4.69
+6 2016-12-01             4.08
+    Tail:
+          Date CPI_YoY_National
+97  2024-07-01             11.1
+98  2024-08-01              9.6
+99  2024-09-01              6.9
+100 2024-10-01              7.2
+101 2024-11-01              4.9
+102 2024-12-01              4.1
+--------------------------------------------------
+    Applying transformation: level to CPI_YoY_National 
+--------------------------------------------------
+  Preparing: PolicyRate (ID: PolicyRate )
+  Source Dataset: policy_rate.csv 
+    Raw data dimensions: 182x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 30 
+    Original Frequency: D 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:22:48.31363 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_192248.txt 
+
+--- Loading Libraries ---
+
+--- Loading Raw Data ---
+Loading data from: loaded_dataframes.rds 
+Data loaded successfully.
+
+--- Configuring Variables ---
+
+--- Processing All Variables ---
+--------------------------------------------------
+  Preparing: CPI_YoY_National (ID: CPI_YoY_National )
+  Source Dataset: inflation_base_2015.csv 
+    Raw data dimensions: 6360x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 10 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 102x2 
+    Head:
+        Date CPI_YoY_National
+1 2016-07-01             3.17
+2 2016-08-01             2.80
+3 2016-09-01             3.23
+4 2016-10-01             4.19
+5 2016-11-01             4.69
+6 2016-12-01             4.08
+    Tail:
+          Date CPI_YoY_National
+97  2024-07-01             11.1
+98  2024-08-01              9.6
+99  2024-09-01              6.9
+100 2024-10-01              7.2
+101 2024-11-01              4.9
+102 2024-12-01              4.1
+--------------------------------------------------
+    Applying transformation: level to CPI_YoY_National 
+--------------------------------------------------
+  Preparing: PolicyRate (ID: PolicyRate )
+  Source Dataset: policy_rate.csv 
+    Raw data dimensions: 182x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 30 
+    Original Frequency: D 
+    Aggregating using: last observation (locf)
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 32x2 
+    Head:
+        Date PolicyRate
+1 2015-05-01       6.50
+2 2015-09-01       6.00
+3 2016-05-01       5.75
+4 2018-01-01       6.00
+5 2018-05-01       6.50
+6 2018-07-01       7.50
+    Tail:
+         Date PolicyRate
+27 2023-06-01       22.0
+28 2024-06-01       20.5
+29 2024-07-01       19.5
+30 2024-09-01       17.5
+31 2024-11-01       15.0
+32 2024-12-01       13.0
+--------------------------------------------------
+    Applying transformation: level to PolicyRate 
+    Creating lags 1 to 12 for PolicyRate 
+--------------------------------------------------
+  Preparing: KIBOR3M_Offer (ID: KIBOR3M )
+  Source Dataset: kibor_kibid.csv 
+    Raw data dimensions: 88330x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 80 
+    Original Frequency: D 
+    Aggregating using: mean
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date KIBOR3M_Offer
+1 2015-01-01      9.175238
+2 2015-02-01      8.482632
+3 2015-03-01      8.190000
+4 2015-04-01      7.894545
+5 2015-05-01      7.065500
+6 2015-06-01      6.840952
+    Tail:
+          Date KIBOR3M_Offer
+115 2024-07-01      19.99850
+116 2024-08-01      18.79524
+117 2024-09-01      17.36150
+118 2024-10-01      15.56696
+119 2024-11-01      13.67286
+120 2024-12-01      12.35571
+--------------------------------------------------
+    Applying transformation: level to KIBOR3M_Offer 
+    Creating lags 1 to 12 for KIBOR3M_Offer 
+--------------------------------------------------
+  Preparing: M2_YoY (ID: M2YoY )
+  Source Dataset: m2_broad_money.csv 
+    Raw data dimensions: 28200x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 500 
+    Original Frequency: W 
+    Aggregating using: mean
+    Aggregated W to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date   M2_YoY
+1 2015-01-01 10.69361
+2 2015-02-01 11.32684
+3 2015-03-01 11.72805
+4 2015-04-01 12.47539
+5 2015-05-01 13.01324
+6 2015-06-01 13.23675
+    Tail:
+          Date   M2_YoY
+115 2024-07-01 14.67198
+116 2024-08-01 14.79419
+117 2024-09-01 14.34390
+118 2024-10-01 15.13467
+119 2024-11-01 14.41176
+120 2024-12-01 10.42018
+--------------------------------------------------
+    Applying transformation: level to M2_YoY 
+    Creating lags 1 to 12 for M2_YoY 
+--------------------------------------------------
+  Preparing: PriSecCred_YoY (ID: PriSecCredYoY )
+  Source Dataset: m2_broad_money.csv 
+    Raw data dimensions: 28200x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 480 
+    Original Frequency: W 
+    Aggregating using: mean
+    Aggregated W to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date PriSecCred_YoY
+1 2015-01-01       8.116375
+2 2015-02-01       7.177300
+3 2015-03-01       7.170945
+4 2015-04-01       7.070519
+5 2015-05-01       6.282237
+6 2015-06-01       5.557958
+    Tail:
+          Date PriSecCred_YoY
+115 2024-07-01       5.136395
+116 2024-08-01       4.728026
+117 2024-09-01       4.667422
+118 2024-10-01       7.679829
+119 2024-11-01      18.704465
+120 2024-12-01      21.659614
+--------------------------------------------------
+    Applying transformation: level to PriSecCred_YoY 
+    Creating lags 1 to 12 for PriSecCred_YoY 
+--------------------------------------------------
+  Preparing: PKR_USD_Rate (ID: PKRUSD )
+  Source Dataset: exchange_rate.csv 
+    Raw data dimensions: 66332x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 220 
+    Original Frequency: D 
+    Aggregating using: mean
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date PKR_USD_Rate
+1 2015-01-01     100.6834
+2 2015-02-01     101.3651
+3 2015-03-01     101.7598
+4 2015-04-01     101.7004
+5 2015-05-01     101.8043
+6 2015-06-01     101.7725
+    Tail:
+          Date PKR_USD_Rate
+115 2024-07-01     278.3912
+116 2024-08-01     278.5403
+117 2024-09-01     278.2436
+118 2024-10-01     277.6704
+119 2024-11-01     277.8093
+120 2024-12-01     278.1204
+--------------------------------------------------
+    Applying transformation: yoy_growth to PKR_USD_Rate 
+    Creating lags 1 to 12 for PKR_USD_Rate 
+--------------------------------------------------
+  Preparing: REER_Index (ID: REER )
+  Source Dataset: REER.csv 
+    Raw data dimensions: 1512x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 20 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: LSM_Index (ID: LSM )
+  Source Dataset: LSM_QIM_2015.csv 
+    Raw data dimensions: 1144x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 10 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 102x2 
+    Head:
+        Date LSM_Index
+1 2016-07-01  91.70136
+2 2016-08-01  96.98941
+3 2016-09-01  93.72849
+4 2016-10-01  98.16784
+5 2016-11-01 100.14720
+6 2016-12-01 108.38785
+    Tail:
+          Date LSM_Index
+97  2024-07-01  106.3478
+98  2024-08-01  111.4782
+99  2024-09-01  111.5908
+100 2024-10-01  109.2906
+101 2024-11-01  107.1491
+102 2024-12-01  127.9166
+--------------------------------------------------
+    Applying transformation: yoy_growth to LSM_Index 
+    Creating lags 1 to 12 for LSM_Index 
+--------------------------------------------------
+  Preparing: GDP_Growth_Q (ID: GDPGrowth )
+  Source Dataset: quaterly_gdp_2015.csv 
+    Raw data dimensions: 304x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 200 
+    Original Frequency: Q 
+    Aggregating using: last observation (locf)
+    Interpolated Quarterly to Monthly (Spline - **Assumption**).
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: UnempRate (ID: UnempRate )
+  Source Dataset: population,_labor_force_and_employment.csv 
+    Raw data dimensions: 65x55 
+    Handling wide format...
+    Using identifier column: Sectors 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: Oil_Brent (ID: OilBrent )
+  Source Dataset: CMO_historical_data_monthly.csv 
+    Raw data dimensions: 781x72 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: NonEnergyComm_Idx (ID: NonEnergyComm )
+  Source Dataset: CMO_historical_data_indices.csv 
+    Raw data dimensions: 783x17 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: Remittances (ID: Remittances )
+  Source Dataset: seasonal_worker_remittance.csv 
+    Raw data dimensions: 474x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 1 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date Remittances
+1 2015-01-01     1403.74
+2 2015-02-01     1420.54
+3 2015-03-01     1576.01
+4 2015-04-01     1640.05
+5 2015-05-01     1608.28
+6 2015-06-01     1654.27
+    Tail:
+          Date Remittances
+115 2024-07-01    2965.560
+116 2024-08-01    2891.940
+117 2024-09-01    2847.240
+118 2024-10-01    3029.520
+119 2024-11-01    2915.349
+120 2024-12-01    3080.398
+--------------------------------------------------
+    Applying transformation: yoy_growth to Remittances 
+    Creating lags 1 to 12 for Remittances 
+--------------------------------------------------
+  Preparing: Imports_Growth (ID: ImportsGrowth )
+  Source Dataset: trade_and_payments.csv 
+    Raw data dimensions: 185x80 
+    Handling wide format...
+    Using identifier column: Sectors 
+Warning messages:
+1: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+2: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+3: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+4: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+5: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+6: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+7: In prepare_individual_ts(pred_info, dataframes_list) :
+      Series became all NA after alignment and interpolation. Skipping.
+8: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+9: In which(in.index & all.indexes >= start & all.indexes <=  ... :
+  Incompatible methods (">=.Date", "Ops.yearmon") for ">="
+10: In which(in.index & all.indexes >= start & all.indexes <=  ... :
+  Incompatible methods ("<=.Date", "Ops.yearmon") for "<="
+11: In prepare_individual_ts(pred_info, dataframes_list) :
+      Series became all NA after alignment and interpolation. Skipping.
+12: In prepare_individual_ts(pred_info, dataframes_list) :
+      Could not find unique row for series name ' Unemployment Rate (%) - Total ' in wide format. Skipping.
+13: In prepare_individual_ts(pred_info, dataframes_list) :
+      Identifier column not found for Oil_Brent in CMO_historical_data_monthly.csv . Skipping.
+14: In prepare_individual_ts(pred_info, dataframes_list) :
+      Identifier column not found for NonEnergyComm_Idx in CMO_historical_data_indices.csv . Skipping.
+15: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:29:02.831508 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_192902.txt 
+
+--- Loading Libraries ---
+
+--- Loading Raw Data ---
+Loading data from: loaded_dataframes.rds 
+Data loaded successfully.
+
+--- Configuring Variables ---
+
+--- Processing All Variables ---
+--------------------------------------------------
+  Preparing: CPI_YoY_National (ID: CPI_YoY_National )
+  Source Dataset: inflation_base_2015.csv 
+    Raw data dimensions: 6360x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 10 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 102x2 
+    Head:
+        Date CPI_YoY_National
+1 2016-07-01             3.17
+2 2016-08-01             2.80
+3 2016-09-01             3.23
+4 2016-10-01             4.19
+5 2016-11-01             4.69
+6 2016-12-01             4.08
+    Tail:
+          Date CPI_YoY_National
+97  2024-07-01             11.1
+98  2024-08-01              9.6
+99  2024-09-01              6.9
+100 2024-10-01              7.2
+101 2024-11-01              4.9
+102 2024-12-01              4.1
+--------------------------------------------------
+    Applying transformation: level to CPI_YoY_National 
+--------------------------------------------------
+  Preparing: PolicyRate (ID: PolicyRate )
+  Source Dataset: policy_rate.csv 
+    Raw data dimensions: 182x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 30 
+    Original Frequency: D 
+    Aggregating using: last observation (locf)
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 32x2 
+    Head:
+        Date PolicyRate
+1 2015-05-01       6.50
+2 2015-09-01       6.00
+3 2016-05-01       5.75
+4 2018-01-01       6.00
+5 2018-05-01       6.50
+6 2018-07-01       7.50
+    Tail:
+         Date PolicyRate
+27 2023-06-01       22.0
+28 2024-06-01       20.5
+29 2024-07-01       19.5
+30 2024-09-01       17.5
+31 2024-11-01       15.0
+32 2024-12-01       13.0
+--------------------------------------------------
+    Applying transformation: level to PolicyRate 
+    Creating lags 1 to 12 for PolicyRate 
+--------------------------------------------------
+  Preparing: KIBOR3M_Offer (ID: KIBOR3M )
+  Source Dataset: kibor_kibid.csv 
+    Raw data dimensions: 88330x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 80 
+    Original Frequency: D 
+    Aggregating using: mean
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date KIBOR3M_Offer
+1 2015-01-01      9.175238
+2 2015-02-01      8.482632
+3 2015-03-01      8.190000
+4 2015-04-01      7.894545
+5 2015-05-01      7.065500
+6 2015-06-01      6.840952
+    Tail:
+          Date KIBOR3M_Offer
+115 2024-07-01      19.99850
+116 2024-08-01      18.79524
+117 2024-09-01      17.36150
+118 2024-10-01      15.56696
+119 2024-11-01      13.67286
+120 2024-12-01      12.35571
+--------------------------------------------------
+    Applying transformation: level to KIBOR3M_Offer 
+    Creating lags 1 to 12 for KIBOR3M_Offer 
+--------------------------------------------------
+  Preparing: M2_YoY (ID: M2YoY )
+  Source Dataset: m2_broad_money.csv 
+    Raw data dimensions: 28200x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 500 
+    Original Frequency: W 
+    Aggregating using: mean
+    Aggregated W to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date   M2_YoY
+1 2015-01-01 10.69361
+2 2015-02-01 11.32684
+3 2015-03-01 11.72805
+4 2015-04-01 12.47539
+5 2015-05-01 13.01324
+6 2015-06-01 13.23675
+    Tail:
+          Date   M2_YoY
+115 2024-07-01 14.67198
+116 2024-08-01 14.79419
+117 2024-09-01 14.34390
+118 2024-10-01 15.13467
+119 2024-11-01 14.41176
+120 2024-12-01 10.42018
+--------------------------------------------------
+    Applying transformation: level to M2_YoY 
+    Creating lags 1 to 12 for M2_YoY 
+--------------------------------------------------
+  Preparing: PriSecCred_YoY (ID: PriSecCredYoY )
+  Source Dataset: m2_broad_money.csv 
+    Raw data dimensions: 28200x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 480 
+    Original Frequency: W 
+    Aggregating using: mean
+    Aggregated W to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date PriSecCred_YoY
+1 2015-01-01       8.116375
+2 2015-02-01       7.177300
+3 2015-03-01       7.170945
+4 2015-04-01       7.070519
+5 2015-05-01       6.282237
+6 2015-06-01       5.557958
+    Tail:
+          Date PriSecCred_YoY
+115 2024-07-01       5.136395
+116 2024-08-01       4.728026
+117 2024-09-01       4.667422
+118 2024-10-01       7.679829
+119 2024-11-01      18.704465
+120 2024-12-01      21.659614
+--------------------------------------------------
+    Applying transformation: level to PriSecCred_YoY 
+    Creating lags 1 to 12 for PriSecCred_YoY 
+--------------------------------------------------
+  Preparing: PKR_USD_Rate (ID: PKRUSD )
+  Source Dataset: exchange_rate.csv 
+    Raw data dimensions: 66332x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 220 
+    Original Frequency: D 
+    Aggregating using: mean
+    Aggregated D to Monthly.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date PKR_USD_Rate
+1 2015-01-01     100.6834
+2 2015-02-01     101.3651
+3 2015-03-01     101.7598
+4 2015-04-01     101.7004
+5 2015-05-01     101.8043
+6 2015-06-01     101.7725
+    Tail:
+          Date PKR_USD_Rate
+115 2024-07-01     278.3912
+116 2024-08-01     278.5403
+117 2024-09-01     278.2436
+118 2024-10-01     277.6704
+119 2024-11-01     277.8093
+120 2024-12-01     278.1204
+--------------------------------------------------
+    Applying transformation: yoy_growth to PKR_USD_Rate 
+    Creating lags 1 to 12 for PKR_USD_Rate 
+--------------------------------------------------
+  Preparing: REER_Index (ID: REER )
+  Source Dataset: REER.csv 
+    Raw data dimensions: 1512x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 20 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: LSM_Index (ID: LSM )
+  Source Dataset: LSM_QIM_2015.csv 
+    Raw data dimensions: 1144x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 10 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 102x2 
+    Head:
+        Date LSM_Index
+1 2016-07-01  91.70136
+2 2016-08-01  96.98941
+3 2016-09-01  93.72849
+4 2016-10-01  98.16784
+5 2016-11-01 100.14720
+6 2016-12-01 108.38785
+    Tail:
+          Date LSM_Index
+97  2024-07-01  106.3478
+98  2024-08-01  111.4782
+99  2024-09-01  111.5908
+100 2024-10-01  109.2906
+101 2024-11-01  107.1491
+102 2024-12-01  127.9166
+--------------------------------------------------
+    Applying transformation: yoy_growth to LSM_Index 
+    Creating lags 1 to 12 for LSM_Index 
+--------------------------------------------------
+  Preparing: GDP_Growth_Q (ID: GDPGrowth )
+  Source Dataset: quaterly_gdp_2015.csv 
+    Raw data dimensions: 304x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 200 
+    Original Frequency: Q 
+    Aggregating using: last observation (locf)
+    Interpolated Quarterly to Monthly (Spline - **Assumption**).
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: UnempRate (ID: UnempRate )
+  Source Dataset: population,_labor_force_and_employment.csv 
+    Raw data dimensions: 65x55 
+    Handling wide format...
+    Using identifier column: Sectors 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: Oil_Brent (ID: OilBrent )
+  Source Dataset: CMO_historical_data_monthly.csv 
+    Raw data dimensions: 781x72 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: NonEnergyComm_Idx (ID: NonEnergyComm )
+  Source Dataset: CMO_historical_data_indices.csv 
+    Raw data dimensions: 783x17 
+--------------------------------------------------
+--------------------------------------------------
+  Preparing: Remittances (ID: Remittances )
+  Source Dataset: seasonal_worker_remittance.csv 
+    Raw data dimensions: 474x10 
+    Using identifier column: Series name 
+    Filtered by Sequence No.: 1 
+    Original Frequency: M 
+    Aggregating using: last observation (locf)
+    Processed as Monthly frequency.
+    Prepared series dimensions (aligned): 120x2 
+    Head:
+        Date Remittances
+1 2015-01-01     1403.74
+2 2015-02-01     1420.54
+3 2015-03-01     1576.01
+4 2015-04-01     1640.05
+5 2015-05-01     1608.28
+6 2015-06-01     1654.27
+    Tail:
+          Date Remittances
+115 2024-07-01    2965.560
+116 2024-08-01    2891.940
+117 2024-09-01    2847.240
+118 2024-10-01    3029.520
+119 2024-11-01    2915.349
+120 2024-12-01    3080.398
+--------------------------------------------------
+    Applying transformation: yoy_growth to Remittances 
+    Creating lags 1 to 12 for Remittances 
+--------------------------------------------------
+  Preparing: Imports_Growth (ID: ImportsGrowth )
+  Source Dataset: trade_and_payments.csv 
+    Raw data dimensions: 185x80 
+    Handling wide format...
+    Using identifier column: Sectors 
+Warning messages:
+1: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+2: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+3: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+4: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+5: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+6: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+7: In prepare_individual_ts(pred_info, dataframes_list) :
+      Series became all NA after alignment and interpolation. Skipping.
+8: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+9: In which(in.index & all.indexes >= start & all.indexes <=  ... :
+  Incompatible methods (">=.Date", "Ops.yearmon") for ">="
+10: In which(in.index & all.indexes >= start & all.indexes <=  ... :
+  Incompatible methods ("<=.Date", "Ops.yearmon") for "<="
+11: In prepare_individual_ts(pred_info, dataframes_list) :
+      Series became all NA after alignment and interpolation. Skipping.
+12: In prepare_individual_ts(pred_info, dataframes_list) :
+      Could not find unique row for series name ' Unemployment Rate (%) - Total ' in wide format. Skipping.
+13: In prepare_individual_ts(pred_info, dataframes_list) :
+      Identifier column not found for Oil_Brent in CMO_historical_data_monthly.csv . Skipping.
+14: In prepare_individual_ts(pred_info, dataframes_list) :
+      Identifier column not found for NonEnergyComm_Idx in CMO_historical_data_indices.csv . Skipping.
+15: In merge.zoo(series_monthly_zoo, zoo(, full_months_target),  ... :
+  Index vectors are of different classes: yearmon Date
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:32:02.470438 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_193202.txt 
+[2025-05-04 19:32:02.4719] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:32:02.487775] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:32:03.289331] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:32:03.363349] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:32:03.37083] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:32:03.481742] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:32:03.482689] [ERROR] ERROR: Target source dataset not found: inflation_base_2015.csv 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:34:03.158902 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_193403.txt 
+[2025-05-04 19:34:03.159885] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:34:03.163854] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:34:03.88517] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:34:03.885843] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:34:03.886835] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:34:03.893478] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:34:03.994867] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:34:03.995778] [ERROR] ERROR: Target source dataset not found: inflation_base_2015.csv 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:34:22.886738 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_193422.txt 
+[2025-05-04 19:34:22.887812] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:34:22.892458] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:34:23.615365] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:34:23.616117] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:34:23.617297] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:34:23.624305] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:34:23.730481] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:34:23.731397] [ERROR] ERROR: Target source dataset not found: inflation_base_2015.csv 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:35:49.272037 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_193545.txt 
+[2025-05-04 19:35:51.311941] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:35:53.597319] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:35:55.162302] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:35:55.16291] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:35:55.65262] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:36:00.937546] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:36:04.07528] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:36:06.510821] [ERROR] ERROR: Target source dataset not found: inflation_base_2015.csv 
+[2025-05-04 19:36:10.164799] [INFO] Target variable processed. Range:  to  
+[2025-05-04 19:36:10.345876] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: CPI Inflation Rate - YoY % (National) ) 
+[2025-05-04 19:36:10.346468] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 19:36:10.346905] [ERROR] Error: Source dataset not found in loaded list: inflation_base_2015.csv 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:38:15.539042 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_193815.txt 
+[2025-05-04 19:38:15.540875] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:38:15.548494] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:38:15.549459] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:38:16.29981] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:38:16.373152] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:38:16.373996] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:38:16.38096] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:38:16.657669] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:38:16.658793] [ERROR] ERROR: Target source dataset key 'inflation_base_2015' (from file 'inflation_base_2015.csv') not found in loaded dataframes_list. Check loadData.R or the filename in target_config. 
+[2025-05-04 19:38:16.659299] [DEBUG] Available dataset keys: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:41:20.643917 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_194120.txt 
+[2025-05-04 19:41:20.645442] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:41:20.651934] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:41:20.652777] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:41:21.451834] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:41:21.453613] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:41:21.454455] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:41:21.46116] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:41:21.706595] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:41:21.707702] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:41:21.708429] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Indicator, Date, Value. Check target_config. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:44:00.016371 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_194400.txt 
+[2025-05-04 19:44:00.018311] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:44:00.025508] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:44:00.026364] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:44:00.788408] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:44:00.82509] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:44:00.826087] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:44:00.834184] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:44:00.972611] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:44:00.973869] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:44:00.974536] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  typed, char_version 
+[2025-05-04 19:44:00.975197] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Indicator, Date, Value. Check target_config. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:46:44.870577 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_194644.txt 
+[2025-05-04 19:46:44.872036] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:46:44.878415] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:46:44.879213] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:46:45.654665] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:46:45.655335] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:46:45.656209] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:46:45.663407] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:46:45.787395] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:46:45.788561] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:46:45.789359] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  typed, char_version 
+[2025-05-04 19:46:45.790042] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Series.name, Observation.Date, Observation.Value. Check target_config. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:49:52.31829 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_194952.txt 
+[2025-05-04 19:49:52.320106] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:49:52.327858] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:49:52.328499] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:49:53.121104] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:49:53.150084] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:49:53.151111] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:49:53.158571] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:49:53.295475] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:49:53.29657] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:49:53.29724] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  typed, char_version 
+[2025-05-04 19:49:53.297963] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Series name, Observation Date, Observation Value. Check target_config. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:52:28.966682 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_195228.txt 
+[2025-05-04 19:52:28.968325] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:52:28.975788] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:52:28.976646] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:52:29.724621] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:52:29.756306] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:52:29.757553] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:52:29.766359] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:52:30.033156] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:52:30.034519] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:52:30.035328] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  typed, char_version 
+[2025-05-04 19:52:30.035888] [DEBUG] DEBUG: Structure of target_raw_df (' inflation_base_2015.csv '): 
+[2025-05-04 19:52:30.060628] [DEBUG] List of 2 
+[2025-05-04 19:52:30.061772] [DEBUG]  $ typed       : tibble [6,360 × 10] (S3: tbl_df/tbl/data.frame) 
+[2025-05-04 19:52:30.062204] [DEBUG]   ..$ Dataset Name              : chr [1:6360] "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" ... 
+[2025-05-04 19:52:30.062642] [DEBUG]   ..$ Observation Date          : POSIXct[1:6360], format: "2025-04-30" "2025-04-30" "2025-04-30" "2025-04-30" ... 
+[2025-05-04 19:52:30.063048] [DEBUG]   ..$ Series Key                : chr [1:6360] "TS_GP_PT_CPI_M.P00011516" "TS_GP_PT_CPI_M.P00021516" "TS_GP_PT_CPI_M.P00041516" "TS_GP_PT_CPI_M.P00061516" ... 
+[2025-05-04 19:52:30.063449] [DEBUG]   ..$ Series Display Name       : chr [1:6360] ". CPI-YoY-National" "............. Urban" "................... Food" "................... Non-Food" ... 
+[2025-05-04 19:52:30.063797] [DEBUG]   ..$ Observation Value         : num [1:6360] 0.3 0.5 -1.9 2.2 -0.1 -4.6 4.4 NA NA NA ... 
+[2025-05-04 19:52:30.064205] [DEBUG]   ..$ Unit                      : chr [1:6360] "Percent" "Percent" "Percent" "Percent" ... 
+[2025-05-04 19:52:30.064562] [DEBUG]   ..$ Observation Status        : chr [1:6360] "Normal" "Normal" "Normal" "Normal" ... 
+[2025-05-04 19:52:30.064879] [DEBUG]   ..$ Observation Status Comment: chr [1:6360] NA NA NA NA ... 
+[2025-05-04 19:52:30.065219] [DEBUG]   ..$ Sequence No.              : num [1:6360] 10 20 30 40 50 60 70 80 90 100 ... 
+[2025-05-04 19:52:30.065529] [DEBUG]   ..$ Series name               : chr [1:6360] "National CPI, an Inflation Measure (Year-on-Year basis)" "Urban CPI, an Inflation Measure (Year-on-Year basis)" "Urban Food CPI, an Inflation Measure (Year-on-Year basis)" "Urban Non-Food CPI, an Inflation Measure (Year-on-Year basis)" ... 
+[2025-05-04 19:52:30.06584] [DEBUG]  $ char_version: spc_tbl_ [6,360 × 10] (S3: spec_tbl_df/tbl_df/tbl/data.frame) 
+[2025-05-04 19:52:30.066158] [DEBUG]   ..$ Dataset Name              : chr [1:6360] "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" "Inflation Snapshot (New Base: 2015-16)" ... 
+[2025-05-04 19:52:30.066529] [DEBUG]   ..$ Observation Date          : chr [1:6360] "30-Apr-2025" "30-Apr-2025" "30-Apr-2025" "30-Apr-2025" ... 
+[2025-05-04 19:52:30.066892] [DEBUG]   ..$ Series Key                : chr [1:6360] "TS_GP_PT_CPI_M.P00011516" "TS_GP_PT_CPI_M.P00021516" "TS_GP_PT_CPI_M.P00041516" "TS_GP_PT_CPI_M.P00061516" ... 
+[2025-05-04 19:52:30.06722] [DEBUG]   ..$ Series Display Name       : chr [1:6360] ". CPI-YoY-National" "............. Urban" "................... Food" "................... Non-Food" ... 
+[2025-05-04 19:52:30.067517] [DEBUG]   ..$ Observation Value         : chr [1:6360] ".3" ".5" "-1.9" "2.2" ... 
+[2025-05-04 19:52:30.067832] [DEBUG]   ..$ Unit                      : chr [1:6360] "Percent" "Percent" "Percent" "Percent" ... 
+[2025-05-04 19:52:30.068186] [DEBUG]   ..$ Observation Status        : chr [1:6360] "Normal" "Normal" "Normal" "Normal" ... 
+[2025-05-04 19:52:30.068512] [DEBUG]   ..$ Observation Status Comment: chr [1:6360] NA NA NA NA ... 
+[2025-05-04 19:52:30.068813] [DEBUG]   ..$ Sequence No.              : chr [1:6360] "10" "20" "30" "40" ... 
+[2025-05-04 19:52:30.069131] [DEBUG]   ..$ Series name               : chr [1:6360] "National CPI, an Inflation Measure (Year-on-Year basis)" "Urban CPI, an Inflation Measure (Year-on-Year basis)" "Urban Food CPI, an Inflation Measure (Year-on-Year basis)" "Urban Non-Food CPI, an Inflation Measure (Year-on-Year basis)" ... 
+[2025-05-04 19:52:30.06949] [DEBUG]   ..- attr(*, "spec")= 
+[2025-05-04 19:52:30.069836] [DEBUG]   .. .. cols( 
+[2025-05-04 19:52:30.070232] [DEBUG]   .. ..   .default = col_character(), 
+[2025-05-04 19:52:30.070558] [DEBUG]   .. ..   `Dataset Name` = col_character(), 
+[2025-05-04 19:52:30.070848] [DEBUG]   .. ..   `Observation Date` = col_character(), 
+[2025-05-04 19:52:30.071167] [DEBUG]   .. ..   `Series Key` = col_character(), 
+[2025-05-04 19:52:30.071498] [DEBUG]   .. ..   `Series Display Name` = col_character(), 
+[2025-05-04 19:52:30.071836] [DEBUG]   .. ..   `Observation Value` = col_character(), 
+[2025-05-04 19:52:30.072213] [DEBUG]   .. ..   Unit = col_character(), 
+[2025-05-04 19:52:30.072527] [DEBUG]   .. ..   `Observation Status` = col_character(), 
+[2025-05-04 19:52:30.072851] [DEBUG]   .. ..   `Observation Status Comment` = col_character(), 
+[2025-05-04 19:52:30.073145] [DEBUG]   .. ..   `Sequence No.` = col_character(), 
+[2025-05-04 19:52:30.073433] [DEBUG]   .. ..   `Series name` = col_character() 
+[2025-05-04 19:52:30.074915] [DEBUG]   .. .. ) 
+[2025-05-04 19:52:30.07525] [DEBUG]   ..- attr(*, "problems")=<externalptr>  
+[2025-05-04 19:52:30.075824] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 19:52:30.076718] [ERROR] ERROR: Required columns missing in target dataframe 'inflation_base_2015.csv': Series name, Observation Date, Observation Value. Check target_config. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:55:14.647189 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_195514.txt 
+[2025-05-04 19:55:14.648815] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:55:14.656298] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:55:14.657291] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:55:15.396598] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:55:15.399612] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:55:15.400601] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:55:15.407051] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:55:15.662553] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:55:15.663894] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:55:15.664623] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 19:55:15.66518] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 19:55:15.677352] [DEBUG] Extracted 106 valid observations for target variable. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 19:57:27.500493 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_195727.txt 
+[2025-05-04 19:57:27.502116] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 19:57:27.510055] [DEBUG] Defined common NA values list. 
+[2025-05-04 19:57:27.510843] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 19:57:28.272461] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 19:57:28.441968] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 19:57:28.534668] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 19:57:28.542028] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 19:57:28.696455] [INFO] --- Processing Target Variable --- 
+[2025-05-04 19:57:28.697966] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 19:57:28.698667] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 19:57:28.699165] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 19:57:28.708631] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 19:57:28.711553] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 19:57:28.712384] [INFO] Total months in target range: 106 
+[2025-05-04 19:57:28.885555] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 19:57:28.886245] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 19:57:28.886725] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 19:57:28.887167] [DEBUG]     Handling long format... 
+[2025-05-04 19:57:28.898154] [WARN] Warning: No data found or extracted for series: CPI_YoY_National with identifier: National CPI, an Inflation Measure (Year-on-Year basis) . Skipping. 
+[2025-05-04 19:57:28.899243] [ERROR] ERROR: Processing the target variable using prepare_individual_ts failed. Check logs above. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script ---
+Time: 2025-05-04 20:06:44.454847 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_200644.txt 
+[2025-05-04 20:06:44.456527] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:06:44.463603] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:06:44.464418] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:06:45.243294] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:06:45.279478] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:06:45.280555] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:06:45.287834] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:06:45.436779] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:06:45.43822] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:06:45.439005] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:06:45.439538] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:06:45.448933] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 20:06:45.45112] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date 
+[2025-05-04 20:06:45.451719] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date 
+[2025-05-04 20:06:45.453152] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 20:06:45.454017] [INFO] Total months in target range: 106 
+[2025-05-04 20:06:45.581786] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 20:06:45.582384] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 20:06:45.582826] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 20:06:45.583258] [DEBUG]     Handling long format... 
+[2025-05-04 20:06:45.58547] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:06:45.592569] [WARN] Warning: No data found or extracted for series: CPI_YoY_National with identifier: National CPI, an Inflation Measure (Year-on-Year basis) . Skipping. 
+[2025-05-04 20:06:45.593774] [ERROR] ERROR: Processing the target variable using prepare_individual_ts failed. Check logs above. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v19 - Standardized) ---
+Time: 2025-05-04 20:12:59.485979 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_201259.txt 
+[2025-05-04 20:12:59.487387] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:12:59.493181] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:12:59.493917] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:13:00.246109] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:13:00.267998] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:13:00.268827] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:13:00.275195] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:13:00.412775] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:13:00.413944] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:13:00.414538] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:13:00.415058] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:13:00.527158] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 20:13:00.529304] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date 
+[2025-05-04 20:13:00.529784] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date 
+[2025-05-04 20:13:00.533639] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 20:13:00.534466] [INFO] Total months in target range: 106 
+[2025-05-04 20:13:00.650697] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 20:13:00.651403] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 20:13:00.651965] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 20:13:00.652415] [DEBUG]     Handling long format... 
+[2025-05-04 20:13:00.654551] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:13:00.659495] [DEBUG]      Found unique series: National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:13:00.659915] [DEBUG]     Cleaning and converting types... 
+[2025-05-04 20:13:00.671404] [DEBUG]      Cleaned data points: 106 
+[2025-05-04 20:13:00.67195] [DEBUG]      Date range: 2016-07-31 to 2025-04-30 
+[2025-05-04 20:13:00.672494] [DEBUG]     Converting to zoo object... 
+[2025-05-04 20:13:00.673055] [DEBUG]      Initial zoo object created with 106 points. 
+[2025-05-04 20:13:00.72799] [DEBUG] Aligning frequency from M to Monthly using method: mean 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v19 - Standardized) ---
+Time: 2025-05-04 20:13:26.032653 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_201326.txt 
+[2025-05-04 20:13:26.033889] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:13:26.039647] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:13:26.040455] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:13:26.761369] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:13:26.85023] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:13:26.850948] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:13:26.85745] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:13:26.98563] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:13:26.986842] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:13:26.987431] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:13:26.987916] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:13:26.996436] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 20:13:26.998633] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date 
+[2025-05-04 20:13:26.999108] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date 
+[2025-05-04 20:13:27.000253] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 20:13:27.001024] [INFO] Total months in target range: 106 
+[2025-05-04 20:13:27.145719] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 20:13:27.167838] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 20:13:27.168565] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 20:13:27.169044] [DEBUG]     Handling long format... 
+[2025-05-04 20:13:27.171237] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:13:27.175963] [DEBUG]      Found unique series: National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:13:27.176392] [DEBUG]     Cleaning and converting types... 
+[2025-05-04 20:13:27.186726] [DEBUG]      Cleaned data points: 106 
+[2025-05-04 20:13:27.187185] [DEBUG]      Date range: 2016-07-31 to 2025-04-30 
+[2025-05-04 20:13:27.187648] [DEBUG]     Converting to zoo object... 
+[2025-05-04 20:13:27.188187] [DEBUG]      Initial zoo object created with 106 points. 
+[2025-05-04 20:13:27.239838] [DEBUG] Aligning frequency from M to Monthly using method: mean 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v20 - Fixed Namespace & Standardized) ---
+Time: 2025-05-04 20:15:49.509527 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_201549.txt 
+[2025-05-04 20:15:49.511124] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:15:49.518415] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:15:49.519388] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:15:50.282868] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:15:50.283541] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:15:50.28434] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:15:50.291973] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:15:50.454876] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:15:50.456337] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:15:50.45688] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:15:50.457361] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:15:50.467218] [DEBUG] Extracted 106 valid observations for target variable. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v21 - Fixed All Namespaces & Standardized) ---
+Time: 2025-05-04 20:18:54.368716 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_201854.txt 
+[2025-05-04 20:18:54.370444] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:18:54.377605] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:18:54.378323] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:18:55.173779] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:18:55.1744] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:18:55.175529] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:18:55.182407] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:18:55.316048] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:18:55.317651] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:18:55.318549] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:18:55.319295] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:18:55.33224] [DEBUG] Extracted 106 valid observations for target variable. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v21 - Fixed All Namespaces & Standardized) ---
+Time: 2025-05-04 20:19:02.018103 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_201902.txt 
+[2025-05-04 20:19:02.01907] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:19:02.024535] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:19:02.025339] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:19:02.765668] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:19:02.766429] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:19:02.767267] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:19:02.773801] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:19:02.907971] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:19:02.909419] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:19:02.910072] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:19:02.910539] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:19:02.919527] [DEBUG] Extracted 106 valid observations for target variable. 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v22 - Fixed start/end Namespace & Standardized) ---
+Time: 2025-05-04 20:21:29.527433 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_202129.txt 
+[2025-05-04 20:21:29.529294] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:21:29.539105] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:21:29.540194] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:21:30.271405] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:21:30.304735] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:21:30.306095] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:21:30.313506] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:21:30.452653] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:21:30.453989] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:21:30.454562] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:21:30.455018] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:21:30.463678] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 20:21:30.465778] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date 
+[2025-05-04 20:21:30.466244] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date 
+[2025-05-04 20:21:30.467546] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 20:21:30.46832] [INFO] Total months in target range: 106 
+[2025-05-04 20:21:30.586517] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 20:21:30.587136] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 20:21:30.587498] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 20:21:30.587854] [DEBUG]     Handling long format... 
+[2025-05-04 20:21:30.589884] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:21:30.594083] [DEBUG]      Found unique series: National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:21:30.594481] [DEBUG]     Cleaning and converting types... 
+[2025-05-04 20:21:30.605607] [DEBUG]      Cleaned data points: 106 
+[2025-05-04 20:21:30.606132] [DEBUG]      Date range: 2016-07-31 to 2025-04-30 
+[2025-05-04 20:21:30.606585] [DEBUG]     Converting to zoo object... 
+[2025-05-04 20:21:30.607138] [DEBUG]      Initial zoo object created with 106 points. 
+[2025-05-04 20:21:30.66589] [DEBUG] Aligning frequency from M to Monthly using method: mean 
+Working directory set to: D:/work/Semester4/AdvStats/pakistan-inflation-forecast 
+--- Starting Predictor Preparation Script (v23 - Use inherits() & Standardized) ---
+Time: 2025-05-04 20:24:29.328682 
+Log file: D:/work/Semester4/AdvStats/pakistan-inflation-forecast/Logs/prepare_predictors_log_20250504_202429.txt 
+[2025-05-04 20:24:29.330269] [INFO] --- Loading Necessary Libraries --- 
+[2025-05-04 20:24:29.336959] [DEBUG] Defined common NA values list. 
+[2025-05-04 20:24:29.337875] [INFO] --- Loading Pre-processed DataFrames List --- 
+[2025-05-04 20:24:30.118985] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds 
+[2025-05-04 20:24:30.119787] [DEBUG] DEBUG: Names in loaded dataframes_list: t_bills.csv, seasonal_worker_remittance.csv, REER.csv, quaterly_gdp_2015.csv, policy_rate.csv, m2_broad_money.csv, kibor_kibid.csv, inflation_base_2015.csv, inflation_base_2007.csv, gdp_domestic_2005.csv, foreign_invest_sectors.csv, foreign_invest_countires.csv, exchange_rate.csv, consumer_confidence_survey.csv, country_wise_remittance.csv, borrow_loans.csv, LSM_QIM_2015.csv, LSM_QIM_2005.csv, gold_foreign_exchange_reserves.csv, transport_and_communications.csv, trade_and_payments.csv, public_debt.csv, population,_labor_force_and_employment.csv, money_and_credit.csv, manufacturing_and_mining.csv, inflation.csv, health_and_nutrition.csv, growth_and_investment.csv, fiscal_development.csv, energy.csv, education.csv, economic_and_social_indicators.csv, capital_markets_and_corporate_sector.csv, agriculture.csv, trade_partner_inflations.csv, CMO_historical_data_monthly.csv, CMO_historical_data_indices.csv 
+[2025-05-04 20:24:30.120682] [INFO] --- Configuring Target and Predictor Variables --- 
+[2025-05-04 20:24:30.13021] [INFO] --- Defining Helper Functions --- 
+[2025-05-04 20:24:30.283435] [INFO] --- Processing Target Variable --- 
+[2025-05-04 20:24:30.284645] [DEBUG] Found target data frame ' inflation_base_2015.csv ' in list. 
+[2025-05-04 20:24:30.285292] [DEBUG] DEBUG: Actual column names in target_raw_df (' inflation_base_2015.csv '):  Dataset Name, Observation Date, Series Key, Series Display Name, Observation Value, Unit, Observation Status, Observation Status Comment, Sequence No., Series name 
+[2025-05-04 20:24:30.285835] [DEBUG] DEBUG: Required target columns: Series name, Observation Date, Observation Value 
+[2025-05-04 20:24:30.296694] [DEBUG] Extracted 106 valid observations for target variable. 
+[2025-05-04 20:24:30.299424] [DEBUG] DEBUG seq(): start_date = 2016-07-01 , class = Date 
+[2025-05-04 20:24:30.29998] [DEBUG] DEBUG seq(): end_date = 2025-04-01 , class = Date 
+[2025-05-04 20:24:30.301373] [INFO] Target variable processed. Range: Jul 2016 to Apr 2025 
+[2025-05-04 20:24:30.302129] [INFO] Total months in target range: 106 
+[2025-05-04 20:24:30.553542] [INFO] --------------------------------------------------
+  Preparing: CPI_YoY_National (ID: National CPI, an Inflation Measure (Year-on-Year basis) ) 
+[2025-05-04 20:24:30.554294] [INFO]   Source Dataset: inflation_base_2015.csv 
+[2025-05-04 20:24:30.554772] [DEBUG]     Raw data dimensions: 6360x10 
+[2025-05-04 20:24:30.555238] [DEBUG]     Handling long format... 
+[2025-05-04 20:24:30.557451] [DEBUG]      Filtering using str_detect (regex pattern detected): National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:24:30.562779] [DEBUG]      Found unique series: National CPI, an Inflation Measure (Year-on-Year basis) 
+[2025-05-04 20:24:30.563331] [DEBUG]     Cleaning and converting types... 
+[2025-05-04 20:24:30.587602] [DEBUG]      Cleaned data points: 106 
+[2025-05-04 20:24:30.588238] [DEBUG]      Date range: 2016-07-31 to 2025-04-30 
+[2025-05-04 20:24:30.58875] [DEBUG]     Converting to zoo object... 
+[2025-05-04 20:24:30.589367] [DEBUG]      Initial zoo object created with 106 points. 
+[2025-05-04 20:24:30.637683] [DEBUG] Aligning frequency from M to Monthly using method: mean 
+[2025-05-04 20:24:30.639973] [DEBUG] Applying transformation: level 
+[2025-05-04 20:24:30.650637] [DEBUG] Creating lags 1 to 12 for CPI_YoY_National 
+Current Date/Time: 2025-05-04 20:28:37 
+Current Date/Time: 2025-05-04 20:28:59 
+Current Date/Time: 2025-05-04 20:29:02 
