@@ -359,34 +359,35 @@ https://easydata.sbp.org.pk/apex/f?p=10:211:6032558072119::NO:RP:P211_DATASET_TY
 
 ---
 
-### 8. ``
+### 17 new Files.
 
-* **Business Area:** 
-* **Dataset Name:** 
-* **Dataset Description:** 
-* **Data Source:** 
-* **Data Frequency:** 
-* **Notes/Links:**
-    * Available since
-    * Available upto
-    * Last refresh 
+Obtained from https://economy.finance.gov.pk/climate-change
 
-    
-* **Contains:**  
+* **Contains:**  Economic and social indiciators, growth and investment, agriculture, manufacturing and mining, fiscal development, money and credit, capital markets and corporate sector, inflation, trade and payments, public debt, education, health and nutrition, population, labor force and eomployement, transport and communications, energy, information techinloogy and telecommunication, social protection
 
 ---
 
-### 8. ``
+### 35. ``
 
-* **Business Area:** 
-* **Dataset Name:** 
-* **Dataset Description:** 
-* **Data Source:** 
-* **Data Frequency:** 
+* **Business Area:** 	Real Sector
+* **Dataset Name:** Consumer Confidence Survey – Indices
+* **Dataset Description:** Consumer confidence and expectations is one of the leading indicators of economic activity having significant impact on business and economic conditions on an economy. These expectations are based on consumers’ perceptions about the current economic conditions. Expectations regarding inflation, interest rate and employment are important for forward looking policy formulation which explains why many countries are using consumer surveys for policy making and research purposes.
+
+The State Bank of Pakistan in partnership with the Institute of Business Administration conducts the Consumer Confidence Survey on a national scale. The information collected is used to construct current, expected and overall confidence indices which are useful in monetary policy formulation and short-term forecasting.
+
+This survey provides permanent direct channel to households which are major stakeholders in the economy and hence an important source of primary data. This survey is being conducted since 2012 via telephone in the first week of every odd number month.
+
+The CCS survey was conducted every two months until February 2023. The frequency of the survey has been increased to monthly since then.
+
+For methodology of calculations of proportions and indices, please refer to the methodology page here: https://www.sbp.org.pk/research/CCS-m.asp
+
+For more information on SBP surveys, visit : https//www.sbp.org.pk/research/intro.asp
+* **Data Source:** State Bank of Pakistan
+* **Data Frequency:** Monthly
 * **Notes/Links:**
-    * Available since
-    * Available upto
-    * Last refresh 
+    * Available since Jan-2012
+    * Available upto Feb-2025
+    * Last refresh 10-Mar-2025
 
     
 * **Contains:**  
