@@ -90,12 +90,18 @@ load_easydata <- function(filename) {
 # 2. fao: Skip metadata/header rows, parse date as yearmon
 load_fao <- function(filename) {
   lines <- readLines(filename)
-  header_line <- which(grepl("^Date", lines))[1]
-  df <- readr::read_csv(filename, skip = header_line - 1)
-  df <- df %>%
-    dplyr::mutate(Date = zoo::as.yearmon(Date, "%Y-%m"))
-  for (col in names(df)[-1]) {
-    df[[col]] <- as.numeric(df[[col]])
+  header_line <- which(grepl("^Date,", lines))[1]
+  # Extract header and data
+  col_names <- strsplit(lines[header_line], ",")[[1]]
+  # Read data, skipping all lines before header
+  df <- readr::read_csv(filename, skip = header_line, col_names = col_names)
+  # Remove any rows where Date is NA or blank
+  df <- df[!is.na(df$Date) & df$Date != "", ]
+  # Parse Date as yearmon
+  df$Date <- zoo::as.yearmon(df$Date, "%Y-%m")
+  # Convert all other columns to numeric (if not already)
+  for (col in setdiff(names(df), "Date")) {
+    df[[col]] <- suppressWarnings(as.numeric(df[[col]]))
   }
   df
 }
@@ -162,6 +168,11 @@ fao_food <- load_fao("Data/fao/Global Food Price Index.csv")
 finance_gdp <- load_financegovpk("Data/finanaceGovPk/Consumption and Invesment of GDP.csv")
 fred_oil <- load_fred("Data/fred/International Oil Prices.csv")
 
+# --- Save EDA output to file instead of printing to console ---
+eda_output_file <- "eda_output.txt"
+
+sink(eda_output_file)
+
 # Observe the structure and summary of each dataset
 dataset_names <- names(datasets)
 for (name in dataset_names) {
@@ -171,6 +182,15 @@ for (name in dataset_names) {
   print(head(datasets[[name]]))
   print(tail(datasets[[name]]))
 }
+
+describe_datasets(all_datasets$easydata, "easydata")
+describe_datasets(all_datasets$fao, "fao")
+describe_datasets(all_datasets$financegovpk, "finanaceGovPk")
+describe_datasets(all_datasets$fred, "fred")
+describe_datasets(all_datasets$old_data, "old_data")
+
+sink()
+# --- End of EDA output to file ---
 
 # --- EDA and Summary for All Loaded Datasets by Source ---
 
