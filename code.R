@@ -91,10 +91,8 @@ load_easydata <- function(filename) {
 load_fao <- function(filename) {
   lines <- readLines(filename)
   header_line <- which(grepl("^Date,", lines))[1]
-  # Extract header and data
-  col_names <- strsplit(lines[header_line], ",")[[1]]
-  # Read data, skipping all lines before header
-  df <- readr::read_csv(filename, skip = header_line, col_names = col_names)
+  # Read data, skipping all lines before the header
+  df <- readr::read_csv(filename, skip = header_line, col_names = TRUE)
   # Remove any rows where Date is NA or blank
   df <- df[!is.na(df$Date) & df$Date != "", ]
   # Parse Date as yearmon
