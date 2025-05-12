@@ -1,3 +1,8 @@
+# --- Set working directory to project root (if running interactively) ---
+if (interactive()) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
+
 # Pakistan Inflation Forecasting Project: Data Preparation
 # Load required libraries
 library(readr)
