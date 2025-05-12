@@ -1,9 +1,14 @@
+# 01_load_and_eda.R
+# Pakistan Inflation Forecasting Project: Data Loading and EDA
+# This script loads all datasets, performs EDA, and saves outputs for further analysis.
+# Author: <Your Name>
+# Date: 2025-05-13
+
 # --- Set working directory to project root (if running interactively) ---
 if (interactive()) {
   setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 }
 
-# Pakistan Inflation Forecasting Project: Data Preparation
 # Load required libraries
 library(readr)
 library(dplyr)
@@ -31,7 +36,6 @@ current_account_balance <- read_csv(file.path(main_data_dir, "Current Account Ba
 growth_rate <- read_csv(file.path(main_data_dir, "Growth Rate.csv"))
 pakistan_share_gdp <- read_csv(file.path(main_data_dir, "Pakistan's Share in GDP.csv"))
 
-# List of all loaded datasets for easy reference
 datasets <- list(
   cpi = cpi,
   kibor = kibor,
@@ -73,8 +77,6 @@ growth_rate <- datasets$growth_rate
 pakistan_share_gdp <- datasets$pakistan_share_gdp
 
 # --- Source-specific Data Loading Functions ---
-
-# 1. easydata: Standardized structure, may have multiple series per file
 load_easydata <- function(filename) {
   df <- readr::read_csv(filename)
   names(df) <- tolower(gsub("[ .-]", "_", names(df)))
@@ -87,31 +89,24 @@ load_easydata <- function(filename) {
   df
 }
 
-# 2. fao: Skip metadata/header rows, parse date as yearmon
 load_fao <- function(filename) {
   lines <- readLines(filename)
   header_line <- which(grepl("^Date,", lines))[1]
-  # Read data, skipping all lines before the header
-  df <- readr::read_csv(filename, skip = header_line, col_names = TRUE)
-  # Remove any rows where Date is NA or blank
+  df <- readr::read_csv(filename, skip = header_line - 1, col_names = TRUE)
   df <- df[!is.na(df$Date) & df$Date != "", ]
-  # Parse Date as yearmon
   df$Date <- zoo::as.yearmon(df$Date, "%Y-%m")
-  # Convert all other columns to numeric (if not already)
   for (col in setdiff(names(df), "Date")) {
     df[[col]] <- suppressWarnings(as.numeric(df[[col]]))
   }
   df
 }
 
-# 3. finanaceGovPk: Fiscal years, values as numeric
 load_financegovpk <- function(filename) {
   df <- readr::read_csv(filename)
   names(df) <- tolower(gsub("[ .-]", "_", names(df)))
   df
 }
 
-# 4. fred: Standard date/value columns
 load_fred <- function(filename) {
   df <- readr::read_csv(filename)
   names(df) <- tolower(gsub("[ .-]", "_", names(df)))
@@ -124,32 +119,25 @@ load_fred <- function(filename) {
   df
 }
 
-# 5. old_data: Same as easydata
 load_olddata <- load_easydata
 
-# --- Load all files by source ---
 load_all_by_source <- function() {
-  # easydata
   easydata_files <- list.files("Data/easydata", full.names = TRUE, pattern = "*.csv")
   easydata <- lapply(easydata_files, load_easydata)
   names(easydata) <- basename(easydata_files)
 
-  # fao
   fao_files <- list.files("Data/fao", full.names = TRUE, pattern = "*.csv")
   fao <- lapply(fao_files, load_fao)
   names(fao) <- basename(fao_files)
 
-  # finanaceGovPk
   finance_files <- list.files("Data/finanaceGovPk", full.names = TRUE, pattern = "*.csv")
   financegovpk <- lapply(finance_files, load_financegovpk)
   names(financegovpk) <- basename(finance_files)
 
-  # fred
   fred_files <- list.files("Data/fred", full.names = TRUE, pattern = "*.csv")
   fred <- lapply(fred_files, load_fred)
   names(fred) <- basename(fred_files)
 
-  # old_data
   olddata_files <- list.files("Data/old_data", full.names = TRUE, pattern = "*.csv")
   old_data <- lapply(olddata_files, load_olddata)
   names(old_data) <- basename(olddata_files)
@@ -157,21 +145,16 @@ load_all_by_source <- function() {
   list(easydata = easydata, fao = fao, financegovpk = financegovpk, fred = fred, old_data = old_data)
 }
 
-# Load all datasets by source
 all_datasets <- load_all_by_source()
 
-# Example usage for each source:
 easydata_cpi <- load_easydata("Data/easydata/CPI National -YoY.csv")
 fao_food <- load_fao("Data/fao/Global Food Price Index.csv")
 finance_gdp <- load_financegovpk("Data/finanaceGovPk/Consumption and Invesment of GDP.csv")
 fred_oil <- load_fred("Data/fred/International Oil Prices.csv")
 
-# --- Save EDA output to file instead of printing to console ---
 eda_output_file <- "eda_output.txt"
-
 sink(eda_output_file)
 
-# Observe the structure and summary of each dataset
 dataset_names <- names(datasets)
 for (name in dataset_names) {
   cat("\n\n===== ", name, " =====\n")
@@ -181,18 +164,6 @@ for (name in dataset_names) {
   print(tail(datasets[[name]]))
 }
 
-describe_datasets(all_datasets$easydata, "easydata")
-describe_datasets(all_datasets$fao, "fao")
-describe_datasets(all_datasets$financegovpk, "finanaceGovPk")
-describe_datasets(all_datasets$fred, "fred")
-describe_datasets(all_datasets$old_data, "old_data")
-
-sink()
-# --- End of EDA output to file ---
-
-# --- EDA and Summary for All Loaded Datasets by Source ---
-
-# Helper function to print structure, summary, head, and tail for a list of dataframes
 describe_datasets <- function(dataset_list, source_name) {
   cat("\n\n==================== ", toupper(source_name), " ====================\n")
   for (name in names(dataset_list)) {
@@ -209,3 +180,6 @@ describe_datasets(all_datasets$fao, "fao")
 describe_datasets(all_datasets$financegovpk, "finanaceGovPk")
 describe_datasets(all_datasets$fred, "fred")
 describe_datasets(all_datasets$old_data, "old_data")
+
+sink()
+# --- End of EDA output to file ---
