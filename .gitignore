@@ -1,0 +1,16 @@
+# R/RStudio
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+.Rapp.history
+
+# Output and logs
+eda_output.txt
+*.log
+*.tmp
+*.bak
+
+# OS/Editor
+.DS_Store
+Thumbs.db
