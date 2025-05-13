@@ -1,0 +1,97 @@
+===== FAO GLOBAL FOOD PRICE INDEX CLEANING LOG =====
+Generated on: 2025-05-13 05:32:26 
+
+Input file: Data/fao/Global Food Price Index.csv 
+Output file: Processed_Data/clean_fao_food_price_index.csv 
+
+Reading original FAO file...
+Successfully read file with dimensions: 424 rows, 66 columns
+
+First 5 rows of raw data:
+# A tibble: 5 × 66
+  Date    `Food Price Index`  Meat Dairy Cereals  Oils Sugar ...8  ...9  ...10
+  <chr>                <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl> <lgl> <lgl> <lgl>
+1 1990-01               64.4  74.3  53.5    64.1  44.6  87.9 NA    NA    NA   
+2 1990-02               64.7  76.8  52.2    62.2  44.5  90.7 NA    NA    NA   
+3 1990-03               64    78.5  41.4    61.3  45.8  95.1 NA    NA    NA   
+4 1990-04               66    81.2  48.4    62.8  44.0  94.3 NA    NA    NA   
+5 1990-05               64.6  81.8  39.2    62    45.5  90.4 NA    NA    NA   
+# ℹ 56 more variables: ...11 <lgl>, ...12 <lgl>, ...13 <lgl>, ...14 <lgl>,
+#   ...15 <lgl>, ...16 <lgl>, ...17 <lgl>, ...18 <lgl>, ...19 <lgl>,
+#   ...20 <lgl>, ...21 <lgl>, ...22 <lgl>, ...23 <lgl>, ...24 <lgl>,
+#   ...25 <lgl>, ...26 <lgl>, ...27 <lgl>, ...28 <lgl>, ...29 <lgl>,
+#   ...30 <lgl>, ...31 <lgl>, ...32 <lgl>, ...33 <lgl>, ...34 <lgl>,
+#   ...35 <lgl>, ...36 <lgl>, ...37 <dbl>, ...38 <lgl>, ...39 <lgl>,
+#   ...40 <lgl>, ...41 <lgl>, ...42 <lgl>, ...43 <lgl>, ...44 <lgl>, …
+
+Missing values in raw data: 24718 (88.33%) 
+Number of completely empty columns: 57 
+
+Cleaning the data...
+Selected first 7 columns (non-empty columns)
+Renamed columns:
+  - Date -> date 
+  - Food Price Index -> food_price_index 
+  - Meat -> meat_index 
+  - Dairy -> dairy_index 
+  - Cereals -> cereals_index 
+  - Oils -> oils_index 
+  - Sugar -> sugar_index 
+
+Converting dates...
+Date range: 1990-01-01 to 2025-04-01 
+
+Handling missing values...
+
+Missing values after cleaning: 0 (0.00%) 
+
+Converting index columns to numeric...
+Removed rows with missing date
+Final dimensions: 424 rows, 8 columns
+
+Saving cleaned data to Processed_Data/clean_fao_food_price_index.csv ...
+Successfully saved cleaned data
+
+===== SUMMARY STATISTICS =====
+
+Column: food_price_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  50.80   64.58   86.20   88.39  114.25  160.20 
+Missing values: 0 (0.00%) 
+
+Column: meat_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  52.30   72.88   84.50   86.73  100.67  125.40 
+Missing values: 0 (0.00%) 
+
+Column: dairy_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  36.80   56.83   80.45   87.60  115.03  158.20 
+Missing values: 0 (0.00%) 
+
+Column: cereals_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  48.60   60.58   87.45   89.31  112.12  173.50 
+Missing values: 0 (0.00%) 
+
+Column: oils_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  35.83   63.67   82.77   92.39  118.28  251.80 
+Missing values: 0 (0.00%) 
+
+Column: sugar_index 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  31.80   59.85   77.75   84.65  108.70  183.20 
+Missing values: 0 (0.00%) 
+
+===== VALIDATION REPORT =====
+No duplicate dates found
+No gaps found in monthly data
+
+===== CLEANING PROCESS COMPLETED =====
+Generated on: 2025-05-13 05:32:27 
+Input file: Data/fao/Global Food Price Index.csv 
+Output file: Processed_Data/clean_fao_food_price_index.csv 
+Original dimensions: 424 rows, 66 columns
+Final dimensions: 424 rows, 8 columns
+Missing values reduced from 88.33% to 0.00% 

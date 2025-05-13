@@ -1,0 +1,39 @@
+"Filename","Source","Rows","Columns","Date_Range","Missing_Pct"
+"Consumption and Invesment of GDP.csv","Combined Data",11,3,"Unknown",0
+"CPI National -YoY.csv","Combined Data",106,8,"Unknown",12.5
+"Current Account Balance.csv","Combined Data",11,5,"Unknown",0
+"Exports and Imports.csv","Combined Data",7584,10,"Unknown",10
+"Global Food Price Index.csv","Combined Data",427,66,"Unknown",88.38
+"Growth Rate.csv","Combined Data",11,6,"Unknown",0
+"Industrial Production Index.csv","Combined Data",104,8,"Unknown",12.5
+"inflation_base_2015.csv","Combined Data",6360,10,"Unknown",10.05
+"International Oil Prices.csv","Combined Data",456,2,"1987-05-01 to 2025-04-01",0
+"KIBOR.csv","Combined Data",88386,10,"Unknown",10
+"Monthly Monetary Aggregate.csv","Combined Data",1287,10,"Unknown",10
+"Pakistan's Share in GDP.csv","Combined Data",11,4,"Unknown",0
+"Pakistan Exchange Rate Per USD.csv","Combined Data",933,8,"Unknown",12.5
+"Policy Rate.csv","Combined Data",37,8,"Unknown",12.5
+"CPI National -YoY.csv","State Bank of Pakistan",106,8,"Unknown",12.5
+"Exports and Imports.csv","State Bank of Pakistan",7584,10,"Unknown",10
+"Industrial Production Index.csv","State Bank of Pakistan",104,8,"Unknown",12.5
+"KIBOR.csv","State Bank of Pakistan",88386,10,"Unknown",10
+"Monthly Monetary Aggregate.csv","State Bank of Pakistan",1287,10,"Unknown",10
+"Pakistan Exchange Rate Per USD.csv","State Bank of Pakistan",933,8,"Unknown",12.5
+"Policy Rate.csv","State Bank of Pakistan",37,8,"Unknown",12.5
+"Global Food Price Index.csv","FAO",426,66,"Unknown",88.36
+"Consumption and Invesment of GDP.csv","Finance.gov.pk",11,3,"Unknown",0
+"Current Account Balance.csv","Finance.gov.pk",11,5,"Unknown",0
+"Growth Rate.csv","Finance.gov.pk",11,6,"Unknown",0
+"Pakistan's Share in GDP.csv","Finance.gov.pk",11,4,"Unknown",0
+"International Oil Prices.csv","FRED",456,2,"1987-05-01 to 2025-04-01",0
+"borrow_loans.csv","Legacy Data",8680,10,"Unknown",10
+"country_wise_remittance.csv","Legacy Data",21651,10,"Unknown",10.25
+"exchange_rate.csv","Legacy Data",66332,10,"Unknown",10
+"foreign_invest_countires.csv","Legacy Data",44523,10,"Unknown",10
+"foreign_invest_sectors.csv","Legacy Data",23409,10,"Unknown",10
+"gold_foreign_exchange_reserves.csv","Legacy Data",6808,10,"Unknown",9.71
+"inflation_base_2015.csv","Legacy Data",6360,10,"Unknown",10.05
+"kibor_kibid.csv","Legacy Data",88330,10,"Unknown",10
+"m2_broad_money.csv","Legacy Data",28200,10,"Unknown",10
+"seasonal_worker_remittance.csv","Legacy Data",474,10,"Unknown",10
+"t_bills.csv","Legacy Data",3276,10,"Unknown",11.54

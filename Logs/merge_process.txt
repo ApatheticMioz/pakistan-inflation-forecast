@@ -1,0 +1,366 @@
+===== PAKISTAN INFLATION FORECASTING PROJECT =====
+===== DATASET MERGING PROCESS LOG =====
+
+Started at: 2025-05-13 05:49:00 
+
+Number of datasets loaded: 16 
+ [1] "cpi"                        "kibor"                     
+ [3] "policy_rate"                "monetary_aggregate"        
+ [5] "exchange_rate"              "exports_imports"           
+ [7] "current_account_balance"    "industrial_production"     
+ [9] "growth_rate"                "pakistan_share_gdp"        
+[11] "consumption_investment_gdp" "oil_prices"                
+[13] "global_food"                "inflation_base_2015"       
+[15] "t_bills"                    "forex_reserves"            
+
+CPI dataset info before preparation:
+- Dimensions: 106 rows, 9 columns
+- Date range: 2016-07-31 to 2025-04-30 
+- Missing values in observation_value: 0 (0.0%) 
+CPI dataset prepared with special handling to create 'cpi' column
+- Dimensions after preparation: 106 rows, 2 columns
+- Date range after preparation: 2016-07-31 to 2025-04-30 
+- Missing values in cpi column: 0 (0.0%) 
+Extracted all food component indices from FAO data
+Checking for old data files...
+T-bills data loaded successfully
+Foreign reserves data loaded successfully
+
+===== DATASET MERGING PROCESS =====
+
+Complete date range across all datasets: 1947-08-31 to 2025-05-09 
+Total time span: 77.7 years
+
+CPI data date range: 2016-07-31 to 2025-04-30 
+Limiting date range to CPI data availability
+Created monthly sequence with 106 months
+
+Base dataframe created with date column
+
+Starting to join all prepared datasets
+Number of datasets to join: 16 
+Dataset names: cpi, exchange_rate, policy_rate, kibor, oil_prices, global_food, meat_index, dairy_index, cereals_index, oils_index, sugar_index, m2, industrial_production, current_account, t_bills, reserves 
+
+TARGET VARIABLE (CPI) IS PRESENT - Good!
+
+CPI data before joining:
+- Dimensions: 106 rows, 2 columns
+- Date range: 2016-07-31 to 2025-04-30 
+- Date class: Date 
+- First few dates: 2016-07-31, 2016-08-31, 2016-09-30, 2016-10-31, 2016-11-30 
+merged_df date column before joining:
+- Date class: Date 
+- First few dates: 2016-07-01, 2016-08-01, 2016-09-01, 2016-10-01, 2016-11-01 
+Converting CPI dates from end-of-month to start-of-month format...
+After joining CPI by year-month:
+- Dimensions: 106 rows, 2 columns
+- Missing values in cpi column: 0 (0.0%) 
+Joining dataset: exchange_rate 
+  Dimensions before join: 106 rows, 2 columns
+  Dataset to join: 933 rows, 9 columns
+  Dataset date range: 1947-08-31 to 2025-04-30 
+  Date coverage:  880.2% ( 933 dates out of 106 possible)
+  New columns added: exchange_rate_dataset, exchange_rate_series_key, exchange_rate_series, exchange_rate_observation_date, exchange_rate_observation_value, exchange_rate_unit, exchange_rate_observation_status, exchange_rate_observation_status_comment 
+  Missingness in new columns:
+     exchange_rate_dataset :  100.0% ( 106 out of 106 )
+     exchange_rate_series_key :  100.0% ( 106 out of 106 )
+     exchange_rate_series :  100.0% ( 106 out of 106 )
+     exchange_rate_observation_date :  100.0% ( 106 out of 106 )
+     exchange_rate_observation_value :  100.0% ( 106 out of 106 )
+     exchange_rate_unit :  100.0% ( 106 out of 106 )
+     exchange_rate_observation_status :  100.0% ( 106 out of 106 )
+     exchange_rate_observation_status_comment :  100.0% ( 106 out of 106 )
+  Dimensions after join: 106 rows, 10 columns
+
+Joining dataset: policy_rate 
+  Dimensions before join: 106 rows, 10 columns
+  Dataset to join: 37 rows, 9 columns
+  Dataset date range: 2015-05-25 to 2025-05-06 
+  Date coverage:  34.9% ( 37 dates out of 106 possible)
+  New columns added: policy_rate_dataset, policy_rate_series_key, policy_rate_series, policy_rate_observation_date, policy_rate_observation_value, policy_rate_unit, policy_rate_observation_status, policy_rate_observation_status_comment 
+  Missingness in new columns:
+     policy_rate_dataset :  97.2% ( 103 out of 106 )
+     policy_rate_series_key :  97.2% ( 103 out of 106 )
+     policy_rate_series :  97.2% ( 103 out of 106 )
+     policy_rate_observation_date :  97.2% ( 103 out of 106 )
+     policy_rate_observation_value :  97.2% ( 103 out of 106 )
+     policy_rate_unit :  97.2% ( 103 out of 106 )
+     policy_rate_observation_status :  97.2% ( 103 out of 106 )
+     policy_rate_observation_status_comment :  100.0% ( 106 out of 106 )
+  Dimensions after join: 106 rows, 18 columns
+
+Joining dataset: kibor 
+  Dimensions before join: 106 rows, 18 columns
+  Dataset to join: 88386 rows, 11 columns
+  Dataset date range: 2005-06-09 to 2025-05-09 
+  Date coverage:  83383.0% ( 88386 dates out of 106 possible)
+  New columns added: kibor_dataset_name, kibor_observation_date, kibor_series_key, kibor_series_display_name, kibor_observation_value, kibor_unit, kibor_observation_status, kibor_observation_status_comment, kibor_sequence_no, kibor_series_name 
+  Missingness in new columns:
+     kibor_dataset_name :  5.6% ( 51 out of 905 )
+     kibor_observation_date :  5.6% ( 51 out of 905 )
+     kibor_series_key :  5.6% ( 51 out of 905 )
+     kibor_series_display_name :  5.6% ( 51 out of 905 )
+     kibor_observation_value :  5.6% ( 51 out of 905 )
+     kibor_unit :  5.6% ( 51 out of 905 )
+     kibor_observation_status :  5.6% ( 51 out of 905 )
+     kibor_observation_status_comment :  100.0% ( 905 out of 905 )
+     kibor_sequence_no :  5.6% ( 51 out of 905 )
+     kibor_series_name :  5.6% ( 51 out of 905 )
+  Dimensions after join: 905 rows, 28 columns
+
+Joining dataset: m2 
+  Dimensions before join: 905 rows, 28 columns
+  Dataset to join: 1287 rows, 11 columns
+  Dataset date range: 2006-06-30 to 2025-03-31 
+  Date coverage:  1214.2% ( 1287 dates out of 106 possible)
+  New columns added: m2_dataset_name, m2_observation_date, m2_series_key, m2_series_display_name, m2_observation_value, m2_unit, m2_observation_status, m2_observation_status_comment, m2_sequence_no, m2_series_name 
+  Missingness in new columns:
+     m2_dataset_name :  100.0% ( 905 out of 905 )
+     m2_observation_date :  100.0% ( 905 out of 905 )
+     m2_series_key :  100.0% ( 905 out of 905 )
+     m2_series_display_name :  100.0% ( 905 out of 905 )
+     m2_observation_value :  100.0% ( 905 out of 905 )
+     m2_unit :  100.0% ( 905 out of 905 )
+     m2_observation_status :  100.0% ( 905 out of 905 )
+     m2_observation_status_comment :  100.0% ( 905 out of 905 )
+     m2_sequence_no :  100.0% ( 905 out of 905 )
+     m2_series_name :  100.0% ( 905 out of 905 )
+  Dimensions after join: 905 rows, 38 columns
+
+Joining dataset: oil_prices 
+  Dimensions before join: 905 rows, 38 columns
+  Dataset to join: 456 rows, 2 columns
+  Dataset date range: 1987-05-01 to 2025-04-01 
+  Date coverage:  430.2% ( 456 dates out of 106 possible)
+  New columns added: oil_price 
+  Missingness in new columns:
+     oil_price :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 39 columns
+
+Joining dataset: global_food 
+  Dimensions before join: 905 rows, 39 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: global_food_index 
+  Missingness in new columns:
+     global_food_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 40 columns
+
+Joining dataset: meat_index 
+  Dimensions before join: 905 rows, 40 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: meat_price_index 
+  Missingness in new columns:
+     meat_price_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 41 columns
+
+Joining dataset: dairy_index 
+  Dimensions before join: 905 rows, 41 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: dairy_price_index 
+  Missingness in new columns:
+     dairy_price_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 42 columns
+
+Joining dataset: cereals_index 
+  Dimensions before join: 905 rows, 42 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: cereals_price_index 
+  Missingness in new columns:
+     cereals_price_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 43 columns
+
+Joining dataset: oils_index 
+  Dimensions before join: 905 rows, 43 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: oils_price_index 
+  Missingness in new columns:
+     oils_price_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 44 columns
+
+Joining dataset: sugar_index 
+  Dimensions before join: 905 rows, 44 columns
+  Dataset to join: 424 rows, 2 columns
+  Dataset date range: 1990-01-01 to 2025-04-01 
+  Date coverage:  400.0% ( 424 dates out of 106 possible)
+  New columns added: sugar_price_index 
+  Missingness in new columns:
+     sugar_price_index :  0.0% ( 0 out of 905 )
+  Dimensions after join: 905 rows, 45 columns
+
+Joining dataset: industrial_production 
+  Dimensions before join: 905 rows, 45 columns
+  Dataset to join: 104 rows, 9 columns
+  Dataset date range: 2016-07-31 to 2025-02-28 
+  Date coverage:  98.1% ( 104 dates out of 106 possible)
+  New columns added: industrial_production_dataset, industrial_production_series_key, industrial_production_series, industrial_production_observation_date, industrial_production_observation_value, industrial_production_unit, industrial_production_observation_status, industrial_production_observation_status_comment 
+  Missingness in new columns:
+     industrial_production_dataset :  100.0% ( 905 out of 905 )
+     industrial_production_series_key :  100.0% ( 905 out of 905 )
+     industrial_production_series :  100.0% ( 905 out of 905 )
+     industrial_production_observation_date :  100.0% ( 905 out of 905 )
+     industrial_production_observation_value :  100.0% ( 905 out of 905 )
+     industrial_production_unit :  100.0% ( 905 out of 905 )
+     industrial_production_observation_status :  100.0% ( 905 out of 905 )
+     industrial_production_observation_status_comment :  100.0% ( 905 out of 905 )
+  Dimensions after join: 905 rows, 53 columns
+
+Joining dataset: current_account 
+  Dimensions before join: 905 rows, 53 columns
+  Dataset to join: 11 rows, 6 columns
+  Dataset date range: 2013-07-01 to 2023-07-01 
+  Date coverage:  10.4% ( 11 dates out of 106 possible)
+  New columns added: current_account_fiscal_years, current_account_exports_of_goods_and_services_billion, current_account_imports_of_goods_and_services_billion, current_account_balance_on_trade_in_goods_and_services_billion, current_account_current_account_balance_billion 
+  Missingness in new columns:
+     current_account_fiscal_years :  99.1% ( 897 out of 905 )
+     current_account_exports_of_goods_and_services_billion :  99.1% ( 897 out of 905 )
+     current_account_imports_of_goods_and_services_billion :  99.1% ( 897 out of 905 )
+     current_account_balance_on_trade_in_goods_and_services_billion :  99.1% ( 897 out of 905 )
+     current_account_current_account_balance_billion :  99.1% ( 897 out of 905 )
+  Dimensions after join: 905 rows, 58 columns
+
+Joining dataset: t_bills 
+  Dimensions before join: 905 rows, 58 columns
+  Dataset to join: 3276 rows, 11 columns
+  Dataset date range: 2004-06-24 to 2025-03-26 
+  Date coverage:  3090.6% ( 3276 dates out of 106 possible)
+  New columns added: t_bills_dataset_name, t_bills_observation_date, t_bills_series_key, t_bills_series_display_name, t_bills_observation_value, t_bills_unit, t_bills_observation_status, t_bills_observation_status_comment, t_bills_sequence_no_, t_bills_series_name 
+  Missingness in new columns:
+     t_bills_dataset_name :  58.4% ( 809 out of 1385 )
+     t_bills_observation_date :  58.4% ( 809 out of 1385 )
+     t_bills_series_key :  58.4% ( 809 out of 1385 )
+     t_bills_series_display_name :  58.4% ( 809 out of 1385 )
+     t_bills_observation_value :  63.6% ( 881 out of 1385 )
+     t_bills_unit :  58.4% ( 809 out of 1385 )
+     t_bills_observation_status :  58.4% ( 809 out of 1385 )
+     t_bills_observation_status_comment :  100.0% ( 1385 out of 1385 )
+     t_bills_sequence_no_ :  58.4% ( 809 out of 1385 )
+     t_bills_series_name :  58.4% ( 809 out of 1385 )
+  Dimensions after join: 1385 rows, 68 columns
+
+Joining dataset: reserves 
+  Dimensions before join: 1385 rows, 68 columns
+  Dataset to join: 6808 rows, 11 columns
+  Dataset date range: 1948-06-30 to 2025-03-31 
+  Date coverage:  6422.6% ( 6808 dates out of 106 possible)
+  New columns added: reserves_dataset_name, reserves_observation_date, reserves_series_key, reserves_series_display_name, reserves_observation_value, reserves_unit, reserves_observation_status, reserves_observation_status_comment, reserves_sequence_no_, reserves_series_name 
+  Missingness in new columns:
+     reserves_dataset_name :  100.0% ( 1385 out of 1385 )
+     reserves_observation_date :  100.0% ( 1385 out of 1385 )
+     reserves_series_key :  100.0% ( 1385 out of 1385 )
+     reserves_series_display_name :  100.0% ( 1385 out of 1385 )
+     reserves_observation_value :  100.0% ( 1385 out of 1385 )
+     reserves_unit :  100.0% ( 1385 out of 1385 )
+     reserves_observation_status :  100.0% ( 1385 out of 1385 )
+     reserves_observation_status_comment :  100.0% ( 1385 out of 1385 )
+     reserves_sequence_no_ :  100.0% ( 1385 out of 1385 )
+     reserves_series_name :  100.0% ( 1385 out of 1385 )
+  Dimensions after join: 1385 rows, 78 columns
+
+===== MERGED DATASET SUMMARY =====
+Final dimensions: 1385 rows, 78 columns
+Date range: 2016-07-01 to 2025-04-01 
+Variables: date, cpi, exchange_rate_dataset, exchange_rate_series_key, exchange_rate_series, exchange_rate_observation_date, exchange_rate_observation_value, exchange_rate_unit, exchange_rate_observation_status, exchange_rate_observation_status_comment, policy_rate_dataset, policy_rate_series_key, policy_rate_series, policy_rate_observation_date, policy_rate_observation_value, policy_rate_unit, policy_rate_observation_status, policy_rate_observation_status_comment, kibor_dataset_name, kibor_observation_date, kibor_series_key, kibor_series_display_name, kibor_observation_value, kibor_unit, kibor_observation_status, kibor_observation_status_comment, kibor_sequence_no, kibor_series_name, m2_dataset_name, m2_observation_date, m2_series_key, m2_series_display_name, m2_observation_value, m2_unit, m2_observation_status, m2_observation_status_comment, m2_sequence_no, m2_series_name, oil_price, global_food_index, meat_price_index, dairy_price_index, cereals_price_index, oils_price_index, sugar_price_index, industrial_production_dataset, industrial_production_series_key, industrial_production_series, industrial_production_observation_date, industrial_production_observation_value, industrial_production_unit, industrial_production_observation_status, industrial_production_observation_status_comment, current_account_fiscal_years, current_account_exports_of_goods_and_services_billion, current_account_imports_of_goods_and_services_billion, current_account_balance_on_trade_in_goods_and_services_billion, current_account_current_account_balance_billion, t_bills_dataset_name, t_bills_observation_date, t_bills_series_key, t_bills_series_display_name, t_bills_observation_value, t_bills_unit, t_bills_observation_status, t_bills_observation_status_comment, t_bills_sequence_no_, t_bills_series_name, reserves_dataset_name, reserves_observation_date, reserves_series_key, reserves_series_display_name, reserves_observation_value, reserves_unit, reserves_observation_status, reserves_observation_status_comment, reserves_sequence_no_, reserves_series_name 
+
+Creating seasonal indicators and calendar effects...
+Creating interaction terms...
+
+===== MISSING DATA ANALYSIS =====
+
+Missingness percentage by column:
+                                                                         Variable
+exchange_rate_dataset                                       exchange_rate_dataset
+exchange_rate_series_key                                 exchange_rate_series_key
+exchange_rate_series                                         exchange_rate_series
+exchange_rate_observation_date                     exchange_rate_observation_date
+exchange_rate_observation_value                   exchange_rate_observation_value
+exchange_rate_unit                                             exchange_rate_unit
+exchange_rate_observation_status                 exchange_rate_observation_status
+exchange_rate_observation_status_comment exchange_rate_observation_status_comment
+policy_rate_observation_status_comment     policy_rate_observation_status_comment
+kibor_observation_status_comment                 kibor_observation_status_comment
+m2_dataset_name                                                   m2_dataset_name
+m2_observation_date                                           m2_observation_date
+m2_series_key                                                       m2_series_key
+m2_series_display_name                                     m2_series_display_name
+m2_observation_value                                         m2_observation_value
+m2_unit                                                                   m2_unit
+m2_observation_status                                       m2_observation_status
+m2_observation_status_comment                       m2_observation_status_comment
+m2_sequence_no                                                     m2_sequence_no
+m2_series_name                                                     m2_series_name
+                                         Missing_Percent
+exchange_rate_dataset                                100
+exchange_rate_series_key                             100
+exchange_rate_series                                 100
+exchange_rate_observation_date                       100
+exchange_rate_observation_value                      100
+exchange_rate_unit                                   100
+exchange_rate_observation_status                     100
+exchange_rate_observation_status_comment             100
+policy_rate_observation_status_comment               100
+kibor_observation_status_comment                     100
+m2_dataset_name                                      100
+m2_observation_date                                  100
+m2_series_key                                        100
+m2_series_display_name                               100
+m2_observation_value                                 100
+m2_unit                                              100
+m2_observation_status                                100
+m2_observation_status_comment                        100
+m2_sequence_no                                       100
+m2_series_name                                       100
+
+Variables with high missingness (>30%): 60 
+exchange_rate_dataset, exchange_rate_series_key, exchange_rate_series, exchange_rate_observation_date, exchange_rate_observation_value, exchange_rate_unit, exchange_rate_observation_status, exchange_rate_observation_status_comment, policy_rate_dataset, policy_rate_series_key, policy_rate_series, policy_rate_observation_date, policy_rate_observation_value, policy_rate_unit, policy_rate_observation_status, policy_rate_observation_status_comment, kibor_observation_status_comment, m2_dataset_name, m2_observation_date, m2_series_key, m2_series_display_name, m2_observation_value, m2_unit, m2_observation_status, m2_observation_status_comment, m2_sequence_no, m2_series_name, industrial_production_dataset, industrial_production_series_key, industrial_production_series, industrial_production_observation_date, industrial_production_observation_value, industrial_production_unit, industrial_production_observation_status, industrial_production_observation_status_comment, current_account_fiscal_years, current_account_exports_of_goods_and_services_billion, current_account_imports_of_goods_and_services_billion, current_account_balance_on_trade_in_goods_and_services_billion, current_account_current_account_balance_billion, t_bills_dataset_name, t_bills_observation_date, t_bills_series_key, t_bills_series_display_name, t_bills_observation_value, t_bills_unit, t_bills_observation_status, t_bills_observation_status_comment, t_bills_sequence_no_, t_bills_series_name, reserves_dataset_name, reserves_observation_date, reserves_series_key, reserves_series_display_name, reserves_observation_value, reserves_unit, reserves_observation_status, reserves_observation_status_comment, reserves_sequence_no_, reserves_series_name 
+
+Variables with moderate missingness (10-30%): 0 
+Variables with low missingness (0-10%): 9 
+kibor_dataset_name, kibor_observation_date, kibor_series_key, kibor_series_display_name, kibor_observation_value, kibor_unit, kibor_observation_status, kibor_sequence_no, kibor_series_name 
+
+
+Performing imputation using multiple methods:
+1. Last observation carried forward (LOCF)
+2. Next observation carried backward (NOCB)
+3. Median imputation for any remaining missing values
+
+All missing values successfully imputed using LOCF/NOCB methods.
+
+===== IMPUTATION SUMMARY =====
+Total data cells: 36414 
+Missing values before imputation: 333 (0.91%) 
+Missing values after imputation: 0 
+Percentage of data imputed: 0.91% 
+
+
+===== DATA VALIDATION CHECKS =====
+Validating dataset: merged_df_with_missing 
+  ISSUE: Found 788 duplicate dates 
+  Found 1 validation issues
+Validating dataset: merged_df_imputed 
+  ISSUE: Found 788 duplicate dates 
+  Found 1 validation issues
+
+===== SAVING DATASETS =====
+Saved: Processed_Data/merged_df_with_missing.csv
+  Dimensions: 867 rows, 50 columns
+  Validation: ISSUES DETECTED 
+Saved: Processed_Data/merged_df_imputed.csv
+  Dimensions: 867 rows, 50 columns
+  Validation: ISSUES DETECTED 
+Saved: Output/merged_df.rds (for use in subsequent scripts)
+Saved: Processed_Data/key_variables.csv
+  Dimensions: 867 rows, 11 columns
+  Variables: date, month, quarter, year, fiscal_year, fiscal_quarter, is_ramadan, post_ramadan, cpi, oil_price, global_food_index 
+
+
+===== GENERATING FINAL REPORT =====

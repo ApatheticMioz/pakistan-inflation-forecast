@@ -1,0 +1,46 @@
+===== DETAILED ANALYSIS OF TARGET VARIABLE (INFLATION) =====
+Generated on: 2025-05-13 05:46:42 
+
+1. BASIC INFORMATION
+Dataset: CPI (Consumer Price Index)
+Description: Year-on-Year percentage change in CPI, our target variable for forecasting
+Dimensions: 106 rows, 9 columns
+Time period: 2016-07-31 to 2025-04-30 (105 months)
+
+2. DETAILED STATISTICS
+Min: 0.3 
+Max: 38 
+Mean: 11.89096 
+Median: 8.615 
+Standard Deviation: 9.041975 
+Quartiles:
+      0%      25%      50%      75%     100% 
+ 0.30000  5.56500  8.61500 12.89683 38.00000 
+
+Distribution characteristics:
+Skewness: 1.239434 (Positive values indicate right skew, negative values indicate left skew)
+Kurtosis: 3.438824 (Values > 3 indicate heavy tails compared to normal distribution)
+Shapiro-Wilk normality test p-value: 1.212353e-09 - Distribution is significantly different from normal 
+
+3. TIME SERIES PROPERTIES
+Seasonal decomposition:
+- Trend component range: 4.72625 30.95417 
+- Seasonal component range: -0.3363769 0.4058979 
+- Random component range: -4.406993 7.886277 
+- Seasonal strength (max-min): 0.7422748 
+- Trend strength (max-min): 26.22792 
+
+Stationarity tests:
+- Augmented Dickey-Fuller Test p-value: 0.9639448 - Series appears non-stationary 
+- KPSS Test p-value: 0.01 - Series appears non-stationary 
+
+Autocorrelation analysis:
+- Ljung-Box Test p-value: 0 - Significant autocorrelation present 
+- Significant autocorrelation at lags: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 
+
+4. IMPLICATIONS FOR MODELING
+Based on the analysis above, the following considerations are important for modeling:
+- The series appears non-stationary based on the ADF test. Consider differencing or transformation before ARIMA modeling.
+- Limited seasonality detected. Simple ARIMA models may be sufficient.
+- Significant autocorrelation present. ARIMA models should capture this temporal dependence.
+- Non-normal distribution detected. Consider robust estimation methods or transformations.

@@ -1,0 +1,796 @@
+===== ALL SOURCE FILES SUMMARY =====
+This file provides an overview of all individual source files
+
+
+
+====================  STATE BANK OF PAKISTAN (EASYDATA)  ====================
+Number of files: 7 
+
+
+---  CPI National -YoY.csv  ---
+Dimensions: 106 9 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+Sample data:
+# A tibble: 3 × 9
+  dataset             series_key series observation_date observation_value unit 
+  <chr>               <chr>      <chr>  <date>                       <dbl> <chr>
+1 Inflation Snapshot… TS_GP_PT_… CPI N… 2025-04-30                     0.3 Perc…
+2 Inflation Snapshot… TS_GP_PT_… CPI N… 2025-03-31                     0.7 Perc…
+3 Inflation Snapshot… TS_GP_PT_… CPI N… 2025-02-28                     1.5 Perc…
+# ℹ 3 more variables: observation_status <chr>,
+#   observation_status_comment <lgl>, date <date>
+
+Summary of key columns:
+   dataset           series_key           series          observation_date    
+ Length:106         Length:106         Length:106         Min.   :2016-07-31  
+ Class :character   Class :character   Class :character   1st Qu.:2018-10-07  
+ Mode  :character   Mode  :character   Mode  :character   Median :2020-12-15  
+                                                          Mean   :2020-12-14  
+                                                          3rd Qu.:2023-02-21  
+                                                          Max.   :2025-04-30  
+ observation_value
+ Min.   : 0.300   
+ 1st Qu.: 5.565   
+ Median : 8.615   
+ Mean   :11.891   
+ 3rd Qu.:12.897   
+ Max.   :38.000   
+
+
+---  Exports and Imports.csv  ---
+Dimensions: 7584 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Export and … 2025-03-31       TS_GP_BOP… . Goods and Servic…             -2407
+2 Export and … 2025-03-31       TS_GP_BOP… 1 Goods - Export (…              2768
+3 Export and … 2025-03-31       TS_GP_BOP… 2 Exports of Servi…               744
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:7584        Min.   :2005-07-31   Length:7584        Length:7584        
+ Class :character   1st Qu.:2010-06-30   Class :character   Class :character   
+ Mode  :character   Median :2015-05-31   Mode  :character   Mode  :character   
+                    Mean   :2015-05-31                                         
+                    3rd Qu.:2020-04-30                                         
+                    Max.   :2025-03-31                                         
+ observation_value
+ Min.   :-4739.0  
+ 1st Qu.:    1.0  
+ Median :   26.0  
+ Mean   :  411.0  
+ 3rd Qu.:  180.2  
+ Max.   : 8533.0  
+
+
+---  Industrial Production Index.csv  ---
+Dimensions: 104 9 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+Sample data:
+# A tibble: 3 × 9
+  dataset             series_key series observation_date observation_value unit 
+  <chr>               <chr>      <chr>  <date>                       <dbl> <chr>
+1 Quantum Index Seri… TS_GP_RL_… QIM -… 2025-02-28                    123. Index
+2 Quantum Index Seri… TS_GP_RL_… QIM -… 2025-01-31                    130. Index
+3 Quantum Index Seri… TS_GP_RL_… QIM -… 2024-12-31                    128. Index
+# ℹ 3 more variables: observation_status <chr>,
+#   observation_status_comment <lgl>, date <date>
+
+Summary of key columns:
+   dataset           series_key           series          observation_date    
+ Length:104         Length:104         Length:104         Min.   :2016-07-31  
+ Class :character   Class :character   Class :character   1st Qu.:2018-09-22  
+ Mode  :character   Mode  :character   Mode  :character   Median :2020-11-15  
+                                                          Mean   :2020-11-14  
+                                                          3rd Qu.:2023-01-07  
+                                                          Max.   :2025-02-28  
+ observation_value
+ Min.   : 66.45   
+ 1st Qu.:106.78   
+ Median :112.18   
+ Mean   :113.52   
+ 3rd Qu.:121.81   
+ Max.   :153.72   
+
+
+---  KIBOR.csv  ---
+Dimensions: 88386 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Structure o… 2025-05-09       TS_GP_BAM… . One-Week Karachi…              11.0
+2 Structure o… 2025-05-09       TS_GP_BAM… . One-Week Karachi…              11.5
+3 Structure o… 2025-05-09       TS_GP_BAM… . Two-Weeks Karach…              11.0
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:88386       Min.   :2005-06-09   Length:88386       Length:88386       
+ Class :character   1st Qu.:2009-07-11   Class :character   Class :character   
+ Mode  :character   Median :2014-03-06   Mode  :character   Mode  :character   
+                    Mean   :2014-07-06                                         
+                    3rd Qu.:2019-03-05                                         
+                    Max.   :2025-05-09                                         
+ observation_value
+ Min.   : 5.01    
+ 1st Qu.: 8.35    
+ Median :10.34    
+ Mean   :10.95    
+ 3rd Qu.:12.86    
+ Max.   :25.16    
+
+
+---  Monthly Monetary Aggregate.csv  ---
+Dimensions: 1287 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Monetary Ag… 2025-03-31       TS_GP_BAM… ....... Notes in C…         10239519.
+2 Monetary Ag… 2025-03-31       TS_GP_BAM… ....... Transferab…         22840798.
+3 Monetary Ag… 2025-03-31       TS_GP_BAM… . M1 (1+2)                  33080316.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:1287        Min.   :2006-06-30   Length:1287        Length:1287        
+ Class :character   1st Qu.:2018-01-31   Class :character   Class :character   
+ Mode  :character   Median :2020-06-30   Mode  :character   Mode  :character   
+                    Mean   :2020-01-16                                         
+                    3rd Qu.:2022-10-31                                         
+                    Max.   :2025-03-31                                         
+ observation_value 
+ Min.   :       0  
+ 1st Qu.:    9043  
+ Median : 3540059  
+ Mean   : 8003008  
+ 3rd Qu.:13310391  
+ Max.   :41994046  
+
+
+---  Pakistan Exchange Rate Per USD.csv  ---
+Dimensions: 933 9 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+Sample data:
+# A tibble: 3 × 9
+  dataset             series_key series observation_date observation_value unit 
+  <chr>               <chr>      <chr>  <date>                       <dbl> <chr>
+1 Bank Floating Aver… TS_GP_ER_… Avera… 2025-04-30                    281. PKR  
+2 Bank Floating Aver… TS_GP_ER_… Avera… 2025-03-31                    280. PKR  
+3 Bank Floating Aver… TS_GP_ER_… Avera… 2025-02-28                    279. PKR  
+# ℹ 3 more variables: observation_status <chr>,
+#   observation_status_comment <lgl>, date <date>
+
+Summary of key columns:
+   dataset           series_key           series          observation_date    
+ Length:933         Length:933         Length:933         Min.   :1947-08-31  
+ Class :character   Class :character   Class :character   1st Qu.:1967-01-31  
+ Mode  :character   Mode  :character   Mode  :character   Median :1986-06-30  
+                                                          Mean   :1986-06-30  
+                                                          3rd Qu.:2005-11-30  
+                                                          Max.   :2025-04-30  
+ observation_value
+ Min.   :  3.309  
+ 1st Qu.:  4.770  
+ Median : 16.780  
+ Mean   : 45.272  
+ 3rd Qu.: 60.398  
+ Max.   :297.754  
+
+
+---  Policy Rate.csv  ---
+Dimensions: 37 9 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+Sample data:
+# A tibble: 3 × 9
+  dataset             series_key series observation_date observation_value unit 
+  <chr>               <chr>      <chr>  <date>                       <dbl> <chr>
+1 Structure of Inter… TS_GP_IR_… SBP P… 2025-05-06                      11 Perc…
+2 Structure of Inter… TS_GP_IR_… SBP P… 2025-01-28                      12 Perc…
+3 Structure of Inter… TS_GP_IR_… SBP P… 2024-12-17                      13 Perc…
+# ℹ 3 more variables: observation_status <chr>,
+#   observation_status_comment <lgl>, date <date>
+
+Summary of key columns:
+   dataset           series_key           series          observation_date    
+ Length:37          Length:37          Length:37          Min.   :2015-05-25  
+ Class :character   Class :character   Class :character   1st Qu.:2019-04-01  
+ Mode  :character   Mode  :character   Mode  :character   Median :2020-06-26  
+                                                          Mean   :2021-02-21  
+                                                          3rd Qu.:2023-03-03  
+                                                          Max.   :2025-05-06  
+ observation_value
+ Min.   : 5.75    
+ 1st Qu.: 8.00    
+ Median :11.00    
+ Mean   :11.86    
+ 3rd Qu.:15.00    
+ Max.   :22.00    
+
+
+
+====================  FOOD AND AGRICULTURE ORGANIZATION (FAO)  ====================
+Number of files: 1 
+
+
+---  Global Food Price Index.csv  ---
+Dimensions: 424 8 
+Variables: date, food_price_index, meat_index, dairy_index, cereals_index, oils_index, sugar_index, original_date 
+
+Sample data:
+# A tibble: 3 × 8
+  date       food_price_index meat_index dairy_index cereals_index oils_index
+  <date>                <dbl>      <dbl>       <dbl>         <dbl>      <dbl>
+1 1990-01-01             64.4       74.3        53.5          64.1       44.6
+2 1990-02-01             64.7       76.8        52.2          62.2       44.5
+3 1990-03-01             64         78.5        41.4          61.3       45.8
+# ℹ 2 more variables: sugar_index <dbl>, original_date <chr>
+
+Summary of key columns:
+      date            food_price_index   meat_index      dairy_index    
+ Min.   :1990-01-01   Min.   : 50.80   Min.   : 52.30   Min.   : 36.80  
+ 1st Qu.:1998-10-24   1st Qu.: 64.58   1st Qu.: 72.88   1st Qu.: 56.83  
+ Median :2007-08-16   Median : 86.20   Median : 84.50   Median : 80.45  
+ Mean   :2007-08-16   Mean   : 88.39   Mean   : 86.73   Mean   : 87.60  
+ 3rd Qu.:2016-06-08   3rd Qu.:114.25   3rd Qu.:100.67   3rd Qu.:115.03  
+ Max.   :2025-04-01   Max.   :160.20   Max.   :125.40   Max.   :158.20  
+ cereals_index   
+ Min.   : 48.60  
+ 1st Qu.: 60.58  
+ Median : 87.45  
+ Mean   : 89.31  
+ 3rd Qu.:112.12  
+ Max.   :173.50  
+
+
+
+====================  PAKISTAN MINISTRY OF FINANCE  ====================
+Number of files: 4 
+
+
+---  Consumption and Invesment of GDP.csv  ---
+Dimensions: 11 4 
+Variables: fiscal_years, consumption_(%_of_gdp), investment_(%_of_gdp), date 
+
+Sample data:
+# A tibble: 3 × 4
+  fiscal_years `consumption_(%_of_gdp)` `investment_(%_of_gdp)` date      
+  <chr>                           <dbl>                   <dbl> <date>    
+1 2013-14                          90.8                    14.4 2013-07-01
+2 2014-15                          89.7                    15.6 2014-07-01
+3 2015-16                          91.3                    15.9 2015-07-01
+
+Summary of key columns:
+ fiscal_years       consumption_(%_of_gdp) investment_(%_of_gdp)
+ Length:11          Min.   :89.70          Min.   :11.60        
+ Class :character   1st Qu.:92.25          1st Qu.:13.95        
+ Mode  :character   Median :94.00          Median :14.40        
+                    Mean   :94.34          Mean   :14.64        
+                    3rd Qu.:96.80          3rd Qu.:15.75        
+                    Max.   :98.60          Max.   :17.00        
+      date           
+ Min.   :2013-07-01  
+ 1st Qu.:2015-12-31  
+ Median :2018-07-01  
+ Mean   :2018-07-01  
+ 3rd Qu.:2020-12-30  
+ Max.   :2023-07-01  
+
+
+---  Current Account Balance.csv  ---
+Dimensions: 11 6 
+Variables: fiscal_years, exports_of_goods_and_services_($_billion), imports_of_goods_and_services_($_billion), balance_on_trade_in_goods_and_services_($_billion), current_account_balance_($_billion), date 
+
+Sample data:
+# A tibble: 3 × 6
+  fiscal_years exports_of_goods_and_services_($_billion…¹ imports_of_goods_and…²
+  <chr>                                             <dbl>                  <dbl>
+1 2013-14                                            30.4                   49.7
+2 2014-15                                            30                     50.2
+3 2015-16                                            27.4                   50.1
+# ℹ abbreviated names: ¹​`exports_of_goods_and_services_($_billion)`,
+#   ²​`imports_of_goods_and_services_($_billion)`
+# ℹ 3 more variables:
+#   `balance_on_trade_in_goods_and_services_($_billion)` <dbl>,
+#   `current_account_balance_($_billion)` <dbl>, date <date>
+
+Summary of key columns:
+ fiscal_years       exports_of_goods_and_services_($_billion)
+ Length:11          Min.   :26.60                            
+ Class :character   1st Qu.:27.95                            
+ Mode  :character   Median :30.20                            
+                    Mean   :30.71                            
+                    3rd Qu.:31.10                            
+                    Max.   :39.60                            
+ imports_of_goods_and_services_($_billion)
+ Min.   :47.30                            
+ 1st Qu.:50.15                            
+ Median :58.60                            
+ Mean   :58.86                            
+ 3rd Qu.:62.75                            
+ Max.   :84.50                            
+ balance_on_trade_in_goods_and_services_($_billion)
+ Min.   :-44.90                                    
+ 1st Qu.:-31.90                                    
+ Median :-25.90                                    
+ Mean   :-28.15                                    
+ 3rd Qu.:-21.65                                    
+ Max.   :-19.20                                    
+ current_account_balance_($_billion)
+ Min.   :-19.200                    
+ 1st Qu.:-12.850                    
+ Median : -4.400                    
+ Mean   : -7.927                    
+ 3rd Qu.: -3.200                    
+ Max.   : -2.800                    
+
+
+---  Growth Rate.csv  ---
+Dimensions: 11 7 
+Variables: fiscal_years, gdp_(%), agriculture_(%), manufacturing_(%), commodity_producing_sector_(%), services_sector_(%), date 
+
+Sample data:
+# A tibble: 3 × 7
+  fiscal_years `gdp_(%)` `agriculture_(%)` `manufacturing_(%)`
+  <chr>            <dbl>             <dbl>               <dbl>
+1 2013-14           3.56              2.42                5.76
+2 2014-15           3.81              1.78                4.12
+3 2015-16           4.07              0.41                4.03
+# ℹ 3 more variables: `commodity_producing_sector_(%)` <dbl>,
+#   `services_sector_(%)` <dbl>, date <date>
+
+Summary of key columns:
+ fiscal_years          gdp_(%)       agriculture_(%) manufacturing_(%)
+ Length:11          Min.   :-0.940   Min.   :0.410   Min.   :-7.800   
+ Class :character   1st Qu.: 2.760   1st Qu.:1.665   1st Qu.: 3.215   
+ Mode  :character   Median : 3.810   Median :2.420   Median : 4.520   
+                    Mean   : 3.535   Mean   :2.827   Mean   : 3.859   
+                    3rd Qu.: 5.190   3rd Qu.:3.895   3rd Qu.: 6.420   
+                    Max.   : 6.100   Max.   :6.200   Max.   :10.860   
+ commodity_producing_sector_(%)
+ Min.   :-0.580                
+ 1st Qu.: 1.735                
+ Median : 3.290                
+ Mean   : 3.047                
+ 3rd Qu.: 4.715                
+ Max.   : 6.290                
+
+
+---  Pakistan's Share in GDP.csv  ---
+Dimensions: 11 5 
+Variables: fiscal_years, agriculture_(%_of_gdp), industry_(%_of_gdp), services_(%_of_gdp), date 
+
+Sample data:
+# A tibble: 3 × 5
+  fiscal_years `agriculture_(%_of_gdp)` `industry_(%_of_gdp)`
+  <chr>                           <dbl>                 <dbl>
+1 2013-14                          25.3                  18.8
+2 2014-15                          24.8                  19.1
+3 2015-16                          24.0                  19.5
+# ℹ 2 more variables: `services_(%_of_gdp)` <dbl>, date <date>
+
+Summary of key columns:
+ fiscal_years       agriculture_(%_of_gdp) industry_(%_of_gdp)
+ Length:11          Min.   :22.43          Min.   :18.22      
+ Class :character   1st Qu.:22.91          1st Qu.:18.68      
+ Mode  :character   Median :23.40          Median :19.09      
+                    Mean   :23.54          Mean   :19.06      
+                    3rd Qu.:24.00          3rd Qu.:19.47      
+                    Max.   :25.32          Max.   :20.04      
+ services_(%_of_gdp)      date           
+ Min.   :55.85       Min.   :2013-07-01  
+ 1st Qu.:56.81       1st Qu.:2015-12-31  
+ Median :57.70       Median :2018-07-01  
+ Mean   :57.39       Mean   :2018-07-01  
+ 3rd Qu.:58.05       3rd Qu.:2020-12-30  
+ Max.   :58.61       Max.   :2023-07-01  
+
+
+
+====================  FEDERAL RESERVE ECONOMIC DATA (FRED)  ====================
+Number of files: 1 
+
+
+---  International Oil Prices.csv  ---
+Dimensions: 456 3 
+Variables: observation_date, mcoilbrenteu, date 
+
+Sample data:
+# A tibble: 3 × 3
+  observation_date mcoilbrenteu date      
+  <date>                  <dbl> <date>    
+1 1987-05-01               18.6 1987-05-01
+2 1987-06-01               18.9 1987-06-01
+3 1987-07-01               19.9 1987-07-01
+
+Summary of key columns:
+ observation_date      mcoilbrenteu         date           
+ Min.   :1987-05-01   Min.   :  9.82   Min.   :1987-05-01  
+ 1st Qu.:1996-10-24   1st Qu.: 19.19   1st Qu.:1996-10-24  
+ Median :2006-04-16   Median : 44.39   Median :2006-04-16  
+ Mean   :2006-04-16   Mean   : 50.55   Mean   :2006-04-16  
+ 3rd Qu.:2015-10-08   3rd Qu.: 74.56   3rd Qu.:2015-10-08  
+ Max.   :2025-04-01   Max.   :132.72   Max.   :2025-04-01  
+
+
+
+====================  LEGACY DATASETS  ====================
+Number of files: 11 
+
+
+---  borrow_loans.csv  ---
+Dimensions: 8680 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Credit / Lo… 2025-03-31       TS_GP_BAM… 1 Credit to Govern…         33173300.
+2 Credit / Lo… 2025-03-31       TS_GP_BAM… ......A. SBP Credi…          4200845.
+3 Credit / Lo… 2025-03-31       TS_GP_BAM… ......B. Scheduled…         28972455.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:8680        Min.   :2019-06-30   Length:8680        Length:8680        
+ Class :character   1st Qu.:2020-11-30   Class :character   Class :character   
+ Mode  :character   Median :2022-05-15   Mode  :character   Mode  :character   
+                    Mean   :2022-05-16                                         
+                    3rd Qu.:2023-10-31                                         
+                    Max.   :2025-03-31                                         
+ observation_value 
+ Min.   :       0  
+ 1st Qu.:    3103  
+ Median :   35386  
+ Mean   : 1066618  
+ 3rd Qu.:  194342  
+ Max.   :46223138  
+
+
+---  country_wise_remittance.csv  ---
+Dimensions: 21651 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Country-wis… 2025-03-31       TS_GP_BOP… I. Cash Flow                    4055.
+2 Country-wis… 2025-03-31       TS_GP_BOP… ......1 USA                      419.
+3 Country-wis… 2025-03-31       TS_GP_BOP… ......2 U.K.                     684.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:21651       Min.   :1972-07-31   Length:21651       Length:21651       
+ Class :character   1st Qu.:1985-10-31   Class :character   Class :character   
+ Mode  :character   Median :1999-01-31   Mode  :character   Mode  :character   
+                    Mean   :1999-01-17                                         
+                    3rd Qu.:2012-04-30                                         
+                    Max.   :2025-03-31                                         
+                                                                               
+ observation_value
+ Min.   :   0.00  
+ 1st Qu.:   0.30  
+ Median :   3.50  
+ Mean   :  66.28  
+ 3rd Qu.:  23.95  
+ Max.   :4055.33  
+ NA's   :552      
+
+
+---  exchange_rate.csv  ---
+Dimensions: 66332 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Bank Floati… 2025-03-28       TS_GP_ES_… 1 Daily Average Ex…              176.
+2 Bank Floati… 2025-03-28       TS_GP_ES_… 2 Daily Average Ex…              743.
+3 Bank Floati… 2025-03-28       TS_GP_ES_… 3 Daily Average Ex…              196.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <chr>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:66332       Min.   :2013-07-02   Length:66332       Length:66332       
+ Class :character   1st Qu.:2016-06-08   Class :character   Class :character   
+ Mode  :character   Median :2019-05-16   Mode  :character   Mode  :character   
+                    Mean   :2019-05-18                                         
+                    3rd Qu.:2022-04-20                                         
+                    Max.   :2025-03-28                                         
+ observation_value 
+ Min.   :  0.8131  
+ 1st Qu.: 22.2130  
+ Median : 70.0186  
+ Mean   :125.1019  
+ 3rd Qu.:161.4911  
+ Max.   :995.3647  
+
+
+---  foreign_invest_countires.csv  ---
+Dimensions: 44523 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Foreign Inv… 2025-03-31       TS_GP_FI_… 1 Net Cash Flow on…            -106. 
+2 Foreign Inv… 2025-03-31       TS_GP_FI_… ......I Net Cash F…              25.7
+3 Foreign Inv… 2025-03-31       TS_GP_FI_… ............i Fore…             177. 
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:44523       Min.   :2012-07-31   Length:44523       Length:44523       
+ Class :character   1st Qu.:2015-09-30   Class :character   Class :character   
+ Mode  :character   Median :2018-11-30   Mode  :character   Mode  :character   
+                    Mean   :2018-11-30                                         
+                    3rd Qu.:2022-01-31                                         
+                    Max.   :2025-03-31                                         
+ observation_value   
+ Min.   :-1830.0597  
+ 1st Qu.:    0.0000  
+ Median :    0.0000  
+ Mean   :    4.7859  
+ 3rd Qu.:    0.9986  
+ Max.   : 2662.4902  
+
+
+---  foreign_invest_sectors.csv  ---
+Dimensions: 23409 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Foreign Inv… 2025-03-31       TS_GP_FI_… 1 Net Foreign Dire…              25.7
+2 Foreign Inv… 2025-03-31       TS_GP_FI_… ......i Foreign Di…             177. 
+3 Foreign Inv… 2025-03-31       TS_GP_FI_… ......ii Foreign D…             151. 
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:23409       Min.   :2012-07-31   Length:23409       Length:23409       
+ Class :character   1st Qu.:2015-09-30   Class :character   Class :character   
+ Mode  :character   Median :2018-11-30   Mode  :character   Mode  :character   
+                    Mean   :2018-11-30                                         
+                    3rd Qu.:2022-01-31                                         
+                    Max.   :2025-03-31                                         
+ observation_value  
+ Min.   :-532.9018  
+ 1st Qu.:   0.0000  
+ Median :   0.3649  
+ Mean   :   8.0055  
+ 3rd Qu.:   3.4341  
+ Max.   : 973.5333  
+
+
+---  gold_foreign_exchange_reserves.csv  ---
+Dimensions: 6808 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Gold and Fo… 2025-03-31       TS_GP_EXT… . Gold (1)                      6485.
+2 Gold and Fo… 2025-03-31       TS_GP_EXT… . Net Reserves wit…            10639.
+3 Gold and Fo… 2025-03-31       TS_GP_EXT… . Total SBP Reserv…            10734.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <chr>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:6808        Min.   :1948-06-30   Length:6808        Length:6808        
+ Class :character   1st Qu.:1990-08-23   Class :character   Class :character   
+ Mode  :character   Median :2007-07-15   Mode  :character   Mode  :character   
+                    Mean   :2003-05-14                                         
+                    3rd Qu.:2016-12-31                                         
+                    Max.   :2025-03-31                                         
+ observation_value 
+ Min.   : -846.00  
+ 1st Qu.:   84.15  
+ Median :  725.00  
+ Mean   : 3127.31  
+ 3rd Qu.: 3409.75  
+ Max.   :27067.70  
+
+
+---  inflation_base_2015.csv  ---
+Dimensions: 6360 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Inflation S… 2025-04-30       TS_GP_PT_… . CPI-YoY-National                0.3
+2 Inflation S… 2025-04-30       TS_GP_PT_… ............. Urban               0.5
+3 Inflation S… 2025-04-30       TS_GP_PT_… ..................…              -1.9
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <chr>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:6360        Min.   :2016-07-31   Length:6360        Length:6360        
+ Class :character   1st Qu.:2018-09-30   Class :character   Class :character   
+ Mode  :character   Median :2020-12-15   Mode  :character   Mode  :character   
+                    Mean   :2020-12-14                                         
+                    3rd Qu.:2023-02-28                                         
+                    Max.   :2025-04-30                                         
+                                                                               
+ observation_value
+ Min.   :-7.400   
+ 1st Qu.: 2.260   
+ Median : 6.760   
+ Mean   : 9.602   
+ 3rd Qu.:13.374   
+ Max.   :52.400   
+ NA's   :269      
+
+
+---  kibor_kibid.csv  ---
+Dimensions: 88330 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Structure o… 2025-05-02       TS_GP_BAM… . One-Week Karachi…              11.9
+2 Structure o… 2025-05-02       TS_GP_BAM… . One-Week Karachi…              12.4
+3 Structure o… 2025-05-02       TS_GP_BAM… . Two-Weeks Karach…              11.8
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:88330       Min.   :2005-06-09   Length:88330       Length:88330       
+ Class :character   1st Qu.:2009-07-10   Class :character   Class :character   
+ Mode  :character   Median :2014-03-05   Mode  :character   Mode  :character   
+                    Mean   :2014-07-04                                         
+                    3rd Qu.:2019-03-01                                         
+                    Max.   :2025-05-02                                         
+ observation_value
+ Min.   : 5.01    
+ 1st Qu.: 8.35    
+ Median :10.34    
+ Mean   :10.95    
+ 3rd Qu.:12.86    
+ Max.   :25.16    
+
+
+---  m2_broad_money.csv  ---
+Dimensions: 28200 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Weekly Broa… 2025-04-18       TS_GP_BAM… ......A. Currency …         10145601.
+2 Weekly Broa… 2025-04-18       TS_GP_BAM… ......B. Other Dep…            51025.
+3 Weekly Broa… 2025-04-18       TS_GP_BAM… ......C. Total Dep…         26893010.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:28200       Min.   :2014-07-04   Length:28200       Length:28200       
+ Class :character   1st Qu.:2017-03-15   Class :character   Class :character   
+ Mode  :character   Median :2019-11-25   Mode  :character   Mode  :character   
+                    Mean   :2019-11-25                                         
+                    3rd Qu.:2022-08-06                                         
+                    Max.   :2025-04-18                                         
+ observation_value 
+ Min.   :-8268372  
+ 1st Qu.:  -20807  
+ Median :  703955  
+ Mean   : 4386613  
+ 3rd Qu.: 6379745  
+ Max.   :37431512  
+
+
+---  seasonal_worker_remittance.csv  ---
+Dimensions: 474 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Seasonally … 2025-03-31       TS_GP_ES_… 1 Workers Remittan…             4055.
+2 Seasonally … 2025-03-31       TS_GP_ES_… 1 Seasonally adjus…             3583.
+3 Seasonally … 2025-02-28       TS_GP_ES_… 1 Seasonally adjus…             3454.
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:474         Min.   :2005-07-31   Length:474         Length:474         
+ Class :character   1st Qu.:2010-06-30   Class :character   Class :character   
+ Mode  :character   Median :2015-05-31   Mode  :character   Mode  :character   
+                    Mean   :2015-05-31                                         
+                    3rd Qu.:2020-04-30                                         
+                    Max.   :2025-03-31                                         
+ observation_value
+ Min.   : 308.8   
+ 1st Qu.: 804.5   
+ Median :1505.2   
+ Mean   :1503.9   
+ 3rd Qu.:2049.2   
+ Max.   :4055.3   
+
+
+---  t_bills.csv  ---
+Dimensions: 3276 11 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+Sample data:
+# A tibble: 3 × 11
+  dataset_name observation_date series_key series_display_name observation_value
+  <chr>        <date>           <chr>      <chr>                           <dbl>
+1 Structure o… 2025-03-26       TS_GP_BAM… . Treasury Bills' …              12.0
+2 Structure o… 2025-03-26       TS_GP_BAM… . Treasury Bills' …              12  
+3 Structure o… 2025-03-26       TS_GP_BAM… . Treasury Bills' …              12.0
+# ℹ 6 more variables: unit <chr>, observation_status <chr>,
+#   observation_status_comment <lgl>, sequence_no_ <dbl>, series_name <chr>,
+#   date <date>
+
+Summary of key columns:
+ dataset_name       observation_date      series_key        series_display_name
+ Length:3276        Min.   :2004-06-24   Length:3276        Length:3276        
+ Class :character   1st Qu.:2009-09-25   Class :character   Class :character   
+ Mode  :character   Median :2014-12-31   Mode  :character   Mode  :character   
+                    Mean   :2014-12-21                                         
+                    3rd Qu.:2020-03-25                                         
+                    Max.   :2025-03-26                                         
+                                                                               
+ observation_value
+ Min.   : 0.1215  
+ 1st Qu.: 7.8382  
+ Median : 9.9763  
+ Mean   :10.8965  
+ 3rd Qu.:13.0220  
+ Max.   :25.0700  
+ NA's   :503      
+

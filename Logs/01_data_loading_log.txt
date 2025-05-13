@@ -1,0 +1,224 @@
+===== PAKISTAN INFLATION FORECASTING PROJECT =====
+===== DETAILED DATA LOADING LOG =====
+Generated on: 2025-05-13 05:46:36 
+
+This log tracks the loading of all datasets, including success/failure status and basic information.
+
+
+===== LOADING TARGET VARIABLE =====
+
+--- LOADING: CPI National -YoY.csv ---
+Description: Consumer Price Index (CPI) - Year-on-Year percentage change, our target variable for inflation forecasting 
+Full path: Data/data_combined/CPI National -YoY.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 106 rows, 9 columns
+Date range: 2016-07-31 to 2025-04-30 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+--- LOADING: Core Inflation NFNE.csv ---
+Description: Non-Food Non-Energy (NFNE) Core Inflation - Measures underlying inflation by excluding volatile components 
+Full path: Data/data_combined/Core Inflation NFNE.csv 
+Loader function: load_easydata 
+Status: File NOT FOUND
+Result: FAILURE
+
+===== LOADING MONETARY VARIABLES =====
+
+--- LOADING: KIBOR.csv ---
+Description: Karachi Interbank Offered Rate - Key interest rate in Pakistan's money market 
+Full path: Data/data_combined/KIBOR.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 88386 rows, 11 columns
+Date range: 2005-06-09 to 2025-05-09 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+--- LOADING: Policy Rate.csv ---
+Description: SBP Policy Rate - Central bank's key interest rate for monetary policy 
+Full path: Data/data_combined/Policy Rate.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 37 rows, 9 columns
+Date range: 2015-05-25 to 2025-05-06 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+--- LOADING: Monthly Monetary Aggregate.csv ---
+Description: Monetary Aggregates - Includes M2 (Broad Money) which affects inflation through quantity theory of money 
+Full path: Data/data_combined/Monthly Monetary Aggregate.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 1287 rows, 11 columns
+Date range: 2006-06-30 to 2025-03-31 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+--- LOADING: T-Bills Rates.csv ---
+Description: Treasury Bills Rates - Short-term government securities rates, indicator of monetary conditions 
+Full path: Data/data_combined/T-Bills Rates.csv 
+Loader function: load_easydata 
+Status: File NOT FOUND
+Result: FAILURE
+
+===== LOADING EXTERNAL SECTOR VARIABLES =====
+
+--- LOADING: Pakistan Exchange Rate Per USD.csv ---
+Description: PKR/USD Exchange Rate - Critical for imported inflation and overall price levels 
+Full path: Data/data_combined/Pakistan Exchange Rate Per USD.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 933 rows, 9 columns
+Date range: 1947-08-31 to 2025-04-30 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+--- LOADING: Exports and Imports.csv ---
+Description: Exports and Imports - Trade data affecting balance of payments and exchange rate pressures 
+Full path: Data/data_combined/Exports and Imports.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 7584 rows, 11 columns
+Date range: 2005-07-31 to 2025-03-31 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+--- LOADING: Current Account Balance.csv ---
+Description: Current Account Balance - Broader measure of external balance affecting exchange rate stability 
+Full path: Data/data_combined/Current Account Balance.csv 
+Loader function: load_financegovpk 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 11 rows, 6 columns
+Date range: 2013-07-01 to 2023-07-01 
+Variables: fiscal_years, exports_of_goods_and_services_($_billion), imports_of_goods_and_services_($_billion), balance_on_trade_in_goods_and_services_($_billion), current_account_balance_($_billion), date 
+
+--- LOADING: Foreign Exchange Reserves.csv ---
+Description: Foreign Exchange Reserves - Buffer against external shocks, affects exchange rate stability 
+Full path: Data/data_combined/Foreign Exchange Reserves.csv 
+Loader function: load_easydata 
+Status: File NOT FOUND
+Result: FAILURE
+
+===== LOADING REAL SECTOR VARIABLES =====
+
+--- LOADING: Industrial Production Index.csv ---
+Description: Quantum Index of Manufacturing (QIM) - Measure of industrial output, indicator of economic activity 
+Full path: Data/data_combined/Industrial Production Index.csv 
+Loader function: load_easydata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 104 rows, 9 columns
+Date range: 2016-07-31 to 2025-02-28 
+Variables: dataset, series_key, series, observation_date, observation_value, unit, observation_status, observation_status_comment, date 
+
+--- LOADING: Growth Rate.csv ---
+Description: GDP Growth Rate - Overall economic growth, related to inflation through Phillips curve 
+Full path: Data/data_combined/Growth Rate.csv 
+Loader function: load_financegovpk 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 11 rows, 7 columns
+Date range: 2013-07-01 to 2023-07-01 
+Variables: fiscal_years, gdp_(%), agriculture_(%), manufacturing_(%), commodity_producing_sector_(%), services_sector_(%), date 
+
+--- LOADING: Pakistan's Share in GDP.csv ---
+Description: Sectoral Shares in GDP - Structure of economy affecting inflation dynamics 
+Full path: Data/data_combined/Pakistan's Share in GDP.csv 
+Loader function: load_financegovpk 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 11 rows, 5 columns
+Date range: 2013-07-01 to 2023-07-01 
+Variables: fiscal_years, agriculture_(%_of_gdp), industry_(%_of_gdp), services_(%_of_gdp), date 
+
+--- LOADING: Consumption and Invesment of GDP.csv ---
+Description: Consumption and Investment - Components of aggregate demand affecting inflation 
+Full path: Data/data_combined/Consumption and Invesment of GDP.csv 
+Loader function: load_financegovpk 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 11 rows, 4 columns
+Date range: 2013-07-01 to 2023-07-01 
+Variables: fiscal_years, consumption_(%_of_gdp), investment_(%_of_gdp), date 
+
+===== LOADING GLOBAL FACTORS =====
+
+--- LOADING: International Oil Prices.csv ---
+Description: Brent Crude Oil Prices - Major global factor affecting domestic energy prices and transportation costs 
+Full path: Data/data_combined/International Oil Prices.csv 
+Loader function: load_fred 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 456 rows, 3 columns
+Date range: 1987-05-01 to 2025-04-01 
+Variables: observation_date, mcoilbrenteu, date 
+
+--- LOADING: Global Food Price Index.csv ---
+Description: FAO Food Price Index - Global food prices affecting domestic food inflation, which has high weight in Pakistan's CPI 
+Full path: Data/data_combined/Global Food Price Index.csv 
+Loader function: load_fao 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 424 rows, 8 columns
+Date range: 1990-01-01 to 2025-04-01 
+Variables: date, food_price_index, meat_index, dairy_index, cereals_index, oils_index, sugar_index, original_date 
+
+===== LOADING ADDITIONAL/LEGACY DATASETS =====
+
+--- LOADING: inflation_base_2015.csv ---
+Description: Inflation Base 2015 - Alternative CPI series with 2015 base year 
+Full path: Data/data_combined/inflation_base_2015.csv 
+Loader function: load_olddata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 6360 rows, 11 columns
+Date range: 2016-07-31 to 2025-04-30 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+===== CHECKING OLD_DATA DIRECTORY FOR ADDITIONAL DATASETS =====
+
+--- LOADING: t_bills.csv ---
+Description: Treasury Bills Rates from old_data - Alternative source for T-Bills rates 
+Full path: Data/old_data/t_bills.csv 
+Loader function: load_olddata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 3276 rows, 11 columns
+Date range: 2004-06-24 to 2025-03-26 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+--- LOADING: gold_foreign_exchange_reserves.csv ---
+Description: Foreign Exchange Reserves from old_data - Alternative source for forex reserves 
+Full path: Data/old_data/gold_foreign_exchange_reserves.csv 
+Loader function: load_olddata 
+Status: File exists, attempting to load
+Result: SUCCESS
+Dimensions: 6808 rows, 11 columns
+Date range: 1948-06-30 to 2025-03-31 
+Variables: dataset_name, observation_date, series_key, series_display_name, observation_value, unit, observation_status, observation_status_comment, sequence_no_, series_name, date 
+
+===== DATA LOADING SUMMARY =====
+Total datasets attempted: 16 
+Successfully loaded datasets: 16 
+Failed to load datasets: 0 
+
+Successfully loaded dataset names:
+-  cpi
+-  kibor
+-  policy_rate
+-  monetary_aggregate
+-  exchange_rate
+-  exports_imports
+-  current_account_balance
+-  industrial_production
+-  growth_rate
+-  pakistan_share_gdp
+-  consumption_investment_gdp
+-  oil_prices
+-  global_food
+-  inflation_base_2015
+-  t_bills
+-  forex_reserves 

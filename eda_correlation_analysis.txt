@@ -1,0 +1,220 @@
+===== CORRELATION ANALYSIS FOR INFLATION FORECASTING =====
+Generated on: 2025-05-13 05:34:49 
+
+Extracting key variables for correlation analysis...
+- CPI (target variable) extracted
+- Policy rate extracted
+- M2 money supply extracted
+- Exchange rate extracted
+- Oil price extracted
+- Global food price index extracted
+- Industrial production extracted
+
+Merging series for correlation analysis...
+Merged dataframe dimensions: 1425 rows, 8 columns
+Variables: date, cpi, policy_rate, m2, exchange_rate, oil_price, food_index, industrial_production 
+
+===== CORRELATION WITH INFLATION (CPI) =====
+
+Contemporaneous correlations:
+ 1. exchange_rate            :  0.644
+ 2. m2                       :  0.514
+ 3. industrial_production    :  0.165
+
+===== LAGGED CORRELATIONS WITH INFLATION =====
+(Positive lag means variable leads inflation, negative lag means variable lags inflation)
+
+
+Lagged correlations for policy_rate with CPI:
+Maximum correlation: 0.997 at lag 2 months
+( policy_rate leads CPI by 2 months )
+
+All lagged correlations:
+Lag (months) | Correlation
+--------------------------
+         -12 |      0.884 
+         -11 |      0.778 
+         -10 |      0.828 
+          -9 |      0.806 
+          -8 |      0.746 
+          -7 |      0.817 
+          -6 |      0.770 
+          -5 |      0.733 
+          -4 |      0.819 
+          -3 |     -0.221 
+          -2 |      0.730 
+          -1 |     -0.210 
+           0 |         NA 
+           1 |      0.686 
+           2 |      0.997  (maximum)
+           3 |      0.710 
+           4 |      0.483 
+           5 |      0.822 
+           6 |      0.492 
+           7 |      0.680 
+           8 |      0.581 
+           9 |      0.491 
+          10 |      0.691 
+          11 |      0.454 
+          12 |      0.582 
+
+
+Lagged correlations for exchange_rate with CPI:
+Maximum correlation: 0.888 at lag -12 months
+( exchange_rate lags CPI by 12 months )
+
+All lagged correlations:
+Lag (months) | Correlation
+--------------------------
+         -12 |      0.888  (maximum)
+         -11 |      0.746 
+         -10 |      0.849 
+          -9 |      0.738 
+          -8 |      0.811 
+          -7 |      0.766 
+          -6 |      0.791 
+          -5 |      0.672 
+          -4 |      0.821 
+          -3 |      0.501 
+          -2 |      0.746 
+          -1 |         NA 
+           0 |      0.644 
+           1 |         NA 
+           2 |      0.704 
+           3 |      0.390 
+           4 |      0.767 
+           5 |      0.495 
+           6 |      0.688 
+           7 |      0.635 
+           8 |      0.605 
+           9 |      0.581 
+          10 |      0.607 
+          11 |      0.479 
+          12 |      0.684 
+
+
+Lagged correlations for oil_price with CPI:
+Maximum correlation: 0.727 at lag 11 months
+( oil_price leads CPI by 11 months )
+
+All lagged correlations:
+Lag (months) | Correlation
+--------------------------
+         -12 |      0.448 
+         -11 |      0.433 
+         -10 |      0.480 
+          -9 |      0.452 
+          -8 |      0.450 
+          -7 |      0.494 
+          -6 |      0.349 
+          -5 |      0.542 
+          -4 |      0.288 
+          -3 |      0.534 
+          -2 |         NA 
+          -1 |      0.481 
+           0 |         NA 
+           1 |      0.575 
+           2 |      0.415 
+           3 |      0.591 
+           4 |      0.456 
+           5 |      0.657 
+           6 |      0.476 
+           7 |      0.646 
+           8 |      0.306 
+           9 |      0.683 
+          10 |      0.473 
+          11 |      0.727  (maximum)
+          12 |      0.513 
+
+
+Lagged correlations for food_index with CPI:
+Maximum correlation: 0.714 at lag 11 months
+( food_index leads CPI by 11 months )
+
+All lagged correlations:
+Lag (months) | Correlation
+--------------------------
+         -12 |      0.422 
+         -11 |      0.427 
+         -10 |      0.419 
+          -9 |      0.442 
+          -8 |      0.472 
+          -7 |      0.458 
+          -6 |      0.428 
+          -5 |      0.501 
+          -4 |      0.378 
+          -3 |      0.488 
+          -2 |         NA 
+          -1 |      0.479 
+           0 |         NA 
+           1 |      0.520 
+           2 |      0.418 
+           3 |      0.550 
+           4 |      0.558 
+           5 |      0.523 
+           6 |      0.642 
+           7 |      0.628 
+           8 |      0.483 
+           9 |      0.683 
+          10 |      0.613 
+          11 |      0.714  (maximum)
+          12 |      0.637 
+
+
+Lagged correlations for industrial_production with CPI:
+Maximum correlation: 0.483 at lag 8 months
+( industrial_production leads CPI by 8 months )
+
+All lagged correlations:
+Lag (months) | Correlation
+--------------------------
+         -12 |      0.236 
+         -11 |     -0.303 
+         -10 |      0.133 
+          -9 |      0.033 
+          -8 |      0.100 
+          -7 |      0.059 
+          -6 |      0.128 
+          -5 |     -0.017 
+          -4 |      0.236 
+          -3 |     -0.171 
+          -2 |      0.212 
+          -1 |         NA 
+           0 |      0.165 
+           1 |         NA 
+           2 |      0.166 
+           3 |      0.201 
+           4 |      0.171 
+           5 |      0.133 
+           6 |      0.289 
+           7 |     -0.063 
+           8 |      0.483  (maximum)
+           9 |     -0.059 
+          10 |      0.357 
+          11 |      0.356 
+          12 |      0.227 
+
+
+===== IMPLICATIONS FOR MODELING =====
+Based on the correlation analysis, consider the following for modeling:
+1. Strong contemporaneous correlations with CPI:
+    exchange_rate, m2 
+   These variables should be considered as key predictors in regression models.
+
+2. Variables with significant lead/lag relationships:
+   -  policy_rate : Maximum correlation at lag 2 months
+   -  exchange_rate : Maximum correlation at lag -12 months
+   -  oil_price : Maximum correlation at lag 11 months
+   -  food_index : Maximum correlation at lag 11 months
+   -  industrial_production : Maximum correlation at lag 8 months
+   Consider including these variables with appropriate lags in your models.
+
+3. For ARIMAX and regression models:
+   - Include variables with strong correlations as exogenous predictors
+   - Consider using lagged values based on the lag analysis
+   - For variables with changing correlation patterns, consider including interaction terms
+
+4. For regularized regression (Lasso, Ridge, Elastic Net):
+   - Include all variables, even those with moderate correlations
+   - The regularization will automatically select the most relevant predictors
+   - Include various lags to allow the model to select the optimal lag structure
