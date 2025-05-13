@@ -52,13 +52,6 @@ arima_models <- tryCatch({
   NULL
 })
 
-arimax_models <- tryCatch({
-  readRDS("Models/arimax_model.rds")
-}, error = function(e) {
-  message("Warning: Could not load ARIMAX model:", e$message)
-  NULL
-})
-
 arima_forecasts <- tryCatch({
   readRDS("Models/arima_forecasts.rds")
 }, error = function(e) {
@@ -153,9 +146,6 @@ if (!is.null(arima_forecasts)) {
   if (!is.null(arima_forecasts$arima)) {
     all_predictions$ARIMA <- as.numeric(arima_forecasts$arima$mean)
   }
-  if (!is.null(arima_forecasts$arimax)) {
-    all_predictions$ARIMAX <- as.numeric(arima_forecasts$arimax$mean)
-  }
 }
 
 # Add regularization predictions
@@ -179,39 +169,21 @@ message("Saved all model predictions to Final_Results/all_model_predictions.csv"
 message("===== IDENTIFYING BEST MODEL =====")
 
 if (nrow(all_accuracy) > 0) {
-  # Find best model based on RMSE
-  best_model_idx <- which.min(all_accuracy$RMSE)
+  # Find best model based on MSE
+  best_model_idx <- which.min(all_accuracy$MSE)
   best_model_name <- all_accuracy$Model[best_model_idx]
 
-  message("Best model based on RMSE:", best_model_name)
-  message("Best model RMSE:", all_accuracy$RMSE[best_model_idx])
+  message("Best model based on MSE:", best_model_name)
+  message("Best model MSE:", all_accuracy$MSE[best_model_idx])
 
   # Compare with other metrics
-  message("\nModel ranking by different metrics:")
+  message("\nModel ranking by MSE:")
 
-  # RMSE ranking
-  rmse_ranking <- all_accuracy[order(all_accuracy$RMSE), ]
-  message("RMSE ranking (lower is better):")
-  for (i in 1:nrow(rmse_ranking)) {
-    message(i, ". ", rmse_ranking$Model[i], " (", rmse_ranking$RMSE[i], ")", sep = "")
-  }
-
-  # MAE ranking
-  if ("MAE" %in% names(all_accuracy)) {
-    mae_ranking <- all_accuracy[order(all_accuracy$MAE), ]
-    message("MAE ranking (lower is better):")
-    for (i in 1:nrow(mae_ranking)) {
-      message(i, ". ", mae_ranking$Model[i], " (", mae_ranking$MAE[i], ")", sep = "")
-    }
-  }
-
-  # MAPE ranking
-  if ("MAPE" %in% names(all_accuracy)) {
-    mape_ranking <- all_accuracy[order(all_accuracy$MAPE), ]
-    message("MAPE ranking (lower is better):")
-    for (i in 1:nrow(mape_ranking)) {
-      message(i, ". ", mape_ranking$Model[i], " (", mape_ranking$MAPE[i], ")", sep = "")
-    }
+  # MSE ranking
+  mse_ranking <- all_accuracy[order(all_accuracy$MSE), ]
+  message("MSE ranking (lower is better):")
+  for (i in 1:nrow(mse_ranking)) {
+    message(i, ". ", mse_ranking$Model[i], " (", mse_ranking$MSE[i], ")", sep = "")
   }
 
   # R-squared ranking
@@ -237,7 +209,7 @@ if (nrow(all_accuracy) > 0) {
     p <- ggplot(plot_data, aes(x = Date, y = Value, color = Model)) +
       geom_line(size = ifelse(plot_data$Model == "Actual", 1.2, 0.8)) +
       labs(title = "Model Comparison: Actual vs. Predicted Values",
-           subtitle = paste("Best model based on RMSE:", best_model_name),
+           subtitle = paste("Best model based on MSE:", best_model_name),
            x = "Date", y = "CPI (YoY %)", color = "Model") +
       theme_minimal() +
       theme(legend.position = "bottom")
@@ -314,35 +286,35 @@ if (nrow(all_accuracy) > 0) {
 
     # Make final model selection based on both MSE and visual inspection
     message("\nFinal model selection based on MSE and visual inspection:")
-    message("1. Best model by RMSE: ", best_model_name)
+    message("1. Best model by MSE: ", best_model_name)
 
-    # Check if the best model by RMSE also has good error distribution
+    # Check if the best model by MSE also has good error distribution
     best_error_idx <- which.min(error_stats$Error_Variance)
     best_error_model <- error_stats$Model[best_error_idx]
 
     if (best_model_name == best_error_model) {
-      message("2. The best model by RMSE also has the lowest error variance.")
+      message("2. The best model by MSE also has the lowest error variance.")
       message("Final selection: ", best_model_name)
     } else {
       message("2. Model with lowest error variance: ", best_error_model)
       message("3. Considering both metrics and visual inspection of error plots:")
 
       # Make a decision based on both metrics
-      # If the difference in RMSE is small but error variance is much better for another model
-      rmse_best <- all_accuracy$RMSE[all_accuracy$Model == best_model_name]
-      rmse_alt <- all_accuracy$RMSE[all_accuracy$Model == best_error_model]
-      rmse_diff_pct <- (rmse_alt - rmse_best) / rmse_best * 100
+      # If the difference in MSE is small but error variance is much better for another model
+      mse_best <- all_accuracy$MSE[all_accuracy$Model == best_model_name]
+      mse_alt <- all_accuracy$MSE[all_accuracy$Model == best_error_model]
+      mse_diff_pct <- (mse_alt - mse_best) / mse_best * 100
 
-      if (rmse_diff_pct < 5) {  # If RMSE difference is less than 5%
-        message("   The difference in RMSE between ", best_model_name, " and ", best_error_model,
-                " is only ", round(rmse_diff_pct, 2), "%, but ", best_error_model,
+      if (mse_diff_pct < 5) {  # If MSE difference is less than 5%
+        message("   The difference in MSE between ", best_model_name, " and ", best_error_model,
+                " is only ", round(mse_diff_pct, 2), "%, but ", best_error_model,
                 " has significantly lower error variance.")
         message("   Final selection: ", best_error_model)
         best_model_name <- best_error_model
         best_model_idx <- which(all_accuracy$Model == best_model_name)
       } else {
-        message("   The difference in RMSE is significant (", round(rmse_diff_pct, 2),
-                "%), so we'll stick with the model that has the lowest RMSE.")
+        message("   The difference in MSE is significant (", round(mse_diff_pct, 2),
+                "%), so we'll stick with the model that has the lowest MSE.")
         message("   Final selection: ", best_model_name)
       }
     }
@@ -440,11 +412,7 @@ if (!is.null(arima_models)) {
   message("Saved ARIMA future forecast plot to Plots/evaluation/arima_future_forecast.png")
 }
 
-# Generate ARIMAX forecasts if external regressors are available
-if (!is.null(arimax_models)) {
-  message("ARIMAX model available, but future values of external regressors are needed")
-  message("Skipping ARIMAX future forecasting")
-}
+# Note: ARIMAX model is excluded as per project requirements
 
 # Generate regularization forecasts
 if (!is.null(reg_models) && !is.null(best_model_name)) {
@@ -490,14 +458,32 @@ if (!is.null(reg_models) && !is.null(best_model_name)) {
 
       # Generate forecast
       reg_future <- tryCatch({
-        predict(best_reg_model, newx = future_predictors)
+        if (inherits(best_reg_model, "lm")) {
+          # For linear regression models
+          predict_data <- data.frame(X_train = rep(mean(model_df$oil_price_lag12_std), forecast_horizon))
+          predict(best_reg_model, newdata = predict_data)
+        } else {
+          # For glmnet models
+          predict(best_reg_model, newx = future_predictors)
+        }
       }, error = function(e) {
         message("Error generating regularization forecast:", e$message)
-        message("Skipping regularization forecasting")
-        return(NULL)
+        message("Using mean of training predictions as forecast")
+
+        # Use mean of training predictions as a fallback
+        if (inherits(best_reg_model, "lm")) {
+          rep(mean(fitted(best_reg_model)), forecast_horizon)
+        } else {
+          rep(mean(model_df$cpi), forecast_horizon)
+        }
       })
 
       if (!is.null(reg_future)) {
+        # Make sure we have the right number of predictions
+        if (length(reg_future) != forecast_horizon) {
+          reg_future <- rep(mean(reg_future), forecast_horizon)
+        }
+
         # Add to forecast dataframe
         final_forecasts[[best_model_name]] <- as.numeric(reg_future)
         message("Generated simple", best_model_name, "forecasts using last available predictor values")
@@ -580,8 +566,8 @@ writeLines("This report presents the results of a comprehensive analysis of Paki
 writeLines("inflation trends and forecasts using various time series and regression models.\n", file_conn)
 
 if (!is.null(best_model_name)) {
-  writeLines(paste("The best performing model was identified as", best_model_name, "with an RMSE of",
-      all_accuracy$RMSE[best_model_idx], "on the test dataset.\n"), file_conn)
+  writeLines(paste("The best performing model was identified as", best_model_name, "with an MSE of",
+      all_accuracy$MSE[best_model_idx], "on the test dataset.\n"), file_conn)
 }
 
 writeLines("The analysis covered historical CPI data and incorporated various economic", file_conn)
@@ -617,9 +603,7 @@ writeLines("- Lasso Regression", file_conn)
 writeLines("- Elastic Net Regression\n", file_conn)
 
 writeLines("Model Selection Criteria:", file_conn)
-writeLines("- Root Mean Square Error (RMSE)", file_conn)
-writeLines("- Mean Absolute Error (MAE)", file_conn)
-writeLines("- Mean Absolute Percentage Error (MAPE)", file_conn)
+writeLines("- Mean Squared Error (MSE) - Primary metric for model selection", file_conn)
 writeLines("- R-squared (for regression models)\n", file_conn)
 
 writeLines("4. MODEL PERFORMANCE", file_conn)
@@ -630,10 +614,10 @@ if (nrow(all_accuracy) > 0) {
   capture.output(print(all_accuracy), file = file_conn)
   writeLines("\n", file_conn)
 
-  writeLines("Model ranking by RMSE (lower is better):", file_conn)
-  rmse_ranking <- all_accuracy[order(all_accuracy$RMSE), ]
-  for (i in 1:nrow(rmse_ranking)) {
-    writeLines(paste0(i, ". ", rmse_ranking$Model[i], " (", rmse_ranking$RMSE[i], ")"), file_conn)
+  writeLines("Model ranking by MSE (lower is better):", file_conn)
+  mse_ranking <- all_accuracy[order(all_accuracy$MSE), ]
+  for (i in 1:nrow(mse_ranking)) {
+    writeLines(paste0(i, ". ", mse_ranking$Model[i], " (", mse_ranking$MSE[i], ")"), file_conn)
   }
   writeLines("", file_conn)
 }

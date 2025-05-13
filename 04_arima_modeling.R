@@ -309,31 +309,23 @@ legend("topleft", legend = c("Actual", "Forecast", "95% Prediction Interval"),
 dev.off()
 message("Saved ARIMA forecast plot to Plots/arima/arima_forecast.png")
 
-# --- Note on ARIMAX Modeling ---
-message("===== NOTE ON ARIMAX MODELING =====")
-message("As per project requirements, ARIMAX modeling has been excluded from this analysis.")
-message("The project focuses only on ARIMA, Ridge, Lasso, and Elastic Net models.")
-
-# Create a placeholder for ARIMAX results to maintain compatibility with later scripts
-arimax_model <- NULL
-arimax_forecast <- NULL
+# --- Note on Model Selection ---
+message("===== NOTE ON MODEL SELECTION =====")
+message("As per project requirements, only ARIMA, Ridge, Lasso, and Elastic Net models are implemented.")
+message("ARIMAX modeling has been excluded from this analysis.")
 
 # --- Step 7: Model Evaluation ---
 message("===== MODEL EVALUATION =====")
 
 # Function to calculate accuracy metrics
 calculate_accuracy <- function(actual, predicted, model_name) {
-  # Calculate metrics
-  mae <- mean(abs(actual - predicted))
-  rmse <- sqrt(mean((actual - predicted)^2))
-  mape <- mean(abs((actual - predicted) / actual)) * 100
+  # Calculate MSE (Mean Squared Error)
+  mse <- mean((actual - predicted)^2)
 
   # Return as data frame
   data.frame(
     Model = model_name,
-    MAE = mae,
-    RMSE = rmse,
-    MAPE = mape
+    MSE = mse
   )
 }
 
@@ -348,15 +340,7 @@ accuracy_results$arima <- calculate_accuracy(
   model_name = "ARIMA"
 )
 
-# Evaluate ARIMAX model if available
-if (exists("arimax_forecast")) {
-  arimax_predictions <- as.numeric(arimax_forecast$mean)
-  accuracy_results$arimax <- calculate_accuracy(
-    actual = as.numeric(test_cpi_ts),
-    predicted = arimax_predictions,
-    model_name = "ARIMAX"
-  )
-}
+# Note: ARIMAX model is excluded as per project requirements
 
 # Combine results
 accuracy_df <- do.call(rbind, accuracy_results)
@@ -377,11 +361,6 @@ forecast_comparison <- data.frame(
   ARIMA = arima_predictions
 )
 
-# Add ARIMAX predictions if available and not empty
-if (exists("arimax_predictions") && length(arimax_predictions) > 0) {
-  forecast_comparison$ARIMAX <- arimax_predictions
-}
-
 # Save comparison data
 write.csv(forecast_comparison, "Processed_Data/arima_forecast_comparison.csv", row.names = FALSE)
 message("Saved forecast comparison to Processed_Data/arima_forecast_comparison.csv")
@@ -389,17 +368,11 @@ message("Saved forecast comparison to Processed_Data/arima_forecast_comparison.c
 # Plot comparison
 png(file.path("Plots/arima", "forecast_comparison.png"), width = 1000, height = 600)
 plot(forecast_comparison$Date, forecast_comparison$Actual, type = "l", col = "black",
-     main = "Comparison of ARIMA Forecasts", xlab = "Date", ylab = "CPI (YoY %)",
+     main = "ARIMA Forecast Comparison", xlab = "Date", ylab = "CPI (YoY %)",
      ylim = range(forecast_comparison[, -1], na.rm = TRUE))
 lines(forecast_comparison$Date, forecast_comparison$ARIMA, col = "blue")
-if ("ARIMAX" %in% names(forecast_comparison)) {
-  lines(forecast_comparison$Date, forecast_comparison$ARIMAX, col = "green")
-  legend("topleft", legend = c("Actual", "ARIMA", "ARIMAX"),
-         col = c("black", "blue", "green"), lty = 1, bty = "n")
-} else {
-  legend("topleft", legend = c("Actual", "ARIMA"),
-         col = c("black", "blue"), lty = 1, bty = "n")
-}
+legend("topleft", legend = c("Actual", "ARIMA"),
+       col = c("black", "blue"), lty = 1, bty = "n")
 dev.off()
 message("Saved forecast comparison plot to Plots/arima/forecast_comparison.png")
 
@@ -410,16 +383,9 @@ message("===== SAVING MODELS =====")
 saveRDS(auto_arima_model, "Models/arima_model.rds")
 message("Saved ARIMA model to Models/arima_model.rds")
 
-# Save ARIMAX model if available
-if (exists("arimax_model")) {
-  saveRDS(arimax_model, "Models/arimax_model.rds")
-  message("Saved ARIMAX model to Models/arimax_model.rds")
-}
-
 # Save forecasts
 saveRDS(list(
-  arima = arima_forecast,
-  arimax = if (exists("arimax_forecast")) arimax_forecast else NULL
+  arima = arima_forecast
 ), "Models/arima_forecasts.rds")
 message("Saved forecasts to Models/arima_forecasts.rds")
 
@@ -429,26 +395,16 @@ message("===== FINAL SUMMARY =====")
 message("ARIMA modeling completed successfully!")
 
 message("Best ARIMA model: ARIMA", paste0(arimaorder(auto_arima_model), collapse = ","))
-if (exists("arimax_model") && !is.null(arimax_model)) {
-  tryCatch({
-    message("Best ARIMAX model: ARIMA", paste0(arimaorder(arimax_model), collapse = ","))
-  }, error = function(e) {
-    message("ARIMAX model information not available")
-  })
-}
 
 message("Model performance on test set:")
 print(accuracy_df)
 
 message("Files created:")
 message("1. Models/arima_model.rds - ARIMA model")
-if (exists("arimax_model")) {
-  message("2. Models/arimax_model.rds - ARIMAX model")
-}
-message("3. Models/arima_forecasts.rds - Forecasts from all models")
-message("4. Processed_Data/arima_accuracy.csv - Accuracy metrics")
-message("5. Processed_Data/arima_forecast_comparison.csv - Forecast comparison")
-message("6. Various plots in Plots/arima/ directory")
+message("2. Models/arima_forecasts.rds - Forecasts from ARIMA model")
+message("3. Processed_Data/arima_accuracy.csv - Accuracy metrics")
+message("4. Processed_Data/arima_forecast_comparison.csv - Forecast comparison")
+message("5. Various plots in Plots/arima/ directory")
 
 message("Next steps:")
 message("1. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression")

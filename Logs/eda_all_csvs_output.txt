@@ -234,25 +234,25 @@ Number of files: 1
 
 ---  Global Food Price Index.csv  ---
 Dimensions: 424 8 
-Variables: date, food_price_index, meat_index, dairy_index, cereals_index, oils_index, sugar_index, original_date 
+Variables: Date, food_price_index, meat_index, dairy_index, cereals_index, oils_index, sugar_index, date 
 
 Sample data:
 # A tibble: 3 × 8
-  date       food_price_index meat_index dairy_index cereals_index oils_index
-  <date>                <dbl>      <dbl>       <dbl>         <dbl>      <dbl>
-1 1990-01-01             64.4       74.3        53.5          64.1       44.6
-2 1990-02-01             64.7       76.8        52.2          62.2       44.5
-3 1990-03-01             64         78.5        41.4          61.3       45.8
-# ℹ 2 more variables: sugar_index <dbl>, original_date <chr>
+  Date    food_price_index meat_index dairy_index cereals_index oils_index
+  <chr>              <dbl>      <dbl>       <dbl>         <dbl>      <dbl>
+1 1990-01             64.4       74.3        53.5          64.1       44.6
+2 1990-02             64.7       76.8        52.2          62.2       44.5
+3 1990-03             64         78.5        41.4          61.3       45.8
+# ℹ 2 more variables: sugar_index <dbl>, date <date>
 
 Summary of key columns:
-      date            food_price_index   meat_index      dairy_index    
- Min.   :1990-01-01   Min.   : 50.80   Min.   : 52.30   Min.   : 36.80  
- 1st Qu.:1998-10-24   1st Qu.: 64.58   1st Qu.: 72.88   1st Qu.: 56.83  
- Median :2007-08-16   Median : 86.20   Median : 84.50   Median : 80.45  
- Mean   :2007-08-16   Mean   : 88.39   Mean   : 86.73   Mean   : 87.60  
- 3rd Qu.:2016-06-08   3rd Qu.:114.25   3rd Qu.:100.67   3rd Qu.:115.03  
- Max.   :2025-04-01   Max.   :160.20   Max.   :125.40   Max.   :158.20  
+     Date           food_price_index   meat_index      dairy_index    
+ Length:424         Min.   : 50.80   Min.   : 52.30   Min.   : 36.80  
+ Class :character   1st Qu.: 64.58   1st Qu.: 72.88   1st Qu.: 56.83  
+ Mode  :character   Median : 86.20   Median : 84.50   Median : 80.45  
+                    Mean   : 88.39   Mean   : 86.73   Mean   : 87.60  
+                    3rd Qu.:114.25   3rd Qu.:100.67   3rd Qu.:115.03  
+                    Max.   :160.20   Max.   :125.40   Max.   :158.20  
  cereals_index   
  Min.   : 48.60  
  1st Qu.: 60.58  
