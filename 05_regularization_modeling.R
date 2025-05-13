@@ -59,7 +59,7 @@ std_cols <- grep("_std$", names(train_df), value = TRUE)
 if (length(std_cols) == 0) {
   message("No standardized columns found. Using original numeric columns.")
   # Exclude non-numeric and target columns
-  exclude_cols <- c("date", "cpi", "cpi_diff")
+  exclude_cols <- c("date", "cpi_value", "cpi_diff")
   exclude_pattern <- "month$|quarter$|year$|is_ramadan|post_ramadan|fiscal"
   predictor_cols <- names(train_df)[!names(train_df) %in% exclude_cols &
                                    !grepl(exclude_pattern, names(train_df))]
@@ -77,9 +77,9 @@ message(paste(head(predictor_cols, 10), collapse = ", "),
 
 # Prepare matrices for glmnet
 X_train <- as.matrix(train_df[, predictor_cols])
-y_train <- train_df$cpi
+y_train <- train_df$cpi_value
 X_test <- as.matrix(test_df[, predictor_cols])
-y_test <- test_df$cpi
+y_test <- test_df$cpi_value
 
 message("Prepared matrices for modeling:")
 message("  X_train dimensions:", nrow(X_train), "x", ncol(X_train))
@@ -611,12 +611,15 @@ calculate_accuracy <- function(actual, predicted, model_name) {
 
   # Calculate MSE (Mean Squared Error)
   mse <- mean((actual - predicted)^2)
+  # Calculate RMSE (Root Mean Squared Error)
+  rmse <- sqrt(mse)
   r_squared <- 1 - sum((actual - predicted)^2) / sum((actual - mean(actual))^2)
 
   # Return as data frame
   data.frame(
     Model = model_name,
     MSE = mse,
+    RMSE = rmse,
     R_Squared = r_squared
   )
 }
@@ -790,7 +793,7 @@ if (!is.null(arima_model)) {
 
   # Combine historical data with forecasts
   historical_df <- model_df %>%
-    select(date, cpi) %>%
+    select(date, cpi_value) %>%
     mutate(type = "Historical")
 
   # Create plot for ARIMA forecast
@@ -798,13 +801,13 @@ if (!is.null(arima_model)) {
     historical_df,
     arima_forecast_df %>%
       select(date, forecast) %>%
-      rename(cpi = forecast) %>%
+      rename(cpi_value = forecast) %>%
       mutate(type = "ARIMA Forecast")
   )
 
   # Plot ARIMA forecast with prediction intervals
   arima_plot <- ggplot() +
-    geom_line(data = arima_plot_df, aes(x = date, y = cpi, color = type, linetype = type), size = 1) +
+    geom_line(data = arima_plot_df, aes(x = date, y = cpi_value, color = type, linetype = type), size = 1) +
     geom_ribbon(data = arima_forecast_df,
                 aes(x = date, ymin = lower_95, ymax = upper_95),
                 fill = "blue", alpha = 0.1) +
@@ -892,7 +895,7 @@ calculate_reg_intervals <- function(model, X_test, y_test, X_future, confidence_
 
 # Prepare test data for regularization models
 X_test <- as.matrix(test_df[, grep("_std$", names(test_df))])
-y_test <- test_df$cpi
+y_test <- test_df$cpi_value
 
 # Prepare future data for regularization models (using last available values)
 last_row <- tail(model_df, 1)

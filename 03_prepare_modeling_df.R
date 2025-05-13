@@ -40,7 +40,7 @@ message("Date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
     format(max(merged_df$date), "%Y-%m-%d"))
 
 # --- Check for target variable ---
-# Look for CPI columns - could be 'cpi' or columns prefixed with 'cpi_'
+# Look for CPI columns - could be 'cpi_value' or columns prefixed with 'cpi_'
 cpi_cols <- grep("^cpi($|_)", names(merged_df), value = TRUE)
 
 if (length(cpi_cols) == 0) {
@@ -91,15 +91,15 @@ if (length(cpi_cols) == 0) {
 } else {
   cat("CPI-related columns found:", paste(cpi_cols, collapse=", "), "\n")
 
-  # If there's no direct 'cpi' column but there is 'cpi_observation_value', create a 'cpi' column
-  if (!"cpi" %in% names(merged_df) && "cpi_observation_value" %in% names(merged_df)) {
-    cat("Creating 'cpi' column from 'cpi_observation_value'\n")
-    merged_df$cpi <- merged_df$cpi_observation_value
-    cat("Target variable 'cpi' created in the dataframe\n\n")
-  } else if ("cpi" %in% names(merged_df)) {
-    cat("Target variable 'cpi' found in the dataframe\n\n")
+  # If there's no direct 'cpi_value' column but there is 'cpi_observation_value', create a 'cpi_value' column
+  if (!"cpi_value" %in% names(merged_df) && "cpi_observation_value" %in% names(merged_df)) {
+    cat("Creating 'cpi_value' column from 'cpi_observation_value'\n")
+    merged_df$cpi_value <- merged_df$cpi_observation_value
+    cat("Target variable 'cpi_value' created in the dataframe\n\n")
+  } else if ("cpi_value" %in% names(merged_df)) {
+    cat("Target variable 'cpi_value' found in the dataframe\n\n")
   } else {
-    cat("WARNING: Could not find or create a 'cpi' column from existing data\n")
+    cat("WARNING: Could not find or create a 'cpi_value' column from existing data\n")
     cat("Creating a synthetic CPI variable for demonstration purposes...\n")
 
     # Create a synthetic CPI variable
@@ -111,7 +111,7 @@ if (length(cpi_cols) == 0) {
     seasonal_component <- sin(2 * pi * (1:n_rows) / 12) * 2
     noise_component <- rnorm(n_rows, mean = 0, sd = 0.8)
 
-    merged_df$cpi <- trend_component + seasonal_component + noise_component
+    merged_df$cpi_value <- trend_component + seasonal_component + noise_component
 
     cat("Created synthetic CPI variable with trend and seasonality\n")
     cat("NOTE: This is NOT real CPI data and should only be used for demonstration purposes!\n")
@@ -417,17 +417,17 @@ create_scatter_plots <- function(df, target_var, predictor_vars, max_plots = 15)
 }
 
 # Create scatter plots for CPI against other variables
-if ("cpi" %in% names(merged_df)) {
-  scatter_plots <- create_scatter_plots(merged_df, "cpi", numeric_cols)
+if ("cpi_value" %in% names(merged_df)) {
+  scatter_plots <- create_scatter_plots(merged_df, "cpi_value", numeric_cols)
 } else {
-  cat("Target variable 'cpi' not found. Scatter plots not created.\n\n")
+  cat("Target variable 'cpi_value' not found. Scatter plots not created.\n\n")
 }
 
 # Calculate correlation with target variable (CPI)
-if ("cpi" %in% numeric_cols) {
+if ("cpi_value" %in% numeric_cols) {
   cat("Calculating correlations with target variable (CPI)...\n")
   target_correlations <- sapply(merged_df[numeric_cols], function(x) {
-    cor(x, merged_df$cpi, use = "pairwise.complete.obs")
+    cor(x, merged_df$cpi_value, use = "pairwise.complete.obs")
   })
 
   # Sort correlations
@@ -438,7 +438,7 @@ if ("cpi" %in% numeric_cols) {
   top_corr <- head(target_correlations, 20)
   for (i in seq_along(top_corr)) {
     var_name <- names(top_corr)[i]
-    actual_corr <- cor(merged_df[[var_name]], merged_df$cpi, use = "pairwise.complete.obs")
+    actual_corr <- cor(merged_df[[var_name]], merged_df$cpi_value, use = "pairwise.complete.obs")
     cat(sprintf("%2d. %-40s: %6.3f\n", i, var_name, actual_corr))
   }
   cat("\n")
@@ -481,8 +481,8 @@ if ("cpi" %in% numeric_cols) {
         cat("  -", var1, "and", var2, ":", round(corr_val, 3), "\n")
 
         # Decide which variable to keep based on correlation with target
-        cor1 <- abs(cor(merged_df[[var1]], merged_df$cpi, use = "pairwise.complete.obs"))
-        cor2 <- abs(cor(merged_df[[var2]], merged_df$cpi, use = "pairwise.complete.obs"))
+        cor1 <- abs(cor(merged_df[[var1]], merged_df$cpi_value, use = "pairwise.complete.obs"))
+        cor2 <- abs(cor(merged_df[[var2]], merged_df$cpi_value, use = "pairwise.complete.obs"))
 
         if (cor1 >= cor2 && !(var2 %in% to_remove)) {
           to_remove <- c(to_remove, var2)
@@ -509,7 +509,7 @@ if ("cpi" %in% numeric_cols) {
   cat("\nFinal selected variables:", length(high_corr_vars), "\n")
   cat(paste(high_corr_vars, collapse = ", "), "\n\n")
 } else {
-  cat("ERROR: Target variable 'cpi' not found among numeric columns!\n\n")
+  cat("ERROR: Target variable 'cpi_value' not found among numeric columns!\n\n")
   high_corr_vars <- numeric_cols
 }
 
@@ -517,12 +517,35 @@ if ("cpi" %in% numeric_cols) {
 cat("===== FEATURE ENGINEERING AND TRANSFORMATION =====\n\n")
 
 # Create a modeling dataframe with selected features
+# Ensure we have at least 5 independent variables
+if (length(high_corr_vars) < 5) {
+  message("WARNING: Less than 5 high correlation variables found. Adding more variables to meet the requirement.")
+
+  # Get all numeric columns except cpi_value
+  all_numeric_vars <- setdiff(numeric_cols, "cpi_value")
+
+  # Sort by correlation with target
+  target_correlations <- sapply(merged_df[all_numeric_vars], function(x) {
+    abs(cor(x, merged_df$cpi_value, use = "pairwise.complete.obs"))
+  })
+
+  sorted_vars <- names(sort(target_correlations, decreasing = TRUE))
+
+  # Add more variables to reach at least 5
+  additional_vars <- setdiff(sorted_vars, high_corr_vars)
+  vars_to_add <- additional_vars[1:min(length(additional_vars), 5 - length(high_corr_vars))]
+
+  message("Adding additional variables: ", paste(vars_to_add, collapse = ", "))
+  high_corr_vars <- c(high_corr_vars, vars_to_add)
+}
+
+# Create a modeling dataframe with selected features
 model_df <- merged_df %>%
-  select(date, cpi, all_of(high_corr_vars), all_of(time_cols))
+  select(date, cpi_value, all_of(high_corr_vars), all_of(time_cols))
 
 # Check for stationarity of the target variable
 cat("Checking stationarity of target variable (CPI)...\n")
-adf_test <- adf.test(model_df$cpi, alternative = "stationary")
+adf_test <- adf.test(model_df$cpi_value, alternative = "stationary")
 cat("ADF Test for CPI:\n")
 cat("  Test statistic:", adf_test$statistic, "\n")
 cat("  p-value:", adf_test$p.value, "\n")
@@ -531,7 +554,7 @@ cat("  Interpretation:", ifelse(adf_test$p.value < 0.05,
                               "CPI is non-stationary"), "\n\n")
 
 # Create differenced version of CPI for ARIMA modeling
-model_df$cpi_diff <- c(NA, diff(model_df$cpi))
+model_df$cpi_diff <- c(NA, diff(model_df$cpi_value))
 cat("Created differenced version of CPI (cpi_diff) for ARIMA modeling\n")
 
 # Check stationarity of differenced series
@@ -548,7 +571,7 @@ if (sum(!is.na(model_df$cpi_diff)) > 10) {
 # Plot original and differenced series
 png(file.path("Plots/model_prep", "cpi_original_vs_differenced.png"), width = 1000, height = 600)
 par(mfrow = c(2, 1))
-plot(model_df$date, model_df$cpi, type = "l", main = "Original CPI Series",
+plot(model_df$date, model_df$cpi_value, type = "l", main = "Original CPI Series",
      xlab = "Date", ylab = "CPI")
 plot(model_df$date, model_df$cpi_diff, type = "l", main = "Differenced CPI Series",
      xlab = "Date", ylab = "CPI (differenced)")
@@ -557,7 +580,7 @@ cat("Saved plot comparing original and differenced CPI series\n\n")
 
 # Normalize/standardize numeric predictors
 cat("Normalizing numeric predictors...\n")
-numeric_predictors <- setdiff(high_corr_vars, "cpi")
+numeric_predictors <- setdiff(high_corr_vars, "cpi_value")
 
 # Create a preprocessing recipe
 preprocess_params <- list()
@@ -616,16 +639,16 @@ evaluate_split <- function(df, split_ratio, model_type = "linear") {
     predictors <- predictors[predictors %in% names(df)]
 
     if (length(predictors) > 0) {
-      formula_str <- paste("cpi ~", paste(predictors, collapse = " + "))
+      formula_str <- paste("cpi_value ~", paste(predictors, collapse = " + "))
       model <- lm(formula_str, data = train_df)
 
       # Make predictions
       predictions <- predict(model, newdata = test_df)
 
       # Calculate error metrics
-      mse <- mean((test_df$cpi - predictions)^2)
+      mse <- mean((test_df$cpi_value - predictions)^2)
       rmse <- sqrt(mse)
-      mae <- mean(abs(test_df$cpi - predictions))
+      mae <- mean(abs(test_df$cpi_value - predictions))
 
       return(list(
         split_ratio = split_ratio,
@@ -750,19 +773,19 @@ start_year <- year(min(model_df$date))
 start_month <- month(min(model_df$date))
 
 # Create time series for full dataset
-cpi_ts <- ts(model_df$cpi, frequency = ts_frequency,
+cpi_ts <- ts(model_df$cpi_value, frequency = ts_frequency,
              start = c(start_year, start_month))
 
 # Create time series for training set
 train_start_year <- year(min(train_df$date))
 train_start_month <- month(min(train_df$date))
-train_cpi_ts <- ts(train_df$cpi, frequency = ts_frequency,
+train_cpi_ts <- ts(train_df$cpi_value, frequency = ts_frequency,
                   start = c(train_start_year, train_start_month))
 
 # Create time series for test set
 test_start_year <- year(min(test_df$date))
 test_start_month <- month(min(test_df$date))
-test_cpi_ts <- ts(test_df$cpi, frequency = ts_frequency,
+test_cpi_ts <- ts(test_df$cpi_value, frequency = ts_frequency,
                  start = c(test_start_year, test_start_month))
 
 message("Created time series objects for ARIMA modeling:")
@@ -805,7 +828,7 @@ message("  - RDS: Processed_Data/test_df.rds")
 message("===== SUMMARY STATISTICS =====")
 
 # Generate summary statistics for modeling dataframe
-sum_stats <- summary(model_df[, c("cpi", high_corr_vars)])
+sum_stats <- summary(model_df[, c("cpi_value", high_corr_vars)])
 print(sum_stats)
 write.table(sum_stats, file = "Processed_Data/model_df_summary.txt", sep = "\t")
 message("Saved summary statistics to Processed_Data/model_df_summary.txt")

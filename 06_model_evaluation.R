@@ -139,7 +139,7 @@ if (nrow(all_accuracy) > 0) {
 message("===== VISUALIZING MODEL COMPARISON =====")
 
 # Collect all predictions
-all_predictions <- data.frame(Date = test_df$date, Actual = test_df$cpi)
+all_predictions <- data.frame(Date = test_df$date, Actual = test_df$cpi_value)
 
 # Add ARIMA predictions
 if (!is.null(arima_forecasts)) {
@@ -303,7 +303,18 @@ if (nrow(all_accuracy) > 0) {
       # If the difference in MSE is small but error variance is much better for another model
       mse_best <- all_accuracy$MSE[all_accuracy$Model == best_model_name]
       mse_alt <- all_accuracy$MSE[all_accuracy$Model == best_error_model]
-      mse_diff_pct <- (mse_alt - mse_best) / mse_best * 100
+
+      # Handle the case where best_error_model is the same as best_model_name
+      if (best_error_model == best_model_name) {
+        message("   The best model by MSE also has the lowest error variance.")
+        message("   Final selection: ", best_model_name)
+        mse_diff_pct <- 0  # No difference since they're the same model
+      } else if (length(mse_best) == 0 || length(mse_alt) == 0 || is.na(mse_best) || is.na(mse_alt)) {
+        mse_diff_pct <- 100  # Set a large value to default to MSE-based model
+        message("   Cannot compare MSE values due to missing data. Defaulting to MSE-based model selection.")
+      } else {
+        mse_diff_pct <- (mse_alt - mse_best) / mse_best * 100
+      }
 
       if (mse_diff_pct < 5) {  # If MSE difference is less than 5%
         message("   The difference in MSE between ", best_model_name, " and ", best_error_model,
@@ -474,7 +485,7 @@ if (!is.null(reg_models) && !is.null(best_model_name)) {
         if (inherits(best_reg_model, "lm")) {
           rep(mean(fitted(best_reg_model)), forecast_horizon)
         } else {
-          rep(mean(model_df$cpi), forecast_horizon)
+          rep(mean(model_df$cpi_value), forecast_horizon)
         }
       })
 
@@ -502,7 +513,7 @@ message("Saved final forecasts to Final_Results/final_forecasts.csv")
 if (ncol(final_forecasts) > 3) {  # More than just Date, Month, Year columns
   # Get historical data for context
   historical <- model_df %>%
-    select(Date = date, CPI = cpi) %>%
+    select(Date = date, CPI = cpi_value) %>%
     mutate(Type = "Historical")
 
   # Prepare forecast data
@@ -584,9 +595,9 @@ writeLines(paste("Training set size:", nrow(train_df), "observations"), file_con
 writeLines(paste("Test set size:", nrow(test_df), "observations\n"), file_conn)
 
 writeLines("Target variable: Consumer Price Index (CPI) Year-on-Year percentage change", file_conn)
-writeLines(paste("CPI range:", min(model_df$cpi, na.rm = TRUE), "to", max(model_df$cpi, na.rm = TRUE)), file_conn)
-writeLines(paste("CPI mean:", mean(model_df$cpi, na.rm = TRUE)), file_conn)
-writeLines(paste("CPI standard deviation:", sd(model_df$cpi, na.rm = TRUE), "\n"), file_conn)
+writeLines(paste("CPI range:", min(model_df$cpi_value, na.rm = TRUE), "to", max(model_df$cpi_value, na.rm = TRUE)), file_conn)
+writeLines(paste("CPI mean:", mean(model_df$cpi_value, na.rm = TRUE)), file_conn)
+writeLines(paste("CPI standard deviation:", sd(model_df$cpi_value, na.rm = TRUE), "\n"), file_conn)
 
 writeLines("3. METHODOLOGY", file_conn)
 writeLines("=============\n", file_conn)
@@ -603,7 +614,8 @@ writeLines("- Lasso Regression", file_conn)
 writeLines("- Elastic Net Regression\n", file_conn)
 
 writeLines("Model Selection Criteria:", file_conn)
-writeLines("- Mean Squared Error (MSE) - Primary metric for model selection", file_conn)
+writeLines("- Root Mean Squared Error (RMSE) - Primary metric for model selection", file_conn)
+writeLines("- Mean Squared Error (MSE)", file_conn)
 writeLines("- R-squared (for regression models)\n", file_conn)
 
 writeLines("4. MODEL PERFORMANCE", file_conn)

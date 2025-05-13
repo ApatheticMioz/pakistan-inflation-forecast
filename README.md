@@ -189,70 +189,93 @@ The project requires the following R packages:
 
 The models were evaluated using Mean Squared Error (MSE) as the primary metric:
 
-| Model       | MSE      | R-Squared  |
-|-------------|----------|------------|
-| ARIMA       | 206.43   | NA         |
-| Ridge       | 177.86   | -0.904     |
-| Lasso       | 177.86   | -0.904     |
-| Elastic Net | 177.86   | -0.904     |
+| Model       | MSE      | RMSE     | R-Squared |
+|-------------|----------|----------|-----------|
+| ARIMA       | 202.13   | NA       | NA        |
+| Ridge       | 1.05     | 1.02     | 0.9888    |
+| Lasso       | 0.54     | 0.74     | 0.9942    |
+| Elastic Net | 0.51     | 0.71     | 0.9946    |
 
 **Interpretation:**
-- Ridge, Lasso, and Elastic Net models all performed identically with an MSE of 177.86, outperforming the ARIMA model (MSE of 206.43).
-- The negative R-squared values indicate that the models performed worse than a simple mean-based model on the test set, suggesting high volatility in the data.
-- All regularization models converged to the same solution, indicating that the dataset likely has limited predictive features.
+- Elastic Net performed the best with the lowest MSE (0.51) and highest R-squared (0.9946), followed closely by Lasso.
+- Ridge regression performed well but had approximately twice the MSE of Elastic Net.
+- ARIMA performed significantly worse than the regularization models, with an MSE of 202.13.
+- The high R-squared values for regularization models indicate they explain over 98% of the variance in the test set.
+- Elastic Net's superior performance suggests it found the optimal balance between Ridge and Lasso penalties.
 
 ### Error Analysis
 
 | Model       | Mean Error | Median Error | Error Variance | Error Range |
 |-------------|------------|--------------|----------------|-------------|
-| ARIMA       | -10.63     | -8.50        | 94.09          | 29.40       |
-| Ridge       | 5.65       | 8.18         | 146.94         | 37.09       |
-| Lasso       | 5.65       | 8.18         | 146.94         | 37.09       |
-| Elastic Net | 5.65       | 8.18         | 146.94         | 37.09       |
+| ARIMA       | -10.41     | -8.50        | 94.44          | 29.40       |
+| Ridge       | -0.25      | -0.15        | 0.99           | 5.79        |
+| Lasso       | -0.19      | 0.06         | 0.51           | 4.43        |
+| Elastic Net | -0.21      | 0.03         | 0.47           | 4.62        |
 
 **Interpretation:**
-- ARIMA tends to overestimate inflation (negative mean error), while regularization models underestimate it.
-- ARIMA has lower error variance, indicating more consistent predictions, despite having a higher overall MSE.
-- The regularization models show identical error patterns, confirming they converged to the same solution.
+- ARIMA consistently overestimates inflation (negative mean error of -10.41).
+- Regularization models have much smaller mean errors, with Lasso and Elastic Net being closest to zero.
+- Elastic Net has the lowest error variance (0.47), indicating more consistent predictions.
+- The error range for regularization models is significantly smaller than for ARIMA, showing more stable predictions.
+- Lasso and Elastic Net have slightly positive median errors, suggesting they slightly underestimate inflation about half the time.
+
+### Feature Importance
+
+| Variable                | Avg. Importance |
+|-------------------------|----------------|
+| cpi_value_ma3_std       | 6.09           |
+| cpi_value_lag1_std      | 1.37           |
+| cpi_value_ma6_std       | 0.90           |
+| oil_prices_oil_price_std| 0.08           |
+
+**Interpretation:**
+- The 3-month moving average of CPI (cpi_value_ma3_std) is by far the most important predictor.
+- The 1-month lag of CPI (cpi_value_lag1_std) is the second most important feature.
+- The 6-month moving average of CPI (cpi_value_ma6_std) also contributes significantly.
+- Oil prices have a small but measurable impact on inflation predictions.
+- The importance of lagged and moving average CPI values suggests strong autocorrelation in the inflation time series.
 
 ### Forecasts
 
 12-month inflation forecasts (May 2025 - April 2026):
 
-| Date       | ARIMA | ARIMA Lower | ARIMA Upper | Ridge  |
-|------------|-------|-------------|-------------|--------|
-| 2025-05-01 | 29.20 | 27.75       | 30.65       | 18.09  |
-| 2025-06-01 | 29.20 | 27.15       | 31.25       | 18.09  |
-| 2025-07-01 | 29.20 | 26.69       | 31.71       | 18.09  |
-| 2025-08-01 | 29.20 | 26.30       | 32.10       | 18.09  |
-| 2025-09-01 | 29.20 | 25.96       | 32.44       | 18.09  |
-| 2025-10-01 | 29.20 | 25.65       | 32.75       | 18.09  |
-| 2025-11-01 | 29.20 | 25.37       | 33.03       | 18.09  |
-| 2025-12-01 | 29.20 | 25.10       | 33.30       | 18.09  |
-| 2026-01-01 | 29.20 | 24.86       | 33.54       | 18.09  |
-| 2026-02-01 | 29.20 | 24.62       | 33.78       | 18.09  |
-| 2026-03-01 | 29.20 | 24.40       | 34.00       | 18.09  |
-| 2026-04-01 | 29.20 | 24.18       | 34.22       | 18.09  |
+| Date       | ARIMA | ARIMA Lower | ARIMA Upper | Elastic Net |
+|------------|-------|-------------|-------------|-------------|
+| 2025-05-01 | 29.20 | 27.73       | 30.67       | 1.20        |
+| 2025-06-01 | 29.20 | 27.13       | 31.27       | 1.20        |
+| 2025-07-01 | 29.20 | 26.66       | 31.74       | 1.20        |
+| 2025-08-01 | 29.20 | 26.27       | 32.13       | 1.20        |
+| 2025-09-01 | 29.20 | 25.92       | 32.48       | 1.20        |
+| 2025-10-01 | 29.20 | 25.61       | 32.79       | 1.20        |
+| 2025-11-01 | 29.20 | 25.32       | 33.08       | 1.20        |
+| 2025-12-01 | 29.20 | 25.06       | 33.34       | 1.20        |
+| 2026-01-01 | 29.20 | 24.80       | 33.60       | 1.20        |
+| 2026-02-01 | 29.20 | 24.57       | 33.83       | 1.20        |
+| 2026-03-01 | 29.20 | 24.34       | 34.06       | 1.20        |
+| 2026-04-01 | 29.20 | 24.12       | 34.28       | 1.20        |
 
 **Interpretation:**
-- ARIMA forecasts consistently higher inflation (29.20%) compared to Ridge (18.09%).
+- There is a dramatic difference between ARIMA forecasts (29.20%) and Elastic Net forecasts (1.20%).
+- ARIMA predicts consistently high inflation, while Elastic Net predicts very low inflation.
 - ARIMA prediction intervals widen over time, reflecting increasing uncertainty in longer-term forecasts.
-- Ridge model produces a constant forecast due to limited predictors and the simplified approach used for regularization forecasts.
-- The significant difference between ARIMA and Ridge forecasts highlights the uncertainty in Pakistan's inflation outlook.
+- The Elastic Net model produces a constant forecast due to the simplified approach used for regularization forecasts.
+- The large discrepancy between models highlights the uncertainty in Pakistan's inflation outlook and the limitations of the current forecasting approach.
 
 ### Key Findings
 
-1. **Best Model**: Ridge regression was identified as the best model based on MSE, though all regularization models performed identically.
-2. **Forecast Divergence**: The substantial difference between time series and regression forecasts suggests high uncertainty in Pakistan's economic outlook.
-3. **Prediction Intervals**: ARIMA prediction intervals widen over time, indicating increasing uncertainty for longer-term forecasts.
-4. **Model Limitations**: The negative R-squared values and identical regularization results suggest limitations in the available predictors.
+1. **Best Model**: Elastic Net regression was identified as the best model based on MSE (0.51) and R-squared (0.9946).
+2. **Feature Importance**: Previous inflation values (moving averages and lags) are the strongest predictors of future inflation.
+3. **Forecast Divergence**: The substantial difference between ARIMA and Elastic Net forecasts suggests high uncertainty in Pakistan's economic outlook.
+4. **Model Stability**: Regularization models, especially Elastic Net, show more stable error patterns compared to ARIMA.
+5. **Prediction Intervals**: ARIMA prediction intervals widen over time, indicating increasing uncertainty for longer-term forecasts.
 
 ### Recommendations
 
-1. **Data Enhancement**: Incorporate additional economic indicators and higher frequency data to improve model performance.
-2. **Model Refinement**: Explore more sophisticated time series models and feature engineering techniques.
-3. **Regular Updates**: Update models as new data becomes available to maintain forecast accuracy.
-4. **Ensemble Approach**: Consider combining forecasts from different models to potentially improve accuracy.
+1. **Data Enhancement**: Incorporate additional economic indicators such as fiscal indicators, remittances, and more detailed sectoral data to improve model accuracy.
+2. **Predictor Forecasting**: Implement more sophisticated forecasting techniques for the predictor variables to improve the accuracy of regularization model forecasts.
+3. **Ensemble Methods**: Consider combining forecasts from different models to potentially improve forecast accuracy.
+4. **Regular Updates**: Update the models regularly as new data becomes available to maintain forecast accuracy.
+5. **Alternative Models**: Explore additional modeling approaches such as VAR (Vector Autoregression) or machine learning methods for comparison.
 
 ## License
 

@@ -402,6 +402,13 @@ join_dataset <- function(merged_df, df, name) {
         "(", nrow(df), "dates out of", length(monthly_seq), "possible)\n")
   }
 
+  # Rename columns to include dataset name as prefix (except for date column)
+  if (ncol(df) > 1) {
+    cols_to_rename <- setdiff(names(df), "date")
+    new_names <- paste0(name, "_", cols_to_rename)
+    names(df)[match(cols_to_rename, names(df))] <- new_names
+  }
+
   # Join by date, keeping all dates from merged_df
   result <- merged_df %>%
     left_join(df, by = "date")
@@ -468,16 +475,19 @@ if ("cpi" %in% names(prepared_datasets)) {
   # Create the same mapping for merged_df
   merged_df$year_month <- format(merged_df$date, "%Y-%m")
 
+  # Rename CPI column to include dataset prefix
+  names(cpi_data)[names(cpi_data) == "cpi"] <- "cpi_value"
+
   # Join by year-month instead of exact date
   merged_df <- merged_df %>%
-    left_join(cpi_data %>% select(year_month, cpi), by = "year_month") %>%
+    left_join(cpi_data %>% select(year_month, cpi_value), by = "year_month") %>%
     select(-year_month)  # Remove the temporary column
 
   # Check if CPI was successfully joined
-  na_count <- sum(is.na(merged_df$cpi))
+  na_count <- sum(is.na(merged_df$cpi_value))
   cat("After joining CPI by year-month:\n")
   cat("- Dimensions:", nrow(merged_df), "rows,", ncol(merged_df), "columns\n")
-  cat("- Missing values in cpi column:", na_count,
+  cat("- Missing values in cpi_value column:", na_count,
       sprintf("(%.1f%%)", na_count/nrow(merged_df)*100), "\n")
 
   # If we still have issues, try another approach
@@ -487,23 +497,23 @@ if ("cpi" %in% names(prepared_datasets)) {
     # Create a dataframe with just the CPI values
     cpi_values <- data.frame(
       date = floor_date(cpi_data$date, "month"),
-      cpi = cpi_data$cpi
+      cpi_value = cpi_data$cpi_value
     )
 
-    # Remove the NA cpi column and join again
+    # Remove the NA cpi_value column and join again
     merged_df <- merged_df %>%
-      select(-cpi) %>%
+      select(-cpi_value) %>%
       left_join(cpi_values, by = "date")
 
     # Check if this worked better
-    na_count_new <- sum(is.na(merged_df$cpi))
+    na_count_new <- sum(is.na(merged_df$cpi_value))
     cat("After direct join with adjusted dates:\n")
-    cat("- Missing values in cpi column:", na_count_new,
+    cat("- Missing values in cpi_value column:", na_count_new,
         sprintf("(%.1f%%)", na_count_new/nrow(merged_df)*100), "\n")
   }
 
   # If we still have all NAs, print a warning
-  if (sum(is.na(merged_df$cpi)) == nrow(merged_df)) {
+  if (sum(is.na(merged_df$cpi_value)) == nrow(merged_df)) {
     cat("WARNING: Failed to join CPI data. All values are still NA.\n")
     cat("This will prevent modeling. Check the data loading and merging process.\n")
   }
@@ -551,8 +561,8 @@ lag_variables <- function(df, var_name, lags = c(1, 3, 6, 12)) {
 }
 
 # Create lags for important variables
-key_vars <- c("cpi", "exchange_rate", "oil_price", "global_food_index",
-              "policy_rate", "kibor_6m", "m2")
+key_vars <- c("cpi_value", "exchange_rate_value", "oil_price_value", "global_food_index",
+              "policy_rate_value", "kibor_6m_value", "m2_value")
 
 for (var in key_vars) {
   if (var %in% names(merged_df)) {
@@ -595,7 +605,7 @@ growth_variables <- function(df, var_name) {
 }
 
 # Create growth rates for important variables
-growth_vars <- c("exchange_rate", "oil_price", "global_food_index", "m2")
+growth_vars <- c("exchange_rate_value", "oil_price_value", "global_food_index", "m2_value")
 for (var in growth_vars) {
   if (var %in% names(merged_df)) {
     merged_df <- growth_variables(merged_df, var)
@@ -675,21 +685,21 @@ merged_df <- merged_df %>%
 cat("Creating interaction terms...\n")
 
 # Interaction between oil price and exchange rate (impacts import costs)
-if (all(c("oil_price", "exchange_rate") %in% names(merged_df))) {
+if (all(c("oil_price_value", "exchange_rate_value") %in% names(merged_df))) {
   merged_df <- merged_df %>%
-    mutate(oil_exchange_interaction = oil_price * exchange_rate)
+    mutate(oil_exchange_interaction = oil_price_value * exchange_rate_value)
 }
 
 # Interaction between global food index and exchange rate
-if (all(c("global_food_index", "exchange_rate") %in% names(merged_df))) {
+if (all(c("global_food_index", "exchange_rate_value") %in% names(merged_df))) {
   merged_df <- merged_df %>%
-    mutate(food_exchange_interaction = global_food_index * exchange_rate)
+    mutate(food_exchange_interaction = global_food_index * exchange_rate_value)
 }
 
 # Interaction between policy rate and M2 growth
-if (all(c("policy_rate", "m2_yoy_pct") %in% names(merged_df))) {
+if (all(c("policy_rate_value", "m2_value_yoy_pct") %in% names(merged_df))) {
   merged_df <- merged_df %>%
-    mutate(policy_m2_interaction = policy_rate * m2_yoy_pct)
+    mutate(policy_m2_interaction = policy_rate_value * m2_value_yoy_pct)
 }
 
 # --- Trim dates to periods with adequate data ---
@@ -1020,14 +1030,14 @@ key_variables <- c("date", "month", "quarter", "year", "fiscal_year", "fiscal_qu
                   "is_ramadan", "post_ramadan")
 
 # Add CPI (target variable) if present
-if ("cpi" %in% names(merged_df_imputed)) {
-  key_variables <- c(key_variables, "cpi")
+if ("cpi_value" %in% names(merged_df_imputed)) {
+  key_variables <- c(key_variables, "cpi_value")
 }
 
 # Add key economic indicators if present
-potential_key_indicators <- c("exchange_rate", "policy_rate", "kibor", "kibor_6m",
-                             "oil_price", "global_food_index", "m2",
-                             "industrial_production", "exports", "imports")
+potential_key_indicators <- c("exchange_rate_value", "policy_rate_value", "kibor_value", "kibor_6m_value",
+                             "oil_price_value", "global_food_index", "m2_value",
+                             "industrial_production_value", "exports_value", "imports_value")
 
 for (var in potential_key_indicators) {
   if (var %in% names(merged_df_imputed)) {
@@ -1119,11 +1129,11 @@ if (length(missing_predictors) > 0) {
 message("\n===== VARIABLES IN FINAL DATASET =====")
 var_categories <- list(
   "Date and Time" = c("date", "month", "quarter", "year", "fiscal_year", "fiscal_quarter"),
-  "Target Variable" = "cpi",
-  "Monetary Variables" = c("policy_rate", "kibor", "m2"),
-  "External Sector" = c("exchange_rate", "exports", "imports", "current_account"),
-  "Real Sector" = "industrial_production",
-  "Global Factors" = c("oil_price", "global_food_index"),
+  "Target Variable" = "cpi_value",
+  "Monetary Variables" = c("policy_rate_value", "kibor_value", "m2_value"),
+  "External Sector" = c("exchange_rate_value", "exports_value", "imports_value", "current_account_value"),
+  "Real Sector" = "industrial_production_value",
+  "Global Factors" = c("oil_price_value", "global_food_index"),
   "Derived Features" = c("is_ramadan", "post_ramadan")
 )
 
@@ -1147,8 +1157,8 @@ for (category in names(var_categories)) {
 
 # Print summary statistics for key variables only to keep the report readable
 message("\n===== SUMMARY STATISTICS =====")
-key_vars <- c("cpi", "exchange_rate", "policy_rate", "oil_price", "global_food_index",
-              "industrial_production", "m2")
+key_vars <- c("cpi_value", "exchange_rate_value", "policy_rate_value", "oil_price_value", "global_food_index",
+              "industrial_production_value", "m2_value")
 key_vars <- key_vars[key_vars %in% names(merged_df_imputed)]
 
 for (var in key_vars) {
@@ -1157,14 +1167,14 @@ for (var in key_vars) {
 }
 
 message("\n===== CORRELATION WITH TARGET (CPI) =====")
-if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 0) {
+if ("cpi_value" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi_value)) > 0) {
   # Exclude non-numeric and time-related columns
   exclude_cols <- c("date", "month", "quarter", "year", "is_ramadan", "post_ramadan",
                    "fiscal_year", "fiscal_quarter")
   exclude_cols <- exclude_cols[exclude_cols %in% names(merged_df_imputed)]
 
   # Check if we have enough non-NA values in CPI
-  non_na_cpi_count <- sum(!is.na(merged_df_imputed$cpi))
+  non_na_cpi_count <- sum(!is.na(merged_df_imputed$cpi_value))
   message("Number of non-NA values in CPI:", non_na_cpi_count)
 
   if (non_na_cpi_count > 1) {
@@ -1173,8 +1183,8 @@ if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 
       correlations <- sapply(
         merged_df_imputed %>% select(-all_of(exclude_cols)),
         function(x) {
-          if (is.numeric(x) && sum(!is.na(x) & !is.na(merged_df_imputed$cpi)) > 1) {
-            cor(x, merged_df_imputed$cpi, use = "complete.obs")
+          if (is.numeric(x) && sum(!is.na(x) & !is.na(merged_df_imputed$cpi_value)) > 1) {
+            cor(x, merged_df_imputed$cpi_value, use = "complete.obs")
           } else {
             NA
           }
@@ -1182,7 +1192,7 @@ if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 
       )
 
       # Filter and sort correlations
-      correlations <- correlations[!is.na(correlations) & names(correlations) != "cpi"]
+      correlations <- correlations[!is.na(correlations) & names(correlations) != "cpi_value"]
 
       if (length(correlations) > 0) {
         correlations <- sort(correlations, decreasing = TRUE)
