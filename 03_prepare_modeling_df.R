@@ -23,22 +23,21 @@ suppressPackageStartupMessages({
   library(stringr)
 })
 
-# --- Set up output file for logging ---
-dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
-sink("Logs/03_prepare_modeling_df_output.txt")
-cat("===== MODELING DATAFRAME PREPARATION =====\n\n")
-cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
+# --- Set up logging to console ---
+message("===== MODELING DATAFRAME PREPARATION =====")
+message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- Create output directories if they don't exist ---
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
 dir.create("Plots/model_prep", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load merged dataframe ---
-cat("Loading merged dataframe...\n")
+message("Loading merged dataframe...")
 merged_df <- readRDS("Output/merged_df.rds")
-cat("Loaded dataframe with", nrow(merged_df), "rows and", ncol(merged_df), "columns\n")
-cat("Date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
-    format(max(merged_df$date), "%Y-%m-%d"), "\n\n")
+message("Loaded dataframe with", nrow(merged_df), "rows and", ncol(merged_df), "columns")
+message("Date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
+    format(max(merged_df$date), "%Y-%m-%d"))
 
 # --- Check for target variable ---
 # Look for CPI columns - could be 'cpi' or columns prefixed with 'cpi_'
@@ -586,39 +585,164 @@ cat("\n\n")
 saveRDS(preprocess_params, "Processed_Data/preprocess_params.rds")
 cat("Saved preprocessing parameters to Processed_Data/preprocess_params.rds\n\n")
 
-# --- Step 5: Create Train/Test Split ---
-cat("===== CREATING TRAIN/TEST SPLIT =====\n\n")
+# --- Step 5: Train-Test Split Sensitivity Analysis ---
+message("===== TRAIN-TEST SPLIT SENSITIVITY ANALYSIS =====")
 
-# Determine split point (80% train, 20% test)
-n_rows <- nrow(model_df)
-train_size <- floor(0.8 * n_rows)
-test_size <- n_rows - train_size
+# For time series data, we typically use a chronological split
+# rather than random sampling
+message("Analyzing different train-test split ratios...")
 
-cat("Total observations:", n_rows, "\n")
-cat("Training set size:", train_size, "observations\n")
-cat("Test set size:", test_size, "observations\n\n")
+# Define different split ratios to test
+split_ratios <- c(0.7, 0.75, 0.8, 0.85, 0.9)
+split_results <- list()
 
-# Create train/test sets
-train_df <- model_df[1:train_size, ]
-test_df <- model_df[(train_size+1):n_rows, ]
+# Function to evaluate a model on a specific train-test split
+evaluate_split <- function(df, split_ratio, model_type = "linear") {
+  # Create train-test split
+  n_rows <- nrow(df)
+  train_size <- floor(split_ratio * n_rows)
+  test_size <- n_rows - train_size
 
-cat("Training set date range:", format(min(train_df$date), "%Y-%m-%d"), "to",
-    format(max(train_df$date), "%Y-%m-%d"), "\n")
-cat("Test set date range:", format(min(test_df$date), "%Y-%m-%d"), "to",
-    format(max(test_df$date), "%Y-%m-%d"), "\n\n")
+  train_indices <- 1:train_size
+  test_indices <- (train_size + 1):n_rows
+
+  train_df <- df[train_indices, ]
+  test_df <- df[test_indices, ]
+
+  # Fit a simple model based on the specified type
+  if (model_type == "linear") {
+    # Use a simple linear model with a few key predictors
+    predictors <- c("oil_price", "global_food_index")
+    predictors <- predictors[predictors %in% names(df)]
+
+    if (length(predictors) > 0) {
+      formula_str <- paste("cpi ~", paste(predictors, collapse = " + "))
+      model <- lm(formula_str, data = train_df)
+
+      # Make predictions
+      predictions <- predict(model, newdata = test_df)
+
+      # Calculate error metrics
+      mse <- mean((test_df$cpi - predictions)^2)
+      rmse <- sqrt(mse)
+      mae <- mean(abs(test_df$cpi - predictions))
+
+      return(list(
+        split_ratio = split_ratio,
+        train_size = nrow(train_df),
+        test_size = nrow(test_df),
+        mse = mse,
+        rmse = rmse,
+        mae = mae,
+        train_period = c(min(train_df$date), max(train_df$date)),
+        test_period = c(min(test_df$date), max(test_df$date))
+      ))
+    } else {
+      message("No suitable predictors found for linear model")
+      return(NULL)
+    }
+  } else {
+    message("Unsupported model type:", model_type)
+    return(NULL)
+  }
+}
+
+# Evaluate each split ratio
+for (ratio in split_ratios) {
+  message("Evaluating split ratio:", ratio)
+  result <- evaluate_split(model_df, ratio)
+  if (!is.null(result)) {
+    split_results[[length(split_results) + 1]] <- result
+    message("  Train size:", result$train_size, "observations")
+    message("  Test size:", result$test_size, "observations")
+    message("  MSE:", round(result$mse, 4))
+    message("  RMSE:", round(result$rmse, 4))
+    message("  MAE:", round(result$mae, 4))
+  }
+}
+
+# Find the best split ratio based on MSE
+if (length(split_results) > 0) {
+  mse_values <- sapply(split_results, function(x) x$mse)
+  best_index <- which.min(mse_values)
+  best_ratio <- split_results[[best_index]]$split_ratio
+
+  message("\nBest split ratio based on MSE:", best_ratio)
+  message("MSE:", round(split_results[[best_index]]$mse, 4))
+  message("RMSE:", round(split_results[[best_index]]$rmse, 4))
+  message("MAE:", round(split_results[[best_index]]$mae, 4))
+
+  # Create a plot to visualize the results
+  results_df <- data.frame(
+    SplitRatio = sapply(split_results, function(x) x$split_ratio),
+    MSE = sapply(split_results, function(x) x$mse),
+    RMSE = sapply(split_results, function(x) x$rmse),
+    MAE = sapply(split_results, function(x) x$mae)
+  )
+
+  # Plot MSE by split ratio
+  p <- ggplot(results_df, aes(x = SplitRatio, y = MSE)) +
+    geom_line(color = "blue", size = 1) +
+    geom_point(color = "red", size = 3) +
+    theme_minimal() +
+    labs(title = "MSE by Train-Test Split Ratio",
+         x = "Train Set Proportion",
+         y = "Mean Squared Error") +
+    geom_vline(xintercept = best_ratio, linetype = "dashed", color = "green") +
+    annotate("text", x = best_ratio, y = max(results_df$MSE) * 0.9,
+             label = paste("Best Ratio:", best_ratio), hjust = -0.1)
+
+  ggsave("Plots/model_prep/split_ratio_mse.png", p, width = 8, height = 6)
+  message("Created plot of MSE by split ratio: Plots/model_prep/split_ratio_mse.png")
+
+  # Use the best split ratio for the final train-test split
+  message("\nCreating final train-test split using optimal ratio:", best_ratio)
+
+  # Create the final train-test split
+  n_rows <- nrow(model_df)
+  train_size <- floor(best_ratio * n_rows)
+  test_size <- n_rows - train_size
+
+  train_df <- model_df[1:train_size, ]
+  test_df <- model_df[(train_size+1):n_rows, ]
+
+  message("Training set size:", nrow(train_df), "observations")
+  message("Test set size:", nrow(test_df), "observations")
+  message("Training period:", format(min(train_df$date), "%Y-%m-%d"), "to",
+      format(max(train_df$date), "%Y-%m-%d"))
+  message("Testing period:", format(min(test_df$date), "%Y-%m-%d"), "to",
+      format(max(test_df$date), "%Y-%m-%d"))
+} else {
+  # If sensitivity analysis failed, use default 80% split
+  message("\nSensitivity analysis failed. Using default 80% train-test split.")
+
+  n_rows <- nrow(model_df)
+  train_size <- floor(0.8 * n_rows)
+  test_size <- n_rows - train_size
+
+  train_df <- model_df[1:train_size, ]
+  test_df <- model_df[(train_size+1):n_rows, ]
+
+  message("Training set size:", nrow(train_df), "observations")
+  message("Test set size:", nrow(test_df), "observations")
+  message("Training period:", format(min(train_df$date), "%Y-%m-%d"), "to",
+      format(max(train_df$date), "%Y-%m-%d"))
+  message("Testing period:", format(min(test_df$date), "%Y-%m-%d"), "to",
+      format(max(test_df$date), "%Y-%m-%d"))
+}
 
 # --- Step 6: Create Time Series Objects for ARIMA Modeling ---
-cat("===== CREATING TIME SERIES OBJECTS =====\n\n")
+message("===== CREATING TIME SERIES OBJECTS =====")
 
 # Determine frequency based on data
 if ("month" %in% names(model_df)) {
   # Monthly data
   ts_frequency <- 12
-  cat("Detected monthly data, setting time series frequency to 12\n")
+  message("Detected monthly data, setting time series frequency to 12")
 } else {
   # Default to monthly if can't determine
   ts_frequency <- 12
-  cat("Assuming monthly data, setting time series frequency to 12\n")
+  message("Assuming monthly data, setting time series frequency to 12")
 }
 
 # Create time series object for CPI
@@ -641,10 +765,10 @@ test_start_month <- month(min(test_df$date))
 test_cpi_ts <- ts(test_df$cpi, frequency = ts_frequency,
                  start = c(test_start_year, test_start_month))
 
-cat("Created time series objects for ARIMA modeling:\n")
-cat("  - Full dataset: cpi_ts\n")
-cat("  - Training set: train_cpi_ts\n")
-cat("  - Test set: test_cpi_ts\n\n")
+message("Created time series objects for ARIMA modeling:")
+message("  - Full dataset: cpi_ts")
+message("  - Training set: train_cpi_ts")
+message("  - Test set: test_cpi_ts")
 
 # Save time series objects
 saveRDS(list(
@@ -652,75 +776,69 @@ saveRDS(list(
   train = train_cpi_ts,
   test = test_cpi_ts
 ), "Processed_Data/ts_objects.rds")
-cat("Saved time series objects to Processed_Data/ts_objects.rds\n\n")
+message("Saved time series objects to Processed_Data/ts_objects.rds")
 
 # --- Step 7: Save Prepared Datasets ---
-cat("===== SAVING PREPARED DATASETS =====\n\n")
+message("===== SAVING PREPARED DATASETS =====")
 
 # Save full modeling dataframe
 write_csv(model_df, "Processed_Data/model_df.csv")
 saveRDS(model_df, "Processed_Data/model_df.rds")
-cat("Saved full modeling dataframe:\n")
-cat("  - CSV: Processed_Data/model_df.csv\n")
-cat("  - RDS: Processed_Data/model_df.rds\n")
+message("Saved full modeling dataframe:")
+message("  - CSV: Processed_Data/model_df.csv")
+message("  - RDS: Processed_Data/model_df.rds")
 
 # Save train/test splits
 write_csv(train_df, "Processed_Data/train_df.csv")
 saveRDS(train_df, "Processed_Data/train_df.rds")
-cat("Saved training dataframe:\n")
-cat("  - CSV: Processed_Data/train_df.csv\n")
-cat("  - RDS: Processed_Data/train_df.rds\n")
+message("Saved training dataframe:")
+message("  - CSV: Processed_Data/train_df.csv")
+message("  - RDS: Processed_Data/train_df.rds")
 
 write_csv(test_df, "Processed_Data/test_df.csv")
 saveRDS(test_df, "Processed_Data/test_df.rds")
-cat("Saved test dataframe:\n")
-cat("  - CSV: Processed_Data/test_df.csv\n")
-cat("  - RDS: Processed_Data/test_df.rds\n\n")
+message("Saved test dataframe:")
+message("  - CSV: Processed_Data/test_df.csv")
+message("  - RDS: Processed_Data/test_df.rds")
 
 # --- Step 8: Generate Summary Statistics ---
-cat("===== SUMMARY STATISTICS =====\n\n")
+message("===== SUMMARY STATISTICS =====")
 
 # Generate summary statistics for modeling dataframe
 sum_stats <- summary(model_df[, c("cpi", high_corr_vars)])
 print(sum_stats)
 write.table(sum_stats, file = "Processed_Data/model_df_summary.txt", sep = "\t")
-cat("\nSaved summary statistics to Processed_Data/model_df_summary.txt\n\n")
+message("Saved summary statistics to Processed_Data/model_df_summary.txt")
 
 # --- Step 9: Final Report ---
-cat("===== FINAL REPORT =====\n\n")
+message("===== FINAL REPORT =====")
 
-cat("Data preparation completed successfully!\n\n")
-
-cat("Key statistics:\n")
-cat("  - Original dataframe:", nrow(merged_df), "rows,", ncol(merged_df), "columns\n")
-cat("  - Modeling dataframe:", nrow(model_df), "rows,", ncol(model_df), "columns\n")
-cat("  - Selected features:", length(high_corr_vars), "\n")
-cat("  - Training set size:", nrow(train_df), "observations\n")
-cat("  - Test set size:", nrow(test_df), "observations\n\n")
-
-cat("Files created:\n")
-cat("1. Processed_Data/model_df.csv - Full modeling dataframe\n")
-cat("2. Processed_Data/model_df.rds - Full modeling dataframe (R object)\n")
-cat("3. Processed_Data/train_df.csv - Training dataset\n")
-cat("4. Processed_Data/train_df.rds - Training dataset (R object)\n")
-cat("5. Processed_Data/test_df.csv - Test dataset\n")
-cat("6. Processed_Data/test_df.rds - Test dataset (R object)\n")
-cat("7. Processed_Data/ts_objects.rds - Time series objects for ARIMA modeling\n")
-cat("8. Processed_Data/preprocess_params.rds - Preprocessing parameters\n")
-cat("9. Processed_Data/model_df_summary.txt - Summary statistics\n")
-cat("10. Various plots in Plots/model_prep/ directory\n\n")
-
-cat("Next steps:\n")
-cat("1. Proceed to 04_arima_modeling.R for ARIMA model implementation\n")
-cat("2. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression\n")
-cat("3. Proceed to 06_model_evaluation.R for model comparison and final forecasting\n\n")
-
-cat("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
-sink()
-
-# Print message to console
 message("Data preparation completed successfully!")
-message("Output saved to Logs/03_prepare_modeling_df_output.txt")
-message("Proceed to 04_arima_modeling.R for ARIMA model implementation")
+
+message("Key statistics:")
+message("  - Original dataframe:", nrow(merged_df), "rows,", ncol(merged_df), "columns")
+message("  - Modeling dataframe:", nrow(model_df), "rows,", ncol(model_df), "columns")
+message("  - Selected features:", length(high_corr_vars))
+message("  - Training set size:", nrow(train_df), "observations")
+message("  - Test set size:", nrow(test_df), "observations")
+
+message("Files created:")
+message("1. Processed_Data/model_df.csv - Full modeling dataframe")
+message("2. Processed_Data/model_df.rds - Full modeling dataframe (R object)")
+message("3. Processed_Data/train_df.csv - Training dataset")
+message("4. Processed_Data/train_df.rds - Training dataset (R object)")
+message("5. Processed_Data/test_df.csv - Test dataset")
+message("6. Processed_Data/test_df.rds - Test dataset (R object)")
+message("7. Processed_Data/ts_objects.rds - Time series objects for ARIMA modeling")
+message("8. Processed_Data/preprocess_params.rds - Preprocessing parameters")
+message("9. Processed_Data/model_df_summary.txt - Summary statistics")
+message("10. Various plots in Plots/model_prep/ directory")
+
+message("Next steps:")
+message("1. Proceed to 04_arima_modeling.R for ARIMA model implementation")
+message("2. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression")
+message("3. Proceed to 06_model_evaluation.R for model comparison and final forecasting")
+
+message("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- End of script ---

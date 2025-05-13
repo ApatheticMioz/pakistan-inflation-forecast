@@ -28,37 +28,36 @@ suppressPackageStartupMessages({
   library(Matrix)
 })
 
-# --- Set up output file for logging ---
-dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
-sink("Logs/05_regularization_modeling_output.txt")
-cat("===== REGULARIZATION MODELING FOR PAKISTAN INFLATION FORECASTING =====\n\n")
-cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
+# --- Set up logging to console ---
+message("===== REGULARIZATION MODELING FOR PAKISTAN INFLATION FORECASTING =====")
+message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- Create output directories if they don't exist ---
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
 dir.create("Plots/regularization", showWarnings = FALSE, recursive = TRUE)
 dir.create("Models", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load prepared data ---
-cat("Loading prepared data...\n")
+message("Loading prepared data...")
 model_df <- readRDS("Processed_Data/model_df.rds")
 train_df <- readRDS("Processed_Data/train_df.rds")
 test_df <- readRDS("Processed_Data/test_df.rds")
 
-cat("Loaded data successfully\n")
-cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
-    format(max(train_df$date), "%Y-%m-%d"), "\n")
-cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
-    format(max(test_df$date), "%Y-%m-%d"), "\n\n")
+message("Loaded data successfully")
+message("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
+    format(max(train_df$date), "%Y-%m-%d"))
+message("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
+    format(max(test_df$date), "%Y-%m-%d"))
 
 # --- Step 1: Prepare Data for Regularization Models ---
-cat("===== PREPARING DATA FOR REGULARIZATION MODELS =====\n\n")
+message("===== PREPARING DATA FOR REGULARIZATION MODELS =====")
 
 # Identify standardized predictor columns (created in 03_prepare_modeling_df.R)
 std_cols <- grep("_std$", names(train_df), value = TRUE)
 
 if (length(std_cols) == 0) {
-  cat("No standardized columns found. Using original numeric columns.\n")
+  message("No standardized columns found. Using original numeric columns.")
   # Exclude non-numeric and target columns
   exclude_cols <- c("date", "cpi", "cpi_diff")
   exclude_pattern <- "month$|quarter$|year$|is_ramadan|post_ramadan|fiscal"
@@ -68,16 +67,13 @@ if (length(std_cols) == 0) {
   # Keep only numeric columns
   predictor_cols <- predictor_cols[sapply(train_df[predictor_cols], is.numeric)]
 } else {
-  cat("Using", length(std_cols), "standardized predictor columns\n")
+  message("Using", length(std_cols), "standardized predictor columns")
   predictor_cols <- std_cols
 }
 
-cat("Selected predictor columns:", length(predictor_cols), "\n")
-cat(paste(head(predictor_cols, 10), collapse = ", "))
-if (length(predictor_cols) > 10) {
-  cat(", ...", length(predictor_cols) - 10, "more")
-}
-cat("\n\n")
+message("Selected predictor columns:", length(predictor_cols))
+message(paste(head(predictor_cols, 10), collapse = ", "),
+      if(length(predictor_cols) > 10) paste(", ...", length(predictor_cols) - 10, "more") else "")
 
 # Prepare matrices for glmnet
 X_train <- as.matrix(train_df[, predictor_cols])
@@ -85,17 +81,17 @@ y_train <- train_df$cpi
 X_test <- as.matrix(test_df[, predictor_cols])
 y_test <- test_df$cpi
 
-cat("Prepared matrices for modeling:\n")
-cat("  X_train dimensions:", nrow(X_train), "x", ncol(X_train), "\n")
-cat("  X_test dimensions:", nrow(X_test), "x", ncol(X_test), "\n\n")
+message("Prepared matrices for modeling:")
+message("  X_train dimensions:", nrow(X_train), "x", ncol(X_train))
+message("  X_test dimensions:", nrow(X_test), "x", ncol(X_test))
 
 # --- Step 2: Ridge Regression ---
-cat("===== RIDGE REGRESSION =====\n\n")
+message("===== RIDGE REGRESSION =====")
 
 # Set up cross-validation
 set.seed(123)  # For reproducibility
 cv_folds <- 10
-cat("Performing", cv_folds, "-fold cross-validation for Ridge regression...\n")
+message("Performing", cv_folds, "-fold cross-validation for Ridge regression...")
 
 # Fit Ridge model with cross-validation
 ridge_cv <- cv.glmnet(X_train, y_train, alpha = 0, nfolds = cv_folds)
@@ -104,13 +100,13 @@ ridge_cv <- cv.glmnet(X_train, y_train, alpha = 0, nfolds = cv_folds)
 png(file.path("Plots/regularization", "ridge_cv.png"), width = 1000, height = 600)
 plot(ridge_cv)
 dev.off()
-cat("Saved Ridge cross-validation plot to Plots/regularization/ridge_cv.png\n")
+message("Saved Ridge cross-validation plot to Plots/regularization/ridge_cv.png")
 
 # Get optimal lambda
 ridge_lambda_min <- ridge_cv$lambda.min
 ridge_lambda_1se <- ridge_cv$lambda.1se
-cat("Ridge optimal lambda (minimum MSE):", ridge_lambda_min, "\n")
-cat("Ridge optimal lambda (1 standard error rule):", ridge_lambda_1se, "\n")
+message("Ridge optimal lambda (minimum MSE):", ridge_lambda_min)
+message("Ridge optimal lambda (1 standard error rule):", ridge_lambda_1se)
 
 # Fit final Ridge model with optimal lambda
 ridge_model <- glmnet(X_train, y_train, alpha = 0, lambda = ridge_lambda_1se)
@@ -124,12 +120,11 @@ ridge_coef_df <- data.frame(
 ridge_coef_df <- ridge_coef_df[order(abs(ridge_coef_df$Coefficient), decreasing = TRUE), ]
 ridge_coef_df <- ridge_coef_df[ridge_coef_df$Coefficient != 0, ]
 
-cat("Ridge model non-zero coefficients:", nrow(ridge_coef_df), "\n")
+message("Ridge model non-zero coefficients:", nrow(ridge_coef_df))
 if (nrow(ridge_coef_df) > 0) {
-  cat("Top 10 Ridge coefficients by magnitude:\n")
+  message("Top 10 Ridge coefficients by magnitude:")
   print(head(ridge_coef_df, 10))
 }
-cat("\n")
 
 # Make predictions
 ridge_pred_train <- predict(ridge_model, X_train)
@@ -138,27 +133,27 @@ ridge_pred_test <- predict(ridge_model, X_test)
 # Calculate errors
 ridge_train_rmse <- sqrt(mean((y_train - ridge_pred_train)^2))
 ridge_test_rmse <- sqrt(mean((y_test - ridge_pred_test)^2))
-cat("Ridge RMSE on training data:", ridge_train_rmse, "\n")
-cat("Ridge RMSE on test data:", ridge_test_rmse, "\n\n")
+message("Ridge RMSE on training data:", ridge_train_rmse)
+message("Ridge RMSE on test data:", ridge_test_rmse)
 
 # --- Step 3: Lasso Regression ---
-cat("===== LASSO REGRESSION =====\n\n")
+message("===== LASSO REGRESSION =====")
 
 # Fit Lasso model with cross-validation
-cat("Performing", cv_folds, "-fold cross-validation for Lasso regression...\n")
+message("Performing", cv_folds, "-fold cross-validation for Lasso regression...")
 lasso_cv <- cv.glmnet(X_train, y_train, alpha = 1, nfolds = cv_folds)
 
 # Plot cross-validation results
 png(file.path("Plots/regularization", "lasso_cv.png"), width = 1000, height = 600)
 plot(lasso_cv)
 dev.off()
-cat("Saved Lasso cross-validation plot to Plots/regularization/lasso_cv.png\n")
+message("Saved Lasso cross-validation plot to Plots/regularization/lasso_cv.png")
 
 # Get optimal lambda
 lasso_lambda_min <- lasso_cv$lambda.min
 lasso_lambda_1se <- lasso_cv$lambda.1se
-cat("Lasso optimal lambda (minimum MSE):", lasso_lambda_min, "\n")
-cat("Lasso optimal lambda (1 standard error rule):", lasso_lambda_1se, "\n")
+message("Lasso optimal lambda (minimum MSE):", lasso_lambda_min)
+message("Lasso optimal lambda (1 standard error rule):", lasso_lambda_1se)
 
 # Fit final Lasso model with optimal lambda
 lasso_model <- glmnet(X_train, y_train, alpha = 1, lambda = lasso_lambda_1se)
@@ -172,12 +167,11 @@ lasso_coef_df <- data.frame(
 lasso_coef_df <- lasso_coef_df[order(abs(lasso_coef_df$Coefficient), decreasing = TRUE), ]
 lasso_coef_df <- lasso_coef_df[lasso_coef_df$Coefficient != 0, ]
 
-cat("Lasso model non-zero coefficients:", nrow(lasso_coef_df), "\n")
+message("Lasso model non-zero coefficients:", nrow(lasso_coef_df))
 if (nrow(lasso_coef_df) > 0) {
-  cat("Top 10 Lasso coefficients by magnitude:\n")
+  message("Top 10 Lasso coefficients by magnitude:")
   print(head(lasso_coef_df, 10))
 }
-cat("\n")
 
 # Make predictions
 lasso_pred_train <- predict(lasso_model, X_train)
@@ -186,11 +180,11 @@ lasso_pred_test <- predict(lasso_model, X_test)
 # Calculate errors
 lasso_train_rmse <- sqrt(mean((y_train - lasso_pred_train)^2))
 lasso_test_rmse <- sqrt(mean((y_test - lasso_pred_test)^2))
-cat("Lasso RMSE on training data:", lasso_train_rmse, "\n")
-cat("Lasso RMSE on test data:", lasso_test_rmse, "\n\n")
+message("Lasso RMSE on training data:", lasso_train_rmse)
+message("Lasso RMSE on test data:", lasso_test_rmse)
 
 # --- Step 4: Elastic Net Regression ---
-cat("===== ELASTIC NET REGRESSION =====\n\n")
+message("===== ELASTIC NET REGRESSION =====")
 
 # Try different alpha values for Elastic Net
 alpha_values <- seq(0.1, 0.9, by = 0.1)
@@ -202,9 +196,9 @@ elastic_net_results <- data.frame(
   NonZero_Coefs = numeric()
 )
 
-cat("Trying different alpha values for Elastic Net...\n")
+message("Trying different alpha values for Elastic Net...")
 for (alpha in alpha_values) {
-  cat("  Testing alpha =", alpha, "\n")
+  message("  Testing alpha =", alpha)
 
   # Cross-validation for this alpha
   en_cv <- cv.glmnet(X_train, y_train, alpha = alpha, nfolds = cv_folds)
@@ -242,11 +236,11 @@ best_alpha_idx <- which.min(elastic_net_results$RMSE_Test)
 best_alpha <- elastic_net_results$Alpha[best_alpha_idx]
 best_lambda <- elastic_net_results$Lambda[best_alpha_idx]
 
-cat("Elastic Net results for different alpha values:\n")
+message("Elastic Net results for different alpha values:")
 print(elastic_net_results)
-cat("\n")
-cat("Best alpha value:", best_alpha, "\n")
-cat("Best lambda value:", best_lambda, "\n\n")
+
+message("Best alpha value:", best_alpha)
+message("Best lambda value:", best_lambda)
 
 # Plot alpha vs. RMSE
 png(file.path("Plots/regularization", "elastic_net_alpha.png"), width = 1000, height = 600)
@@ -260,7 +254,7 @@ ggplot(elastic_net_results, aes(x = Alpha)) +
        x = "Alpha", y = "RMSE", color = "Dataset") +
   theme_minimal()
 dev.off()
-cat("Saved Elastic Net alpha plot to Plots/regularization/elastic_net_alpha.png\n")
+message("Saved Elastic Net alpha plot to Plots/regularization/elastic_net_alpha.png")
 
 # Fit final Elastic Net model with optimal parameters
 elastic_net_model <- glmnet(X_train, y_train, alpha = best_alpha, lambda = best_lambda)
@@ -274,12 +268,11 @@ en_coef_df <- data.frame(
 en_coef_df <- en_coef_df[order(abs(en_coef_df$Coefficient), decreasing = TRUE), ]
 en_coef_df <- en_coef_df[en_coef_df$Coefficient != 0, ]
 
-cat("Elastic Net model non-zero coefficients:", nrow(en_coef_df), "\n")
+message("Elastic Net model non-zero coefficients:", nrow(en_coef_df))
 if (nrow(en_coef_df) > 0) {
-  cat("Top 10 Elastic Net coefficients by magnitude:\n")
+  message("Top 10 Elastic Net coefficients by magnitude:")
   print(head(en_coef_df, 10))
 }
-cat("\n")
 
 # Make predictions with final model
 en_pred_train <- predict(elastic_net_model, X_train)
@@ -288,11 +281,11 @@ en_pred_test <- predict(elastic_net_model, X_test)
 # Calculate errors
 en_train_rmse <- sqrt(mean((y_train - en_pred_train)^2))
 en_test_rmse <- sqrt(mean((y_test - en_pred_test)^2))
-cat("Elastic Net RMSE on training data:", en_train_rmse, "\n")
-cat("Elastic Net RMSE on test data:", en_test_rmse, "\n\n")
+message("Elastic Net RMSE on training data:", en_train_rmse)
+message("Elastic Net RMSE on test data:", en_test_rmse)
 
 # --- Step 5: Feature Importance Analysis ---
-cat("===== FEATURE IMPORTANCE ANALYSIS =====\n\n")
+message("===== FEATURE IMPORTANCE ANALYSIS =====")
 
 # Combine coefficients from all models
 all_coefs <- data.frame(
@@ -316,7 +309,7 @@ all_coefs <- all_coefs[all_coefs$Variable != "(Intercept)" & all_coefs$Avg_Impor
 
 # Save feature importance
 write.csv(all_coefs, "Processed_Data/feature_importance.csv", row.names = FALSE)
-cat("Saved feature importance to Processed_Data/feature_importance.csv\n")
+message("Saved feature importance to Processed_Data/feature_importance.csv")
 
 # Plot top features
 if (nrow(all_coefs) > 0) {
@@ -341,13 +334,13 @@ if (nrow(all_coefs) > 0) {
     theme_minimal() +
     theme(legend.position = "bottom")
   dev.off()
-  cat("Saved feature importance plot to Plots/regularization/feature_importance.png\n\n")
+  message("Saved feature importance plot to Plots/regularization/feature_importance.png")
 } else {
-  cat("No non-zero coefficients to plot\n\n")
+  message("No non-zero coefficients to plot")
 }
 
 # --- Step 6: Variable Significance Analysis ---
-cat("===== VARIABLE SIGNIFICANCE ANALYSIS =====\n\n")
+message("===== VARIABLE SIGNIFICANCE ANALYSIS =====")
 
 # Function to evaluate variable significance
 evaluate_significance <- function(model_name, coef_df) {
@@ -355,21 +348,20 @@ evaluate_significance <- function(model_name, coef_df) {
   non_zero <- sum(coef_df$Variable != "(Intercept)" & abs(coef_df$Coefficient) > 0.001)
   total <- sum(coef_df$Variable != "(Intercept)")  # Exclude intercept
 
-  cat("Variable Significance Analysis for", model_name, ":\n")
-  cat("Total variables:", total, "\n")
-  cat("Variables with significant coefficients:", non_zero, "\n")
-  cat("Variables with insignificant coefficients:", total - non_zero, "\n")
+  message("Variable Significance Analysis for", model_name, ":")
+  message("Total variables:", total)
+  message("Variables with significant coefficients:", non_zero)
+  message("Variables with insignificant coefficients:", total - non_zero)
 
   # Check if more significant than insignificant
   if (non_zero > (total - non_zero)) {
-    cat("REQUIREMENT MET: More significant variables than insignificant variables\n")
+    message("REQUIREMENT MET: More significant variables than insignificant variables")
   } else {
-    cat("REQUIREMENT NOT MET: Fewer significant variables than insignificant variables\n")
+    message("REQUIREMENT NOT MET: Fewer significant variables than insignificant variables")
 
     # If requirement not met, we need to adjust the model
-    cat("Adjusting model to meet the requirement...\n")
+    message("Adjusting model to meet the requirement...")
   }
-  cat("\n")
 
   return(list(
     significant = non_zero,
@@ -379,7 +371,7 @@ evaluate_significance <- function(model_name, coef_df) {
 }
 
 # Evaluate significance for each model
-cat("Evaluating variable significance for each model...\n\n")
+message("Evaluating variable significance for each model...")
 ridge_significance <- evaluate_significance("Ridge", ridge_coef_df)
 lasso_significance <- evaluate_significance("Lasso", lasso_coef_df)
 en_significance <- evaluate_significance("Elastic Net", en_coef_df)
@@ -393,15 +385,14 @@ significance_summary <- data.frame(
 )
 
 # Print and save summary
-cat("Variable Significance Summary:\n")
+message("Variable Significance Summary:")
 print(significance_summary)
-cat("\n")
 
 write.csv(significance_summary, "Processed_Data/variable_significance.csv", row.names = FALSE)
-cat("Saved variable significance summary to Processed_Data/variable_significance.csv\n\n")
+message("Saved variable significance summary to Processed_Data/variable_significance.csv")
 
 # --- Step 7: Model Comparison ---
-cat("===== MODEL COMPARISON =====\n\n")
+message("===== MODEL COMPARISON =====")
 
 # Function to calculate accuracy metrics
 calculate_accuracy <- function(actual, predicted, model_name) {
@@ -429,15 +420,14 @@ accuracy_results <- rbind(
 )
 
 # Print and save accuracy results
-cat("Model Accuracy Metrics on Test Set:\n")
+message("Model Accuracy Metrics on Test Set:")
 print(accuracy_results)
-cat("\n")
 
 write.csv(accuracy_results, "Processed_Data/regularization_accuracy.csv", row.names = FALSE)
-cat("Saved accuracy metrics to Processed_Data/regularization_accuracy.csv\n\n")
+message("Saved accuracy metrics to Processed_Data/regularization_accuracy.csv")
 
 # --- Step 8: Plot Predictions ---
-cat("===== PREDICTION VISUALIZATION =====\n\n")
+message("===== PREDICTION VISUALIZATION =====")
 
 # Create a dataframe with actual and predicted values
 predictions_df <- data.frame(
@@ -450,7 +440,7 @@ predictions_df <- data.frame(
 
 # Save predictions
 write.csv(predictions_df, "Processed_Data/regularization_predictions.csv", row.names = FALSE)
-cat("Saved predictions to Processed_Data/regularization_predictions.csv\n")
+message("Saved predictions to Processed_Data/regularization_predictions.csv")
 
 # Plot predictions
 png(file.path("Plots/regularization", "predictions_comparison.png"), width = 1200, height = 800)
@@ -464,10 +454,10 @@ ggplot(predictions_df, aes(x = Date)) +
   theme_minimal() +
   theme(legend.position = "bottom")
 dev.off()
-cat("Saved predictions comparison plot to Plots/regularization/predictions_comparison.png\n\n")
+message("Saved predictions comparison plot to Plots/regularization/predictions_comparison.png")
 
 # --- Step 9: Save Models ---
-cat("===== SAVING MODELS =====\n\n")
+message("===== SAVING MODELS =====")
 
 # Create a list of models
 models_list <- list(
@@ -493,58 +483,49 @@ models_list <- list(
 
 # Save models
 saveRDS(models_list, "Models/regularization_models.rds")
-cat("Saved all regularization models to Models/regularization_models.rds\n")
+message("Saved all regularization models to Models/regularization_models.rds")
 
 # Save predictions
 saveRDS(predictions_df, "Models/regularization_predictions.rds")
-cat("Saved predictions to Models/regularization_predictions.rds\n\n")
+message("Saved predictions to Models/regularization_predictions.rds")
 
 # --- Final Summary ---
-cat("===== FINAL SUMMARY =====\n\n")
+message("===== FINAL SUMMARY =====")
 
-cat("Regularization modeling completed successfully!\n\n")
+message("Regularization modeling completed successfully!")
 
-cat("Model performance on test set:\n")
+message("Model performance on test set:")
 print(accuracy_results)
-cat("\n")
 
 # Determine best model
 best_model_idx <- which.min(accuracy_results$RMSE)
 best_model_name <- accuracy_results$Model[best_model_idx]
-cat("Best performing model based on RMSE:", best_model_name, "\n")
-cat("Best model RMSE:", accuracy_results$RMSE[best_model_idx], "\n\n")
+message("Best performing model based on RMSE:", best_model_name)
+message("Best model RMSE:", accuracy_results$RMSE[best_model_idx])
 
-cat("Feature importance summary:\n")
+message("Feature importance summary:")
 if (nrow(all_coefs) > 0) {
-  cat("Top 10 most important features across all models:\n")
+  message("Top 10 most important features across all models:")
   print(head(all_coefs[, c("Variable", "Avg_Importance")], 10))
 } else {
-  cat("No non-zero coefficients found\n")
+  message("No non-zero coefficients found")
 }
-cat("\n")
 
-cat("Variable significance summary:\n")
+message("Variable significance summary:")
 print(significance_summary)
-cat("\n")
 
-cat("Files created:\n")
-cat("1. Models/regularization_models.rds - All regularization models\n")
-cat("2. Models/regularization_predictions.rds - Predictions from all models\n")
-cat("3. Processed_Data/regularization_accuracy.csv - Accuracy metrics\n")
-cat("4. Processed_Data/regularization_predictions.csv - Predictions comparison\n")
-cat("5. Processed_Data/feature_importance.csv - Feature importance analysis\n")
-cat("6. Processed_Data/variable_significance.csv - Variable significance analysis\n")
-cat("7. Various plots in Plots/regularization/ directory\n\n")
+message("Files created:")
+message("1. Models/regularization_models.rds - All regularization models")
+message("2. Models/regularization_predictions.rds - Predictions from all models")
+message("3. Processed_Data/regularization_accuracy.csv - Accuracy metrics")
+message("4. Processed_Data/regularization_predictions.csv - Predictions comparison")
+message("5. Processed_Data/feature_importance.csv - Feature importance analysis")
+message("6. Processed_Data/variable_significance.csv - Variable significance analysis")
+message("7. Various plots in Plots/regularization/ directory")
 
-cat("Next steps:\n")
-cat("1. Proceed to 06_model_evaluation.R for comprehensive model comparison and final forecasting\n\n")
+message("Next steps:")
+message("1. Proceed to 06_model_evaluation.R for comprehensive model comparison and final forecasting")
 
-cat("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
-sink()
-
-# Print message to console
-message("Regularization modeling completed successfully!")
-message("Output saved to Logs/05_regularization_modeling_output.txt")
-message("Proceed to 06_model_evaluation.R for model comparison and final forecasting")
+message("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- End of script ---

@@ -27,19 +27,18 @@ suppressPackageStartupMessages({
   library(gridExtra)
 })
 
-# --- Set up output file for logging ---
-dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
-sink("Logs/04_arima_modeling_output.txt")
-cat("===== ARIMA MODELING FOR PAKISTAN INFLATION FORECASTING =====\n\n")
-cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
+# --- Set up logging to console ---
+message("===== ARIMA MODELING FOR PAKISTAN INFLATION FORECASTING =====")
+message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- Create output directories if they don't exist ---
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
 dir.create("Plots/arima", showWarnings = FALSE, recursive = TRUE)
 dir.create("Models", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load prepared data ---
-cat("Loading prepared data...\n")
+message("Loading prepared data...")
 model_df <- readRDS("Processed_Data/model_df.rds")
 train_df <- readRDS("Processed_Data/train_df.rds")
 test_df <- readRDS("Processed_Data/test_df.rds")
@@ -50,14 +49,14 @@ cpi_ts <- ts_objects$full
 train_cpi_ts <- ts_objects$train
 test_cpi_ts <- ts_objects$test
 
-cat("Loaded data successfully\n")
-cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
-    format(max(train_df$date), "%Y-%m-%d"), "\n")
-cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
-    format(max(test_df$date), "%Y-%m-%d"), "\n\n")
+message("Loaded data successfully")
+message("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
+    format(max(train_df$date), "%Y-%m-%d"))
+message("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
+    format(max(test_df$date), "%Y-%m-%d"))
 
 # --- Step 1: Exploratory Analysis of Time Series ---
-cat("===== EXPLORATORY ANALYSIS OF TIME SERIES =====\n\n")
+message("===== EXPLORATORY ANALYSIS OF TIME SERIES =====")
 
 # Plot the time series
 png(file.path("Plots/arima", "cpi_time_series.png"), width = 1000, height = 600)
@@ -67,15 +66,15 @@ abline(v = time(train_cpi_ts)[length(train_cpi_ts)], col = "red", lty = 2)
 legend("topleft", legend = c("Training Data", "Test Data"),
        col = c("black", "black"), lty = c(1, 1), bty = "n")
 dev.off()
-cat("Saved time series plot to Plots/arima/cpi_time_series.png\n")
+message("Saved time series plot to Plots/arima/cpi_time_series.png")
 
 # Decompose the time series
-cat("Decomposing time series to identify trend, seasonality, and residuals...\n")
+message("Decomposing time series to identify trend, seasonality, and residuals...")
 ts_decomp <- decompose(cpi_ts)
 png(file.path("Plots/arima", "cpi_decomposition.png"), width = 1000, height = 800)
 plot(ts_decomp)
 dev.off()
-cat("Saved time series decomposition plot to Plots/arima/cpi_decomposition.png\n")
+message("Saved time series decomposition plot to Plots/arima/cpi_decomposition.png")
 
 # ACF and PACF plots
 png(file.path("Plots/arima", "acf_pacf.png"), width = 1000, height = 600)
@@ -83,23 +82,23 @@ par(mfrow = c(2, 1))
 acf(train_cpi_ts, main = "ACF of CPI")
 pacf(train_cpi_ts, main = "PACF of CPI")
 dev.off()
-cat("Saved ACF and PACF plots to Plots/arima/acf_pacf.png\n\n")
+message("Saved ACF and PACF plots to Plots/arima/acf_pacf.png")
 
 # --- Step 2: Check for Stationarity ---
-cat("===== STATIONARITY TESTING =====\n\n")
+message("===== STATIONARITY TESTING =====")
 
 # Augmented Dickey-Fuller test
 adf_test <- adf.test(train_cpi_ts, alternative = "stationary")
-cat("Augmented Dickey-Fuller Test for Stationarity:\n")
-cat("  Test statistic:", adf_test$statistic, "\n")
-cat("  p-value:", adf_test$p.value, "\n")
-cat("  Interpretation:", ifelse(adf_test$p.value < 0.05,
+message("Augmented Dickey-Fuller Test for Stationarity:")
+message("  Test statistic:", adf_test$statistic)
+message("  p-value:", adf_test$p.value)
+message("  Interpretation:", ifelse(adf_test$p.value < 0.05,
                               "Series is stationary",
-                              "Series is non-stationary"), "\n\n")
+                              "Series is non-stationary"))
 
 # If non-stationary, difference the series
 if (adf_test$p.value >= 0.05) {
-  cat("Series is non-stationary. Differencing the series...\n")
+  message("Series is non-stationary. Differencing the series...")
   diff_cpi_ts <- diff(train_cpi_ts)
 
   # Plot differenced series
@@ -107,16 +106,16 @@ if (adf_test$p.value >= 0.05) {
   plot(diff_cpi_ts, main = "Differenced CPI Series",
        xlab = "Year", ylab = "Differenced CPI")
   dev.off()
-  cat("Saved differenced series plot to Plots/arima/differenced_series.png\n")
+  message("Saved differenced series plot to Plots/arima/differenced_series.png")
 
   # Check stationarity of differenced series
   adf_diff_test <- adf.test(diff_cpi_ts, alternative = "stationary")
-  cat("Augmented Dickey-Fuller Test for Differenced Series:\n")
-  cat("  Test statistic:", adf_diff_test$statistic, "\n")
-  cat("  p-value:", adf_diff_test$p.value, "\n")
-  cat("  Interpretation:", ifelse(adf_diff_test$p.value < 0.05,
+  message("Augmented Dickey-Fuller Test for Differenced Series:")
+  message("  Test statistic:", adf_diff_test$statistic)
+  message("  p-value:", adf_diff_test$p.value)
+  message("  Interpretation:", ifelse(adf_diff_test$p.value < 0.05,
                                 "Differenced series is stationary",
-                                "Differenced series is non-stationary"), "\n\n")
+                                "Differenced series is non-stationary"))
 
   # ACF and PACF of differenced series
   png(file.path("Plots/arima", "acf_pacf_diff.png"), width = 1000, height = 600)
@@ -124,62 +123,61 @@ if (adf_test$p.value >= 0.05) {
   acf(diff_cpi_ts, main = "ACF of Differenced CPI")
   pacf(diff_cpi_ts, main = "PACF of Differenced CPI")
   dev.off()
-  cat("Saved ACF and PACF plots of differenced series to Plots/arima/acf_pacf_diff.png\n\n")
+  message("Saved ACF and PACF plots of differenced series to Plots/arima/acf_pacf_diff.png")
 } else {
-  cat("Series is already stationary. No differencing needed.\n\n")
+  message("Series is already stationary. No differencing needed.")
   diff_cpi_ts <- train_cpi_ts
 }
 
 # --- Step 3: ARIMA Model Selection ---
-cat("===== ARIMA MODEL SELECTION =====\n\n")
+message("===== ARIMA MODEL SELECTION =====")
 
 # Auto ARIMA to find the best model
-cat("Running auto.arima to find the best ARIMA model...\n")
+message("Running auto.arima to find the best ARIMA model...")
 auto_arima_model <- auto.arima(train_cpi_ts, seasonal = TRUE,
                               stepwise = TRUE, approximation = FALSE)
 
 # Print model summary
-cat("Best ARIMA Model:\n")
+message("Best ARIMA Model:")
 print(auto_arima_model)
-cat("\n")
 
 # Save model information
 arima_order <- arimaorder(auto_arima_model)
-cat("ARIMA Order: (", arima_order[1], ",", arima_order[2], ",", arima_order[3], ")\n")
+message("ARIMA Order: (", arima_order[1], ",", arima_order[2], ",", arima_order[3], ")")
 if (is.null(auto_arima_model$coef)) {
-  cat("No coefficients in the model\n")
+  message("No coefficients in the model")
 } else {
-  cat("Coefficients:\n")
+  message("Coefficients:")
   print(auto_arima_model$coef)
 }
-cat("AIC:", auto_arima_model$aic, "\n")
-cat("BIC:", auto_arima_model$bic, "\n")
-cat("Log Likelihood:", auto_arima_model$loglik, "\n\n")
+message("AIC:", auto_arima_model$aic)
+message("BIC:", auto_arima_model$bic)
+message("Log Likelihood:", auto_arima_model$loglik)
 
 # --- Step 4: ARIMA Model Diagnostics ---
-cat("===== ARIMA MODEL DIAGNOSTICS =====\n\n")
+message("===== ARIMA MODEL DIAGNOSTICS =====")
 
 # Residual analysis
 png(file.path("Plots/arima", "residual_diagnostics.png"), width = 1000, height = 800)
 checkresiduals(auto_arima_model)
 dev.off()
-cat("Saved residual diagnostics plot to Plots/arima/residual_diagnostics.png\n")
+message("Saved residual diagnostics plot to Plots/arima/residual_diagnostics.png")
 
 # Ljung-Box test for residual autocorrelation
 lb_test <- Box.test(residuals(auto_arima_model), lag = 20, type = "Ljung-Box")
-cat("Ljung-Box Test for Residual Autocorrelation:\n")
-cat("  Test statistic:", lb_test$statistic, "\n")
-cat("  p-value:", lb_test$p.value, "\n")
-cat("  Interpretation:", ifelse(lb_test$p.value >= 0.05,
+message("Ljung-Box Test for Residual Autocorrelation:")
+message("  Test statistic:", lb_test$statistic)
+message("  p-value:", lb_test$p.value)
+message("  Interpretation:", ifelse(lb_test$p.value >= 0.05,
                               "Residuals are white noise (good)",
-                              "Residuals show autocorrelation (problematic)"), "\n\n")
+                              "Residuals show autocorrelation (problematic)"))
 
 # --- Step 5: ARIMA Forecasting ---
-cat("===== ARIMA FORECASTING =====\n\n")
+message("===== ARIMA FORECASTING =====")
 
 # Forecast horizon (length of test set)
 h <- length(test_cpi_ts)
-cat("Forecast horizon:", h, "periods\n")
+message("Forecast horizon:", h, "periods")
 
 # Generate forecasts
 arima_forecast <- forecast(auto_arima_model, h = h)
@@ -192,19 +190,19 @@ lines(test_cpi_ts, col = "red")
 legend("topleft", legend = c("Actual", "Forecast", "95% Prediction Interval"),
        col = c("red", "blue", "gray"), lty = c(1, 1, 1), bty = "n")
 dev.off()
-cat("Saved ARIMA forecast plot to Plots/arima/arima_forecast.png\n")
+message("Saved ARIMA forecast plot to Plots/arima/arima_forecast.png")
 
 # --- Note on ARIMAX Modeling ---
-cat("===== NOTE ON ARIMAX MODELING =====\n\n")
-cat("As per project requirements, ARIMAX modeling has been excluded from this analysis.\n")
-cat("The project focuses only on ARIMA, Ridge, Lasso, and Elastic Net models.\n\n")
+message("===== NOTE ON ARIMAX MODELING =====")
+message("As per project requirements, ARIMAX modeling has been excluded from this analysis.")
+message("The project focuses only on ARIMA, Ridge, Lasso, and Elastic Net models.")
 
 # Create a placeholder for ARIMAX results to maintain compatibility with later scripts
 arimax_model <- NULL
 arimax_forecast <- NULL
 
 # --- Step 7: Model Evaluation ---
-cat("===== MODEL EVALUATION =====\n\n")
+message("===== MODEL EVALUATION =====")
 
 # Function to calculate accuracy metrics
 calculate_accuracy <- function(actual, predicted, model_name) {
@@ -245,16 +243,15 @@ if (exists("arimax_forecast")) {
 
 # Combine results
 accuracy_df <- do.call(rbind, accuracy_results)
-cat("Model Accuracy Metrics:\n")
+message("Model Accuracy Metrics:")
 print(accuracy_df)
-cat("\n")
 
 # Save accuracy results
 write.csv(accuracy_df, "Processed_Data/arima_accuracy.csv", row.names = FALSE)
-cat("Saved accuracy metrics to Processed_Data/arima_accuracy.csv\n\n")
+message("Saved accuracy metrics to Processed_Data/arima_accuracy.csv")
 
 # --- Step 8: Compare Forecasts ---
-cat("===== FORECAST COMPARISON =====\n\n")
+message("===== FORECAST COMPARISON =====")
 
 # Create a dataframe with actual and predicted values
 forecast_comparison <- data.frame(
@@ -270,7 +267,7 @@ if (exists("arimax_predictions") && length(arimax_predictions) > 0) {
 
 # Save comparison data
 write.csv(forecast_comparison, "Processed_Data/arima_forecast_comparison.csv", row.names = FALSE)
-cat("Saved forecast comparison to Processed_Data/arima_forecast_comparison.csv\n")
+message("Saved forecast comparison to Processed_Data/arima_forecast_comparison.csv")
 
 # Plot comparison
 png(file.path("Plots/arima", "forecast_comparison.png"), width = 1000, height = 600)
@@ -287,19 +284,19 @@ if ("ARIMAX" %in% names(forecast_comparison)) {
          col = c("black", "blue"), lty = 1, bty = "n")
 }
 dev.off()
-cat("Saved forecast comparison plot to Plots/arima/forecast_comparison.png\n\n")
+message("Saved forecast comparison plot to Plots/arima/forecast_comparison.png")
 
 # --- Step 9: Save Models ---
-cat("===== SAVING MODELS =====\n\n")
+message("===== SAVING MODELS =====")
 
 # Save ARIMA model
 saveRDS(auto_arima_model, "Models/arima_model.rds")
-cat("Saved ARIMA model to Models/arima_model.rds\n")
+message("Saved ARIMA model to Models/arima_model.rds")
 
 # Save ARIMAX model if available
 if (exists("arimax_model")) {
   saveRDS(arimax_model, "Models/arimax_model.rds")
-  cat("Saved ARIMAX model to Models/arimax_model.rds\n")
+  message("Saved ARIMAX model to Models/arimax_model.rds")
 }
 
 # Save forecasts
@@ -307,47 +304,39 @@ saveRDS(list(
   arima = arima_forecast,
   arimax = if (exists("arimax_forecast")) arimax_forecast else NULL
 ), "Models/arima_forecasts.rds")
-cat("Saved forecasts to Models/arima_forecasts.rds\n\n")
+message("Saved forecasts to Models/arima_forecasts.rds")
 
 # --- Final Summary ---
-cat("===== FINAL SUMMARY =====\n\n")
+message("===== FINAL SUMMARY =====")
 
-cat("ARIMA modeling completed successfully!\n\n")
+message("ARIMA modeling completed successfully!")
 
-cat("Best ARIMA model: ARIMA", paste0(arimaorder(auto_arima_model), collapse = ","), "\n")
+message("Best ARIMA model: ARIMA", paste0(arimaorder(auto_arima_model), collapse = ","))
 if (exists("arimax_model") && !is.null(arimax_model)) {
   tryCatch({
-    cat("Best ARIMAX model: ARIMA", paste0(arimaorder(arimax_model), collapse = ","), "\n")
+    message("Best ARIMAX model: ARIMA", paste0(arimaorder(arimax_model), collapse = ","))
   }, error = function(e) {
-    cat("ARIMAX model information not available\n")
+    message("ARIMAX model information not available")
   })
 }
-cat("\n")
 
-cat("Model performance on test set:\n")
+message("Model performance on test set:")
 print(accuracy_df)
-cat("\n")
 
-cat("Files created:\n")
-cat("1. Models/arima_model.rds - ARIMA model\n")
+message("Files created:")
+message("1. Models/arima_model.rds - ARIMA model")
 if (exists("arimax_model")) {
-  cat("2. Models/arimax_model.rds - ARIMAX model\n")
+  message("2. Models/arimax_model.rds - ARIMAX model")
 }
-cat("3. Models/arima_forecasts.rds - Forecasts from all models\n")
-cat("4. Processed_Data/arima_accuracy.csv - Accuracy metrics\n")
-cat("5. Processed_Data/arima_forecast_comparison.csv - Forecast comparison\n")
-cat("6. Various plots in Plots/arima/ directory\n\n")
+message("3. Models/arima_forecasts.rds - Forecasts from all models")
+message("4. Processed_Data/arima_accuracy.csv - Accuracy metrics")
+message("5. Processed_Data/arima_forecast_comparison.csv - Forecast comparison")
+message("6. Various plots in Plots/arima/ directory")
 
-cat("Next steps:\n")
-cat("1. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression\n")
-cat("2. Proceed to 06_model_evaluation.R for model comparison and final forecasting\n\n")
+message("Next steps:")
+message("1. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression")
+message("2. Proceed to 06_model_evaluation.R for model comparison and final forecasting")
 
-cat("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
-sink()
-
-# Print message to console
-message("ARIMA modeling completed successfully!")
-message("Output saved to Logs/04_arima_modeling_output.txt")
-message("Proceed to 05_regularization_modeling.R for regularization techniques")
+message("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # --- End of script ---

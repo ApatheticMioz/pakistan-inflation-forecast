@@ -3,7 +3,7 @@
                    COMPREHENSIVE ANALYSIS REPORT                       
 =======================================================================
 
-Report Generated on: 2025-05-13 08:14:24 
+Report Generated on: 2025-05-13 09:08:23 
 
 1. EXECUTIVE SUMMARY
 ===================
@@ -11,7 +11,7 @@ Report Generated on: 2025-05-13 08:14:24
 This report presents the results of a comprehensive analysis of Pakistan's
 inflation trends and forecasts using various time series and regression models.
 
-The best performing model was identified as Lasso with an RMSE of 7.423358 on the test dataset.
+The best performing model was identified as Lasso with an RMSE of 7.42335802508708 on the test dataset.
 
 The analysis covered historical CPI data and incorporated various economic
 indicators including exchange rates, interest rates, global commodity prices,
@@ -20,15 +20,15 @@ and domestic economic indicators.
 2. DATA OVERVIEW
 ===============
 
-Time period analyzed: 2018-10-01 to 2025-04-01 
-Total observations: 867 
+Time period analyzed: 2018-10-01 to 2025-04-01
+Total observations: 867
 Training set size: 693 observations
 Test set size: 174 observations
 
 Target variable: Consumer Price Index (CPI) Year-on-Year percentage change
-CPI range: 0.3 to 38 
-CPI mean: 16.42132 
-CPI standard deviation: 8.731781 
+CPI range: 0.3 to 38
+CPI mean: 16.4213165448627
+CPI standard deviation: 8.7317806820604 
 
 3. METHODOLOGY
 =============
@@ -62,11 +62,12 @@ Performance metrics for all models on the test set:
 4       Lasso 5.764063  7.423358 116.2079 0.4079183
 5 Elastic Net 5.787196  7.445630 116.6192 0.4043602
 
+
 Model ranking by RMSE (lower is better):
-1. Lasso (7.423358)
-2. Elastic Net (7.44563)
-3. Ridge (7.827047)
-4. ARIMA (12.93365)
+1. Lasso (7.42335802508708)
+2. Elastic Net (7.44562995291838)
+3. Ridge (7.82704697216499)
+4. ARIMA (12.9336525319065)
 5. ARIMAX (NA)
 
 5. KEY FINDINGS
@@ -100,7 +101,7 @@ Monthly forecasts:
 11 2026-03-01     3 2026  29.2    24.66304    33.73696 17.94397
 12 2026-04-01     4 2026  29.2    24.46130    33.93870 17.94397
 
-Average forecast for the next 12 months: 23.57198 
+Average forecast for the next 12 months: 23.5719844449254 
 
 7. CONCLUSIONS AND RECOMMENDATIONS
 ================================

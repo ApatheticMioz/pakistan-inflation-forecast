@@ -1044,62 +1044,61 @@ message("Saved: Processed_Data/key_variables.csv")
 message("  Dimensions:", nrow(key_vars_df), "rows,", ncol(key_vars_df), "columns")
 message("  Variables:", paste(names(key_vars_df), collapse = ", "))
 
-# Create a comprehensive report
-sink("merge_report.txt")
-cat("===== PAKISTAN INFLATION FORECASTING PROJECT =====\n")
-cat("===== DATASET MERGING REPORT =====\n")
-cat("Generated on:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
+# Create a comprehensive report in the console
+message("\n===== PAKISTAN INFLATION FORECASTING PROJECT =====")
+message("===== DATASET MERGING REPORT =====")
+message("Generated on:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
 # Add project overview
-cat("1. PROJECT OVERVIEW\n")
-cat("This report summarizes the dataset merging process for the Pakistan Inflation Forecasting Project.\n")
-cat("The goal is to create a comprehensive dataset for forecasting inflation using various regression techniques.\n\n")
+message("\n1. PROJECT OVERVIEW")
+message("This report summarizes the dataset merging process for the Pakistan Inflation Forecasting Project.")
+message("The goal is to create a comprehensive dataset for forecasting inflation using various regression techniques.")
 
 # Add data sources
-cat("2. DATA SOURCES\n")
-cat("The following data sources were used in this project:\n")
-cat("- State Bank of Pakistan (SBP) EasyData portal: Monetary and financial indicators\n")
-cat("- Pakistan Bureau of Statistics (PBS): Price indices and economic indicators\n")
-cat("- Food and Agriculture Organization (FAO): Global food price indices\n")
-cat("- Federal Reserve Economic Data (FRED): International oil prices and global indicators\n")
-cat("- Finance.gov.pk: Fiscal and economic data\n")
-cat("- Legacy datasets from previous analyses\n\n")
+message("\n2. DATA SOURCES")
+message("The following data sources were used in this project:")
+message("- State Bank of Pakistan (SBP) EasyData portal: Monetary and financial indicators")
+message("- Pakistan Bureau of Statistics (PBS): Price indices and economic indicators")
+message("- Food and Agriculture Organization (FAO): Global food price indices")
+message("- Federal Reserve Economic Data (FRED): International oil prices and global indicators")
+message("- Finance.gov.pk: Fiscal and economic data")
+message("- Legacy datasets from previous analyses")
 
-cat("3. DATASET SUMMARY\n")
-cat("Original datasets loaded:", length(datasets), "\n")
-cat("Prepared datasets for merging:", length(prepared_datasets), "\n")
-cat("Date range in merged data:", format(min(merged_df$date), "%Y-%m-%d"), "to",
-    format(max(merged_df$date), "%Y-%m-%d"), "\n")
-cat("Total time period:", round(difftime(max(merged_df$date), min(merged_df$date), units = "days") / 365.25, 1), "years\n")
-cat("Number of rows in full merged data:", nrow(merged_df), "\n")
-cat("Number of rows in trimmed data:", nrow(merged_df_trimmed),
-    sprintf("(%.1f%% of full data)", nrow(merged_df_trimmed)/nrow(merged_df)*100), "\n")
-cat("Number of columns in final dataset:", ncol(merged_df_imputed), "\n\n")
+message("\n3. DATASET SUMMARY")
+message("Original datasets loaded:", length(datasets))
+message("Prepared datasets for merging:", length(prepared_datasets))
+message("Date range in merged data:", format(min(merged_df$date), "%Y-%m-%d"), "to",
+    format(max(merged_df$date), "%Y-%m-%d"))
+message("Total time period:", round(difftime(max(merged_df$date), min(merged_df$date), units = "days") / 365.25, 1), "years")
+message("Number of rows in full merged data:", nrow(merged_df))
+message("Number of rows in trimmed data:", nrow(merged_df_trimmed),
+    sprintf("(%.1f%% of full data)", nrow(merged_df_trimmed)/nrow(merged_df)*100))
+message("Number of columns in final dataset:", ncol(merged_df_imputed))
 
 # Add information about key variables
-cat("4. KEY VARIABLES\n")
+message("\n4. KEY VARIABLES")
 
 # Check if target variable is present
 if ("cpi" %in% names(merged_df_imputed)) {
-  cat("Target variable (CPI) is present in the final dataset\n")
+  message("Target variable (CPI) is present in the final dataset")
 
   # Check if we have non-NA values in CPI
   non_na_cpi <- merged_df_imputed$cpi[!is.na(merged_df_imputed$cpi)]
   if (length(non_na_cpi) > 0) {
-    cat("CPI range:", min(non_na_cpi), "to", max(non_na_cpi), "\n")
-    cat("CPI mean:", mean(non_na_cpi), "\n")
-    cat("CPI standard deviation:", sd(non_na_cpi), "\n")
-    cat("Number of non-NA CPI values:", length(non_na_cpi),
-        sprintf("(%.1f%% of data)", length(non_na_cpi)/nrow(merged_df_imputed)*100), "\n\n")
+    message("CPI range:", min(non_na_cpi), "to", max(non_na_cpi))
+    message("CPI mean:", mean(non_na_cpi))
+    message("CPI standard deviation:", sd(non_na_cpi))
+    message("Number of non-NA CPI values:", length(non_na_cpi),
+        sprintf("(%.1f%% of data)", length(non_na_cpi)/nrow(merged_df_imputed)*100))
   } else {
-    cat("WARNING: CPI column contains only NA values!\n\n")
+    message("WARNING: CPI column contains only NA values!")
   }
 } else {
-  cat("WARNING: Target variable (CPI) is NOT present in the final dataset!\n\n")
+  message("WARNING: Target variable (CPI) is NOT present in the final dataset!")
 }
 
 # List key predictor variables
-cat("Key predictor variables:\n")
+message("\nKey predictor variables:")
 key_predictors <- c("exchange_rate", "policy_rate", "kibor", "kibor_6m",
                    "oil_price", "global_food_index", "m2",
                    "industrial_production", "exports", "imports")
@@ -1108,17 +1107,16 @@ present_predictors <- key_predictors[key_predictors %in% names(merged_df_imputed
 missing_predictors <- key_predictors[!key_predictors %in% names(merged_df_imputed)]
 
 if (length(present_predictors) > 0) {
-  cat("Present:", paste(present_predictors, collapse = ", "), "\n")
+  message("Present:", paste(present_predictors, collapse = ", "))
 } else {
-  cat("No key predictors present!\n")
+  message("No key predictors present!")
 }
 
 if (length(missing_predictors) > 0) {
-  cat("Missing:", paste(missing_predictors, collapse = ", "), "\n")
+  message("Missing:", paste(missing_predictors, collapse = ", "))
 }
-cat("\n")
 
-cat("===== VARIABLES IN FINAL DATASET =====\n\n")
+message("\n===== VARIABLES IN FINAL DATASET =====")
 var_categories <- list(
   "Date and Time" = c("date", "month", "quarter", "year", "fiscal_year", "fiscal_quarter"),
   "Target Variable" = "cpi",
@@ -1131,7 +1129,7 @@ var_categories <- list(
 
 # Print variables by category
 for (category in names(var_categories)) {
-  cat(category, ":\n")
+  message(category, ":")
   vars_in_category <- var_categories[[category]]
   vars_present <- vars_in_category[sapply(vars_in_category, function(pattern) {
     any(grepl(pattern, names(merged_df_imputed)))
@@ -1140,32 +1138,25 @@ for (category in names(var_categories)) {
   if (length(vars_present) > 0) {
     for (pattern in vars_present) {
       matching_vars <- names(merged_df_imputed)[grepl(pattern, names(merged_df_imputed))]
-      cat("  - ", paste(matching_vars, collapse = "\n  - "), "\n")
+      message("  - ", paste(matching_vars, collapse = "\n  - "))
     }
   } else {
-    cat("  None found\n")
+    message("  None found")
   }
-  cat("\n")
 }
 
-# Print all variables alphabetically
-cat("All Variables (Alphabetical):\n")
-cat(paste(sort(names(merged_df_imputed)), collapse = "\n"))
-cat("\n\n")
-
-cat("===== SUMMARY STATISTICS =====\n\n")
 # Print summary statistics for key variables only to keep the report readable
+message("\n===== SUMMARY STATISTICS =====")
 key_vars <- c("cpi", "exchange_rate", "policy_rate", "oil_price", "global_food_index",
               "industrial_production", "m2")
 key_vars <- key_vars[key_vars %in% names(merged_df_imputed)]
 
 for (var in key_vars) {
-  cat("Summary for", var, ":\n")
+  message("Summary for", var, ":")
   print(summary(merged_df_imputed[[var]]))
-  cat("\n")
 }
 
-cat("\n===== CORRELATION WITH TARGET (CPI) =====\n\n")
+message("\n===== CORRELATION WITH TARGET (CPI) =====")
 if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 0) {
   # Exclude non-numeric and time-related columns
   exclude_cols <- c("date", "month", "quarter", "year", "is_ramadan", "post_ramadan",
@@ -1174,7 +1165,7 @@ if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 
 
   # Check if we have enough non-NA values in CPI
   non_na_cpi_count <- sum(!is.na(merged_df_imputed$cpi))
-  cat("Number of non-NA values in CPI:", non_na_cpi_count, "\n")
+  message("Number of non-NA values in CPI:", non_na_cpi_count)
 
   if (non_na_cpi_count > 1) {
     # Calculate correlations safely
@@ -1199,193 +1190,115 @@ if ("cpi" %in% names(merged_df_imputed) && sum(!is.na(merged_df_imputed$cpi)) > 
         # Print top positive correlations
         pos_correlations <- correlations[correlations > 0]
         if (length(pos_correlations) > 0) {
-          cat("Top", min(10, length(pos_correlations)), "Positive Correlations with CPI:\n")
+          message("Top", min(10, length(pos_correlations)), "Positive Correlations with CPI:")
           top_pos <- head(pos_correlations, 10)
           for (i in seq_along(top_pos)) {
-            cat(sprintf("%2d. %-30s: %6.3f\n", i, names(top_pos)[i], top_pos[i]))
+            message(sprintf("%2d. %-30s: %6.3f", i, names(top_pos)[i], top_pos[i]))
           }
         } else {
-          cat("No positive correlations found with CPI\n")
+          message("No positive correlations found with CPI")
         }
-        cat("\n")
 
         # Print top negative correlations
         neg_correlations <- correlations[correlations < 0]
         if (length(neg_correlations) > 0) {
-          cat("Top", min(10, length(neg_correlations)), "Negative Correlations with CPI:\n")
+          message("\nTop", min(10, length(neg_correlations)), "Negative Correlations with CPI:")
           top_neg <- head(sort(neg_correlations), 10)
           for (i in seq_along(top_neg)) {
-            cat(sprintf("%2d. %-30s: %6.3f\n", i, names(top_neg)[i], top_neg[i]))
+            message(sprintf("%2d. %-30s: %6.3f", i, names(top_neg)[i], top_neg[i]))
           }
         } else {
-          cat("No negative correlations found with CPI\n")
+          message("No negative correlations found with CPI")
         }
       } else {
-        cat("No valid correlations could be calculated with CPI\n")
+        message("No valid correlations could be calculated with CPI")
       }
     }, error = function(e) {
-      cat("Error calculating correlations:", e$message, "\n")
+      message("Error calculating correlations:", e$message)
     })
   } else {
-    cat("Insufficient non-NA values in CPI to calculate correlations\n")
+    message("Insufficient non-NA values in CPI to calculate correlations")
   }
 } else {
-  cat("CPI column is missing or contains only NA values\n")
+  message("CPI column is missing or contains only NA values")
 }
 
-cat("7. DATA QUALITY ASSESSMENT\n")
-cat("The following data quality issues were identified and addressed:\n\n")
+message("\n7. DATA QUALITY ASSESSMENT")
+message("The following data quality issues were identified and addressed:")
 
 # Missing data summary
-cat("Missing data:\n")
-cat("- Variables with high missingness (>30%):", length(high_missingness), "\n")
+message("\nMissing data:")
+message("- Variables with high missingness (>30%):", length(high_missingness))
 if (length(high_missingness) > 0) {
-  cat("  These variables were dropped:", paste(head(high_missingness, 10), collapse = ", "), "\n")
+  message("  These variables were dropped:", paste(head(high_missingness, 10), collapse = ", "))
   if (length(high_missingness) > 10) {
-    cat("  And", length(high_missingness) - 10, "more\n")
+    message("  And", length(high_missingness) - 10, "more")
   }
 }
 
-cat("- Variables with moderate missingness (10-30%):", length(moderate_missingness), "\n")
+message("- Variables with moderate missingness (10-30%):", length(moderate_missingness))
 if (length(moderate_missingness) > 0) {
-  cat("  These were imputed:", paste(head(moderate_missingness, 10), collapse = ", "), "\n")
+  message("  These were imputed:", paste(head(moderate_missingness, 10), collapse = ", "))
   if (length(moderate_missingness) > 10) {
-    cat("  And", length(moderate_missingness) - 10, "more\n")
+    message("  And", length(moderate_missingness) - 10, "more")
   }
 }
 
 # Imputation summary
-cat("\nImputation summary:\n")
-cat("- Total cells in dataset:", total_cells, "\n")
-cat("- Missing values before imputation:", total_missing_before,
-    sprintf("(%.2f%%)", total_missing_before/total_cells*100), "\n")
-cat("- Missing values after imputation:", total_missing_after, "\n")
-cat("- Percentage of data imputed:", sprintf("%.2f%%", imputation_percent), "\n\n")
+message("\nImputation summary:")
+message("- Total cells in dataset:", total_cells)
+message("- Missing values before imputation:", total_missing_before,
+    sprintf("(%.2f%%)", total_missing_before/total_cells*100))
+message("- Missing values after imputation:", total_missing_after)
+message("- Percentage of data imputed:", sprintf("%.2f%%", imputation_percent))
 
 # Date range issues
-cat("Date range considerations:\n")
-cat("- Full date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
-    format(max(merged_df$date), "%Y-%m-%d"), "\n")
-cat("- Trimmed date range:", format(min(merged_df_trimmed$date), "%Y-%m-%d"), "to",
-    format(max(merged_df_trimmed$date), "%Y-%m-%d"), "\n")
-cat("- Data was trimmed to periods with adequate coverage across variables\n\n")
+message("\nDate range considerations:")
+message("- Full date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
+    format(max(merged_df$date), "%Y-%m-%d"))
+message("- Trimmed date range:", format(min(merged_df_trimmed$date), "%Y-%m-%d"), "to",
+    format(max(merged_df_trimmed$date), "%Y-%m-%d"))
+message("- Data was trimmed to periods with adequate coverage across variables")
 
-cat("8. DERIVED FEATURES\n")
-cat("The following types of derived features were created:\n")
-cat("- Lag variables (1, 3, 6, 12 months) for key predictors\n")
-cat("- Moving averages (3, 6, 12 months) for key predictors\n")
-cat("- Growth rates (month-over-month and year-over-year) for key variables\n")
-cat("- Seasonal indicators (month, quarter, Ramadan periods)\n")
-cat("- Fiscal year indicators (Pakistan's fiscal year runs July-June)\n")
-cat("- Interaction terms between related variables\n\n")
+message("\n8. DERIVED FEATURES")
+message("The following types of derived features were created:")
+message("- Lag variables (1, 3, 6, 12 months) for key predictors")
+message("- Moving averages (3, 6, 12 months) for key predictors")
+message("- Growth rates (month-over-month and year-over-year) for key variables")
+message("- Seasonal indicators (month, quarter, Ramadan periods)")
+message("- Fiscal year indicators (Pakistan's fiscal year runs July-June)")
+message("- Interaction terms between related variables")
 
-cat("9. NEXT STEPS\n")
-cat("1. Review the merged dataset for any remaining anomalies or issues\n")
-cat("2. Proceed to 03_prepare_modeling_df.R for final modeling preparation\n")
-cat("3. Implement ARIMA modeling in 04_arima_modeling.R\n")
-cat("4. Implement Lasso, Ridge, and Elastic-Net Regression in 05_regularization_modeling.R\n")
-cat("5. Evaluate model performance and select the best model in 06_model_evaluation.R\n")
-cat("6. Generate forecasts and visualizations\n\n")
+message("\n9. NEXT STEPS")
+message("1. Review the merged dataset for any remaining anomalies or issues")
+message("2. Proceed to 03_prepare_modeling_df.R for final modeling preparation")
+message("3. Implement ARIMA modeling in 04_arima_modeling.R")
+message("4. Implement Lasso, Ridge, and Elastic-Net Regression in 05_regularization_modeling.R")
+message("5. Evaluate model performance and select the best model in 06_model_evaluation.R")
+message("6. Generate forecasts and visualizations")
 
-cat("===== END OF REPORT =====\n")
-sink()
+message("\n===== END OF REPORT =====\n")
 
-# Create a separate output file as required
-sink("Logs/02_merge_datasets_output.txt")
-cat("===== 02_MERGE_DATASETS.R OUTPUT =====\n")
-cat("Execution completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
-cat("This file provides a summary of the dataset merging process for the Pakistan Inflation Forecasting Project.\n\n")
+# Final summary
+message("\n===== FINAL SUMMARY =====")
+message("Execution completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 
-cat("===== DATASET SUMMARY =====\n")
-cat("Original datasets loaded:", length(datasets), "\n")
-cat("Prepared datasets for merging:", length(prepared_datasets), "\n")
-cat("Date range in merged data:", format(min(merged_df$date), "%Y-%m-%d"), "to",
-    format(max(merged_df$date), "%Y-%m-%d"), "\n")
-cat("Number of rows in full merged data:", nrow(merged_df), "\n")
-cat("Number of rows in trimmed data:", nrow(merged_df_trimmed), "\n")
-cat("Number of columns in final dataset:", ncol(merged_df_imputed), "\n\n")
+message("\n===== FILES CREATED =====")
+message("1. Processed_Data/merged_df_with_missing.csv - Merged data before imputation")
+message("   Dimensions:", nrow(merged_df_with_missing), "rows,", ncol(merged_df_with_missing), "columns")
+message("2. Processed_Data/merged_df_imputed.csv - Final merged data with imputation")
+message("   Dimensions:", nrow(merged_df_imputed), "rows,", ncol(merged_df_imputed), "columns")
+message("3. Processed_Data/key_variables.csv - Subset with only key variables")
+message("   Dimensions:", nrow(key_vars_df), "rows,", ncol(key_vars_df), "columns")
+message("4. Output/merged_df.rds - R data object for use in subsequent scripts")
 
-cat("===== TARGET VARIABLE STATUS =====\n")
-if ("cpi" %in% names(merged_df_imputed)) {
-  cat("CPI (target variable) is PRESENT in the final dataset\n")
+message("\n===== NEXT STEPS =====")
+message("1. Review the merged dataset for any remaining issues")
+message("2. Proceed to 03_prepare_modeling_df.R for final modeling preparation")
+message("3. Implement ARIMA and regularization models in subsequent scripts")
 
-  # Check if we have non-NA values in CPI
-  non_na_cpi <- merged_df_imputed$cpi[!is.na(merged_df_imputed$cpi)]
-  missing_count <- sum(is.na(merged_df_imputed$cpi))
-  missing_pct <- missing_count/nrow(merged_df_imputed)*100
-
-  if (length(non_na_cpi) > 0) {
-    cat("CPI statistics:\n")
-    cat("- Range:", min(non_na_cpi), "to", max(non_na_cpi), "\n")
-    cat("- Mean:", mean(non_na_cpi), "\n")
-    cat("- Standard deviation:", sd(non_na_cpi), "\n")
-    cat("- Non-NA values:", length(non_na_cpi),
-        sprintf("(%.1f%%)", 100 - missing_pct), "\n")
-    cat("- Missing values:", missing_count,
-        sprintf("(%.1f%%)", missing_pct), "\n")
-  } else {
-    cat("WARNING: CPI column contains only NA values!\n")
-    cat("This will prevent modeling. Check the data loading and merging process.\n")
-  }
-} else {
-  cat("WARNING: CPI (target variable) is MISSING from the final dataset!\n")
-  cat("This will prevent modeling. Check the data loading and merging process.\n")
-}
-cat("\n")
-
-cat("===== KEY PREDICTOR VARIABLES =====\n")
-key_vars <- c("exchange_rate", "policy_rate", "kibor", "kibor_6m", "oil_price",
-              "global_food_index", "m2", "industrial_production", "exports", "imports")
-present_vars <- key_vars[key_vars %in% names(merged_df_imputed)]
-missing_vars <- key_vars[!key_vars %in% names(merged_df_imputed)]
-
-cat("Present (", length(present_vars), "/", length(key_vars), "):\n", sep="")
-if (length(present_vars) > 0) {
-  for (var in present_vars) {
-    cat("- ", var, ": Range ", min(merged_df_imputed[[var]], na.rm = TRUE), " to ",
-        max(merged_df_imputed[[var]], na.rm = TRUE), "\n", sep="")
-  }
-} else {
-  cat("No key predictor variables present!\n")
-}
-
-if (length(missing_vars) > 0) {
-  cat("\nMissing (", length(missing_vars), "/", length(key_vars), "):\n", sep="")
-  cat(paste("- ", missing_vars, collapse = "\n"), "\n")
-}
-cat("\n")
-
-cat("===== DATA QUALITY SUMMARY =====\n")
-cat("Variables with high missingness (>30%):", length(high_missingness), "\n")
-cat("Variables with moderate missingness (10-30%):", length(moderate_missingness), "\n")
-cat("Variables with low missingness (0-10%):", length(low_missingness), "\n")
-cat("Missing values before imputation:", total_missing_before,
-    sprintf("(%.2f%%)", total_missing_before/total_cells*100), "\n")
-cat("Missing values after imputation:", total_missing_after, "\n\n")
-
-cat("===== FILES CREATED =====\n")
-cat("1. Processed_Data/merged_df_with_missing.csv - Merged data before imputation\n")
-cat("   Dimensions:", nrow(merged_df_with_missing), "rows,", ncol(merged_df_with_missing), "columns\n")
-cat("2. Processed_Data/merged_df_imputed.csv - Final merged data with imputation\n")
-cat("   Dimensions:", nrow(merged_df_imputed), "rows,", ncol(merged_df_imputed), "columns\n")
-cat("3. Processed_Data/key_variables.csv - Subset with only key variables\n")
-cat("   Dimensions:", nrow(key_vars_df), "rows,", ncol(key_vars_df), "columns\n")
-cat("4. Output/merged_df.rds - R data object for use in subsequent scripts\n")
-cat("5. Logs/merge_report.txt - Comprehensive report on the merging process\n")
-cat("6. Logs/merge_process.txt - Detailed log of the merging process\n")
-cat("7. Logs/02_merge_datasets_output.txt - This summary output file\n\n")
-
-cat("===== NEXT STEPS =====\n")
-cat("1. Review the merged dataset for any remaining issues\n")
-cat("2. Proceed to 03_prepare_modeling_df.R for final modeling preparation\n")
-cat("3. Implement ARIMA and regularization models in subsequent scripts\n\n")
-
-cat("Merge complete! Datasets saved to Processed_Data/ directory.\n")
-sink()
-
-message("Merge complete! Datasets saved to Processed_Data/ directory.")
+message("\nMerge complete! Datasets saved to Processed_Data/ directory.")
 message("RDS file saved to Output/merged_df.rds")
-message("Reports saved to Logs/ directory")
 message("Proceed to 03_prepare_modeling_df.R for final modeling preparation")
 
 # --- End of script ---
