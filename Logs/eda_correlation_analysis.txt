@@ -1,5 +1,5 @@
 ===== CORRELATION ANALYSIS FOR INFLATION FORECASTING =====
-Generated on: 2025-05-13 08:38:05 
+Generated on: 2025-05-13 09:09:42 
 
 Extracting key variables for correlation analysis...
 - CPI (target variable) extracted
