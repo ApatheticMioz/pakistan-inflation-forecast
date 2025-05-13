@@ -1,9 +1,0 @@
-"Metric","Value"
-"Best_Alpha",1
-"Best_Lambda",0.102549646096107
-"RMSE_scaled",3.30275247965019
-"MAE_scaled",2.85172532438374
-"RMSE_unscaled",122.208858429478
-"MAE_unscaled",103.267435615516
-"MAPE_unscaled",9.24277336245055
-"R_squared_train",0.993077393737241

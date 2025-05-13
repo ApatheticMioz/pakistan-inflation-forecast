@@ -1,7 +1,0 @@
-"Metric","Value"
-"RMSE_scaled",4.15378256006738
-"MAE_scaled",3.3623932753942
-"RMSE_unscaled",128.856902875225
-"MAE_unscaled",122.029981520632
-"MAPE_unscaled",13.4928400407752
-"R_squared_train",0.83826124748148

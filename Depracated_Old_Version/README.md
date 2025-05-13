@@ -1,2 +1,0 @@
-# pakistan-inflation-forecast
- 

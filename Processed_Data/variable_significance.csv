@@ -1,4 +1,0 @@
-"Model","Significant_Vars","Insignificant_Vars","Requirement_Met"
-"Ridge",1,0,TRUE
-"Lasso",1,0,TRUE
-"Elastic Net",1,0,TRUE

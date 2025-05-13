@@ -1,7 +1,0 @@
-[2025-05-04 19:32:02.4719] [INFO] --- Loading Necessary Libraries ---
-[2025-05-04 19:32:02.487775] [INFO] --- Loading Pre-processed DataFrames List ---
-[2025-05-04 19:32:03.289331] [INFO] Successfully loaded dataframes list from: loaded_dataframes.rds
-[2025-05-04 19:32:03.363349] [INFO] --- Configuring Target and Predictor Variables ---
-[2025-05-04 19:32:03.37083] [INFO] --- Defining Helper Functions ---
-[2025-05-04 19:32:03.481742] [INFO] --- Processing Target Variable ---
-[2025-05-04 19:32:03.482689] [ERROR] ERROR: Target source dataset not found: inflation_base_2015.csv
