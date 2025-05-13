@@ -154,6 +154,123 @@ message("AIC:", auto_arima_model$aic)
 message("BIC:", auto_arima_model$bic)
 message("Log Likelihood:", auto_arima_model$loglik)
 
+# Display ARIMA equation
+p <- arima_order[1]  # AR order
+d <- arima_order[2]  # Differencing
+q <- arima_order[3]  # MA order
+
+message("\nARIMA Equation:")
+if (d == 0) {
+  message("ARIMA(", p, ",", d, ",", q, ") model without differencing")
+  ar_terms <- if (p > 0) paste0("φ₁Y_{t-1} + φ₂Y_{t-2} + ... + φ_", p, "Y_{t-", p, "}") else ""
+  ma_terms <- if (q > 0) paste0("θ₁ε_{t-1} + θ₂ε_{t-2} + ... + θ_", q, "ε_{t-", q, "}") else ""
+
+  equation <- "Y_t = μ"
+  if (p > 0) equation <- paste0(equation, " + ", ar_terms)
+  if (q > 0) equation <- paste0(equation, " + ε_t + ", ma_terms)
+  else equation <- paste0(equation, " + ε_t")
+
+  message(equation)
+} else {
+  message("ARIMA(", p, ",", d, ",", q, ") model with differencing")
+  if (d == 1) {
+    message("First difference: ΔY_t = Y_t - Y_{t-1}")
+    ar_terms <- if (p > 0) paste0("φ₁ΔY_{t-1} + φ₂ΔY_{t-2} + ... + φ_", p, "ΔY_{t-", p, "}") else ""
+    ma_terms <- if (q > 0) paste0("θ₁ε_{t-1} + θ₂ε_{t-2} + ... + θ_", q, "ε_{t-", q, "}") else ""
+
+    equation <- "ΔY_t = μ"
+    if (p > 0) equation <- paste0(equation, " + ", ar_terms)
+    if (q > 0) equation <- paste0(equation, " + ε_t + ", ma_terms)
+    else equation <- paste0(equation, " + ε_t")
+
+    message(equation)
+  } else if (d == 2) {
+    message("Second difference: Δ²Y_t = ΔY_t - ΔY_{t-1} = Y_t - 2Y_{t-1} + Y_{t-2}")
+    ar_terms <- if (p > 0) paste0("φ₁Δ²Y_{t-1} + φ₂Δ²Y_{t-2} + ... + φ_", p, "Δ²Y_{t-", p, "}") else ""
+    ma_terms <- if (q > 0) paste0("θ₁ε_{t-1} + θ₂ε_{t-2} + ... + θ_", q, "ε_{t-", q, "}") else ""
+
+    equation <- "Δ²Y_t = μ"
+    if (p > 0) equation <- paste0(equation, " + ", ar_terms)
+    if (q > 0) equation <- paste0(equation, " + ε_t + ", ma_terms)
+    else equation <- paste0(equation, " + ε_t")
+
+    message(equation)
+  }
+}
+
+# Display the actual equation with coefficient values
+message("\nARIMA Equation with coefficients:")
+coefs <- auto_arima_model$coef
+if (length(coefs) > 0) {
+  # Extract coefficients
+  ar_coefs <- coefs[grep("^ar", names(coefs))]
+  ma_coefs <- coefs[grep("^ma", names(coefs))]
+  intercept <- coefs["intercept"]
+
+  # Build equation with actual coefficients
+  if (d == 0) {
+    eq_parts <- c()
+
+    # Add intercept if it exists
+    if (!is.na(intercept)) {
+      eq_parts <- c(eq_parts, sprintf("%.4f", intercept))
+    }
+
+    # Add AR terms
+    if (length(ar_coefs) > 0) {
+      for (i in 1:length(ar_coefs)) {
+        term <- sprintf("%+.4f Y_{t-%d}", ar_coefs[i], i)
+        eq_parts <- c(eq_parts, term)
+      }
+    }
+
+    # Add MA terms
+    if (length(ma_coefs) > 0) {
+      eq_parts <- c(eq_parts, "ε_t")
+      for (i in 1:length(ma_coefs)) {
+        term <- sprintf("%+.4f ε_{t-%d}", ma_coefs[i], i)
+        eq_parts <- c(eq_parts, term)
+      }
+    } else {
+      eq_parts <- c(eq_parts, "ε_t")
+    }
+
+    message("Y_t = ", paste(eq_parts, collapse = " "))
+  } else {
+    # For differenced models
+    diff_symbol <- if (d == 1) "Δ" else "Δ²"
+    eq_parts <- c()
+
+    # Add intercept if it exists
+    if (!is.na(intercept)) {
+      eq_parts <- c(eq_parts, sprintf("%.4f", intercept))
+    }
+
+    # Add AR terms
+    if (length(ar_coefs) > 0) {
+      for (i in 1:length(ar_coefs)) {
+        term <- sprintf("%+.4f %sY_{t-%d}", ar_coefs[i], diff_symbol, i)
+        eq_parts <- c(eq_parts, term)
+      }
+    }
+
+    # Add MA terms
+    if (length(ma_coefs) > 0) {
+      eq_parts <- c(eq_parts, "ε_t")
+      for (i in 1:length(ma_coefs)) {
+        term <- sprintf("%+.4f ε_{t-%d}", ma_coefs[i], i)
+        eq_parts <- c(eq_parts, term)
+      }
+    } else {
+      eq_parts <- c(eq_parts, "ε_t")
+    }
+
+    message(diff_symbol, "Y_t = ", paste(eq_parts, collapse = " "))
+  }
+} else {
+  message("No coefficients available to display equation")
+}
+
 # --- Step 4: ARIMA Model Diagnostics ---
 message("===== ARIMA MODEL DIAGNOSTICS =====")
 

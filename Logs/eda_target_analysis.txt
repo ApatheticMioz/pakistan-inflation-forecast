@@ -1,5 +1,5 @@
 ===== DETAILED ANALYSIS OF TARGET VARIABLE (INFLATION) =====
-Generated on: 2025-05-13 09:09:42 
+Generated on: 2025-05-13 09:33:41 
 
 1. BASIC INFORMATION
 Dataset: CPI (Consumer Price Index)

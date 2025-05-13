@@ -142,6 +142,39 @@ if (nrow(all_accuracy) > 0) {
   message("No accuracy metrics available. Please run the modeling scripts first.")
 }
 
+# --- Step 3: Visualize Model Comparison ---
+message("===== VISUALIZING MODEL COMPARISON =====")
+
+# Collect all predictions
+all_predictions <- data.frame(Date = test_df$date, Actual = test_df$cpi)
+
+# Add ARIMA predictions
+if (!is.null(arima_forecasts)) {
+  if (!is.null(arima_forecasts$arima)) {
+    all_predictions$ARIMA <- as.numeric(arima_forecasts$arima$mean)
+  }
+  if (!is.null(arima_forecasts$arimax)) {
+    all_predictions$ARIMAX <- as.numeric(arima_forecasts$arimax$mean)
+  }
+}
+
+# Add regularization predictions
+if (!is.null(reg_predictions)) {
+  if ("Ridge" %in% names(reg_predictions)) {
+    all_predictions$Ridge <- reg_predictions$Ridge
+  }
+  if ("Lasso" %in% names(reg_predictions)) {
+    all_predictions$Lasso <- reg_predictions$Lasso
+  }
+  if ("ElasticNet" %in% names(reg_predictions)) {
+    all_predictions$ElasticNet <- reg_predictions$ElasticNet
+  }
+}
+
+# Save all predictions
+write.csv(all_predictions, "Final_Results/all_model_predictions.csv", row.names = FALSE)
+message("Saved all model predictions to Final_Results/all_model_predictions.csv")
+
 # --- Step 2: Identify Best Model ---
 message("===== IDENTIFYING BEST MODEL =====")
 
@@ -189,43 +222,140 @@ if (nrow(all_accuracy) > 0) {
       message(i, ". ", r2_ranking$Model[i], " (", r2_ranking$R_Squared[i], ")", sep = "")
     }
   }
+
+  # Create a comprehensive model comparison plot
+  message("\nCreating comprehensive model comparison plot...")
+
+  # Prepare data for plotting
+  if (ncol(all_predictions) > 2) {
+    # Create a long format dataframe for plotting
+    plot_data <- reshape2::melt(all_predictions, id.vars = "Date",
+                               variable.name = "Model", value.name = "Value")
+
+    # Create comparison plot
+    png(file.path("Plots/evaluation", "model_comparison_detailed.png"), width = 1200, height = 800)
+    p <- ggplot(plot_data, aes(x = Date, y = Value, color = Model)) +
+      geom_line(size = ifelse(plot_data$Model == "Actual", 1.2, 0.8)) +
+      labs(title = "Model Comparison: Actual vs. Predicted Values",
+           subtitle = paste("Best model based on RMSE:", best_model_name),
+           x = "Date", y = "CPI (YoY %)", color = "Model") +
+      theme_minimal() +
+      theme(legend.position = "bottom")
+    print(p)
+    dev.off()
+    message("Saved detailed model comparison plot to Plots/evaluation/model_comparison_detailed.png")
+
+    # Create error plot
+    error_data <- all_predictions
+    for (col in names(error_data)[-c(1, 2)]) {
+      error_data[[paste0(col, "_Error")]] <- error_data$Actual - error_data[[col]]
+    }
+
+    error_cols <- grep("_Error$", names(error_data), value = TRUE)
+    error_data_long <- reshape2::melt(error_data[, c("Date", error_cols)],
+                                     id.vars = "Date",
+                                     variable.name = "Model",
+                                     value.name = "Error")
+    error_data_long$Model <- gsub("_Error$", "", error_data_long$Model)
+
+    # Create error comparison plot
+    png(file.path("Plots/evaluation", "model_error_comparison.png"), width = 1200, height = 800)
+    p_error <- ggplot(error_data_long, aes(x = Date, y = Error, color = Model)) +
+      geom_line(size = 0.8) +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+      labs(title = "Model Error Comparison",
+           subtitle = "Error = Actual - Predicted (positive values indicate underestimation)",
+           x = "Date", y = "Error", color = "Model") +
+      theme_minimal() +
+      theme(legend.position = "bottom")
+    print(p_error)
+    dev.off()
+    message("Saved model error comparison plot to Plots/evaluation/model_error_comparison.png")
+
+    # Create boxplot of errors
+    png(file.path("Plots/evaluation", "model_error_boxplot.png"), width = 1200, height = 800)
+    p_box <- ggplot(error_data_long, aes(x = Model, y = Error, fill = Model)) +
+      geom_boxplot() +
+      labs(title = "Distribution of Prediction Errors by Model",
+           subtitle = "Lower variance and median closer to zero is better",
+           x = "Model", y = "Error", fill = "Model") +
+      theme_minimal() +
+      theme(legend.position = "none")
+    print(p_box)
+    dev.off()
+    message("Saved model error boxplot to Plots/evaluation/model_error_boxplot.png")
+
+    # Calculate additional error statistics
+    error_stats <- data.frame(
+      Model = character(),
+      Mean_Error = numeric(),
+      Median_Error = numeric(),
+      Error_Variance = numeric(),
+      Error_Range = numeric()
+    )
+
+    for (model in unique(error_data_long$Model)) {
+      model_errors <- error_data_long$Error[error_data_long$Model == model]
+      error_stats <- rbind(error_stats, data.frame(
+        Model = model,
+        Mean_Error = mean(model_errors, na.rm = TRUE),
+        Median_Error = median(model_errors, na.rm = TRUE),
+        Error_Variance = var(model_errors, na.rm = TRUE),
+        Error_Range = max(model_errors, na.rm = TRUE) - min(model_errors, na.rm = TRUE)
+      ))
+    }
+
+    message("\nAdditional error statistics:")
+    print(error_stats)
+
+    # Save error statistics
+    write.csv(error_stats, "Final_Results/model_error_statistics.csv", row.names = FALSE)
+    message("Saved error statistics to Final_Results/model_error_statistics.csv")
+
+    # Make final model selection based on both MSE and visual inspection
+    message("\nFinal model selection based on MSE and visual inspection:")
+    message("1. Best model by RMSE: ", best_model_name)
+
+    # Check if the best model by RMSE also has good error distribution
+    best_error_idx <- which.min(error_stats$Error_Variance)
+    best_error_model <- error_stats$Model[best_error_idx]
+
+    if (best_model_name == best_error_model) {
+      message("2. The best model by RMSE also has the lowest error variance.")
+      message("Final selection: ", best_model_name)
+    } else {
+      message("2. Model with lowest error variance: ", best_error_model)
+      message("3. Considering both metrics and visual inspection of error plots:")
+
+      # Make a decision based on both metrics
+      # If the difference in RMSE is small but error variance is much better for another model
+      rmse_best <- all_accuracy$RMSE[all_accuracy$Model == best_model_name]
+      rmse_alt <- all_accuracy$RMSE[all_accuracy$Model == best_error_model]
+      rmse_diff_pct <- (rmse_alt - rmse_best) / rmse_best * 100
+
+      if (rmse_diff_pct < 5) {  # If RMSE difference is less than 5%
+        message("   The difference in RMSE between ", best_model_name, " and ", best_error_model,
+                " is only ", round(rmse_diff_pct, 2), "%, but ", best_error_model,
+                " has significantly lower error variance.")
+        message("   Final selection: ", best_error_model)
+        best_model_name <- best_error_model
+        best_model_idx <- which(all_accuracy$Model == best_model_name)
+      } else {
+        message("   The difference in RMSE is significant (", round(rmse_diff_pct, 2),
+                "%), so we'll stick with the model that has the lowest RMSE.")
+        message("   Final selection: ", best_model_name)
+      }
+    }
+  } else {
+    message("Not enough predictions to create comparison plots")
+  }
 } else {
   message("Cannot identify best model without accuracy metrics.")
   best_model_name <- NULL
 }
 
-# --- Step 3: Visualize Model Comparison ---
-message("===== VISUALIZING MODEL COMPARISON =====")
-
-# Collect all predictions
-all_predictions <- data.frame(Date = test_df$date, Actual = test_df$cpi)
-
-# Add ARIMA predictions
-if (!is.null(arima_forecasts)) {
-  if (!is.null(arima_forecasts$arima)) {
-    all_predictions$ARIMA <- as.numeric(arima_forecasts$arima$mean)
-  }
-  if (!is.null(arima_forecasts$arimax)) {
-    all_predictions$ARIMAX <- as.numeric(arima_forecasts$arimax$mean)
-  }
-}
-
-# Add regularization predictions
-if (!is.null(reg_predictions)) {
-  if ("Ridge" %in% names(reg_predictions)) {
-    all_predictions$Ridge <- reg_predictions$Ridge
-  }
-  if ("Lasso" %in% names(reg_predictions)) {
-    all_predictions$Lasso <- reg_predictions$Lasso
-  }
-  if ("ElasticNet" %in% names(reg_predictions)) {
-    all_predictions$ElasticNet <- reg_predictions$ElasticNet
-  }
-}
-
-# Save all predictions
-write.csv(all_predictions, "Final_Results/all_model_predictions.csv", row.names = FALSE)
-message("Saved all model predictions to Final_Results/all_model_predictions.csv")
+# --- Step 4: Generate Final Forecasts ---
+message("===== GENERATING FINAL FORECASTS =====")
 
 # Plot all predictions
 if (ncol(all_predictions) > 2) {
@@ -268,9 +398,6 @@ if (ncol(all_predictions) > 2) {
 } else {
   message("Not enough predictions to create comparison plots")
 }
-
-# --- Step 4: Generate Final Forecasts ---
-message("===== GENERATING FINAL FORECASTS =====")
 
 # Determine forecast horizon (12 months)
 forecast_horizon <- 12

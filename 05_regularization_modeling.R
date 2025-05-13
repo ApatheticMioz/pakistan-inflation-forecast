@@ -88,6 +88,17 @@ message("  X_test dimensions:", nrow(X_test), "x", ncol(X_test))
 # --- Step 2: Ridge Regression ---
 message("===== RIDGE REGRESSION =====")
 
+# Display Ridge Regression equation
+message("\nRidge Regression Equation:")
+message("β_ridge = argmin_β { ||y - Xβ||² + λ||β||² }")
+message("Where:")
+message("  ||y - Xβ||² is the sum of squared residuals (RSS)")
+message("  λ||β||² is the L2 penalty term (sum of squared coefficients)")
+message("  λ is the regularization parameter that controls the strength of the penalty")
+message("\nIn contrast to OLS regression (β_ols = argmin_β ||y - Xβ||²), Ridge adds")
+message("the L2 penalty to shrink coefficients toward zero, but not exactly to zero.")
+message("This helps with multicollinearity and prevents overfitting.\n")
+
 # Set up cross-validation
 set.seed(123)  # For reproducibility
 cv_folds <- 10
@@ -139,6 +150,17 @@ message("Ridge RMSE on test data:", ridge_test_rmse)
 # --- Step 3: Lasso Regression ---
 message("===== LASSO REGRESSION =====")
 
+# Display Lasso Regression equation
+message("\nLasso Regression Equation:")
+message("β_lasso = argmin_β { ||y - Xβ||² + λ||β||₁ }")
+message("Where:")
+message("  ||y - Xβ||² is the sum of squared residuals (RSS)")
+message("  λ||β||₁ is the L1 penalty term (sum of absolute values of coefficients)")
+message("  λ is the regularization parameter that controls the strength of the penalty")
+message("\nUnlike Ridge regression, Lasso uses the L1 norm penalty which can shrink")
+message("coefficients exactly to zero, performing variable selection. This makes")
+message("Lasso particularly useful when we believe many features are irrelevant.\n")
+
 # Fit Lasso model with cross-validation
 message("Performing", cv_folds, "-fold cross-validation for Lasso regression...")
 lasso_cv <- cv.glmnet(X_train, y_train, alpha = 1, nfolds = cv_folds)
@@ -185,6 +207,23 @@ message("Lasso RMSE on test data:", lasso_test_rmse)
 
 # --- Step 4: Elastic Net Regression ---
 message("===== ELASTIC NET REGRESSION =====")
+
+# Display Elastic Net Regression equation
+message("\nElastic Net Regression Equation:")
+message("β_elastic = argmin_β { ||y - Xβ||² + λ₁||β||₁ + λ₂||β||² }")
+message("Which can be rewritten as:")
+message("β_elastic = argmin_β { ||y - Xβ||² + λ[(1-α)||β||² + α||β||₁] }")
+message("Where:")
+message("  ||y - Xβ||² is the sum of squared residuals (RSS)")
+message("  λ is the overall regularization parameter")
+message("  α controls the mix between L1 (Lasso) and L2 (Ridge) penalties:")
+message("    - α = 0: Ridge regression (only L2 penalty)")
+message("    - α = 1: Lasso regression (only L1 penalty)")
+message("    - 0 < α < 1: Elastic Net (mixture of L1 and L2 penalties)")
+message("\nElastic Net combines the strengths of both Ridge and Lasso:")
+message("- Like Ridge, it handles multicollinearity well")
+message("- Like Lasso, it can perform variable selection by setting coefficients to zero")
+message("- It tends to select or eliminate groups of correlated variables together\n")
 
 # Try different alpha values for Elastic Net
 alpha_values <- seq(0.1, 0.9, by = 0.1)
