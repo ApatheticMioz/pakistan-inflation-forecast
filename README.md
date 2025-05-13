@@ -269,13 +269,47 @@ The models were evaluated using Mean Squared Error (MSE) as the primary metric:
 4. **Model Stability**: Regularization models, especially Elastic Net, show more stable error patterns compared to ARIMA.
 5. **Prediction Intervals**: ARIMA prediction intervals widen over time, indicating increasing uncertainty for longer-term forecasts.
 
-### Recommendations
+### Detailed Interpretation of Results
 
-1. **Data Enhancement**: Incorporate additional economic indicators such as fiscal indicators, remittances, and more detailed sectoral data to improve model accuracy.
-2. **Predictor Forecasting**: Implement more sophisticated forecasting techniques for the predictor variables to improve the accuracy of regularization model forecasts.
-3. **Ensemble Methods**: Consider combining forecasts from different models to potentially improve forecast accuracy.
-4. **Regular Updates**: Update the models regularly as new data becomes available to maintain forecast accuracy.
-5. **Alternative Models**: Explore additional modeling approaches such as VAR (Vector Autoregression) or machine learning methods for comparison.
+### Coefficient Interpretation
+
+Since the variables are standardized, the coefficients represent the effect of a one standard deviation change in the predictor on the target variable (CPI). Converting to the original scale:
+
+For the Elastic Net model (best performer):
+- **3-month moving average of CPI**: A 1 percentage point increase is associated with a 7.07 percentage point increase in current CPI, indicating strong momentum effects in inflation.
+- **Previous month's CPI**: A 1 percentage point increase is associated with a 1.40 percentage point increase in current CPI, showing the importance of recent inflation trends.
+- **6-month moving average of CPI**: A 1 percentage point increase is associated with a 0.04 percentage point increase in current CPI, suggesting longer-term trends have a smaller but still positive effect.
+- **Oil prices**: While included in the Ridge model, this variable has a relatively small effect, with a coefficient of 0.23 in standardized units.
+
+### Model Performance Analysis
+
+- **Elastic Net vs. Lasso**: Elastic Net slightly outperformed Lasso, suggesting that a combination of L1 and L2 penalties provides the optimal balance for this dataset.
+- **Ridge vs. Lasso/Elastic Net**: Ridge performed well but not as well as the other regularization models, indicating that some feature selection (setting coefficients to zero) improves model performance.
+- **ARIMA Performance**: The poor performance of ARIMA (MSE of 202.13) compared to regularization models (MSE < 1.05) is likely due to:
+  1. Different evaluation approaches (raw vs. standardized data)
+  2. ARIMA's inability to incorporate external economic indicators
+  3. The simplicity of the selected ARIMA model
+
+### Forecast Divergence
+
+The large difference in forecasts between ARIMA (29.20%) and Elastic Net (1.20%) highlights:
+1. The uncertainty in long-term forecasting
+2. Different assumptions about inflation persistence
+3. The value of incorporating multiple predictors in the regularization models
+
+## Recommendations
+
+1. **Improve ARIMA Modeling**: Consider transforming the data or trying more complex ARIMA models to improve performance and enable fairer comparison with regularization models.
+
+2. **Data Enhancement**: Incorporate additional economic indicators such as fiscal indicators, remittances, and more detailed sectoral data to improve model accuracy.
+
+3. **Predictor Forecasting**: Implement more sophisticated forecasting techniques for the predictor variables to improve the accuracy of regularization model forecasts.
+
+4. **Ensemble Methods**: Consider combining forecasts from different models to potentially improve forecast accuracy, especially given the large divergence between model forecasts.
+
+5. **Regular Updates**: Update the models regularly as new data becomes available to maintain forecast accuracy.
+
+6. **Alternative Models**: Explore additional modeling approaches such as VAR (Vector Autoregression) or machine learning methods for comparison.
 
 ## License
 
