@@ -2,7 +2,7 @@
 # Pakistan Inflation Forecasting Project: ARIMA Modeling
 # This script implements ARIMA models for forecasting inflation in Pakistan.
 # Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
-# Date: 2025-05-13
+# Date: 2025-05-06
 #
 # NOTES FOR DEMO:
 # - ARIMA is a powerful time series forecasting method that captures temporal patterns

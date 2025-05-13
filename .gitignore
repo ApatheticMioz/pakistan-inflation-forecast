@@ -1,28 +1,31 @@
-# R specific
+# Ignore everything
+/*
+
+# Don't ignore the 6 R files
+!01_load_and_eda.R
+!02_merge_datasets.R
+!03_prepare_modeling_df.R
+!04_arima_modeling.R
+!05_regularization_modeling.R
+!06_model_evaluation.R
+
+# Don't ignore README.md
+!README.md
+
+# Don't ignore .gitignore
+!.gitignore
+
+# Don't ignore Data folder
+!Data/
+!Data/**
+
+# R specific files that should be ignored even if in allowed directories
 .Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
 .Rapp.history
 *.Rproj
-
-# Output directories (keep only the Data folder)
-Logs/
-Output/
-Processed_Data/
-Plots/
-Models/
-Final_Results/
-Documentation/
-Analysis_Plots/
-Analysis_Reports/
-Interactive_Visualizations/
-
-# Project summary file
-pakistan_inflation_forecast_project.txt
-
-# Deprecated folders
-Deprecated_Old_Version/
 
 # System files
 .DS_Store
@@ -36,9 +39,5 @@ Thumbs.db
 *.swp
 *~
 
-# IDE files
-.vscode/
-.idea/
-
-# Keep Data folder
-!Data/
+# Project summary file
+pakistan_inflation_forecast_project.txt
