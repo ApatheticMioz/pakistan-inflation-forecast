@@ -1,0 +1,92 @@
+===== WEB SEARCH INTEGRATION =====
+Started at: 2025-05-13 07:51:17 
+
+Configuring Brave Search API...
+API configuration complete (using placeholder values)
+
+===== DEFINING SEARCH FUNCTIONS =====
+
+
+===== PERFORMING WEB SEARCHES =====
+
+
+Searching for cpi...
+Performing web search for: 'Pakistan consumer price index monthly data 2023-2024'
+Note: Using simulated API response for demonstration
+Found 5 results
+Extracting data from top result: https://www.pbs.gov.pk/content/price-statistics
+Extracting data from: https://www.pbs.gov.pk/content/price-statistics
+Note: Using simulated webpage content for demonstration
+Extracted data with 12 rows and 4 columns
+Saved extracted data to Data/web_search/cpi_data.csv
+
+Searching for interest_rates...
+Performing web search for: 'Pakistan State Bank policy interest rates history'
+Note: Using simulated API response for demonstration
+Found 5 results
+Extracting data from top result: https://www.pbs.gov.pk/content/price-statistics
+Extracting data from: https://www.pbs.gov.pk/content/price-statistics
+Note: Using simulated webpage content for demonstration
+Extracted data with 12 rows and 4 columns
+Saved extracted data to Data/web_search/interest_rates_data.csv
+
+Searching for economic_indicators...
+Performing web search for: 'Pakistan economic indicators GDP inflation unemployment'
+Note: Using simulated API response for demonstration
+Found 5 results
+Extracting data from top result: https://www.pbs.gov.pk/content/price-statistics
+Extracting data from: https://www.pbs.gov.pk/content/price-statistics
+Note: Using simulated webpage content for demonstration
+Extracted data with 12 rows and 4 columns
+Saved extracted data to Data/web_search/economic_indicators_data.csv
+
+Searching for exchange_rate...
+Performing web search for: 'Pakistani rupee exchange rate USD historical data'
+Note: Using simulated API response for demonstration
+Found 5 results
+Extracting data from top result: https://www.pbs.gov.pk/content/price-statistics
+Extracting data from: https://www.pbs.gov.pk/content/price-statistics
+Note: Using simulated webpage content for demonstration
+Extracted data with 12 rows and 4 columns
+Saved extracted data to Data/web_search/exchange_rate_data.csv
+
+Searching for food_prices...
+Performing web search for: 'Pakistan food price inflation statistics'
+Note: Using simulated API response for demonstration
+Found 5 results
+Extracting data from top result: https://www.pbs.gov.pk/content/price-statistics
+Extracting data from: https://www.pbs.gov.pk/content/price-statistics
+Note: Using simulated webpage content for demonstration
+Extracted data with 12 rows and 4 columns
+Saved extracted data to Data/web_search/food_prices_data.csv
+
+===== CREATING COMBINED DATASET =====
+
+Saved combined dataset with 12 rows and 16 columns to Data/web_search/combined_web_data.csv
+
+===== CREATING SEARCH RESULTS SUMMARY =====
+
+Saved search results summary to Data/web_search/search_results_summary.csv
+
+===== CREATING README FILE =====
+
+Created README file at Data/web_search/README.md
+
+===== SUMMARY =====
+
+Web search integration completed at: 2025-05-13 07:51:17 
+Files created:
+- Data/web_search/cpi_data.csv
+- Data/web_search/interest_rates_data.csv
+- Data/web_search/economic_indicators_data.csv
+- Data/web_search/exchange_rate_data.csv
+- Data/web_search/food_prices_data.csv
+- Data/web_search/combined_web_data.csv
+- Data/web_search/search_results_summary.csv
+- Data/web_search/README.md
+
+Next steps:
+1. Use the extracted data in the inflation forecasting models
+2. Merge the web search data with existing datasets
+3. Update the search queries to find more specific information as needed
+

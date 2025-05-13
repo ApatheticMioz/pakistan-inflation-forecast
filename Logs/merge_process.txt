@@ -1,7 +1,7 @@
 ===== PAKISTAN INFLATION FORECASTING PROJECT =====
 ===== DATASET MERGING PROCESS LOG =====
 
-Started at: 2025-05-13 05:49:00 
+Started at: 2025-05-13 08:06:07 
 
 Number of datasets loaded: 16 
  [1] "cpi"                        "kibor"                     

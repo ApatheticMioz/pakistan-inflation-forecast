@@ -1,0 +1,130 @@
+===== ARIMA MODELING FOR PAKISTAN INFLATION FORECASTING =====
+
+Started at: 2025-05-13 08:06:58 
+
+Loading prepared data...
+Loaded data successfully
+Training data period: 2018-10-01 to 2023-11-01 
+Test data period: 2023-11-01 to 2025-04-01 
+
+===== EXPLORATORY ANALYSIS OF TIME SERIES =====
+
+null device 
+          1 
+Saved time series plot to Plots/arima/cpi_time_series.png
+Decomposing time series to identify trend, seasonality, and residuals...
+null device 
+          1 
+Saved time series decomposition plot to Plots/arima/cpi_decomposition.png
+null device 
+          1 
+Saved ACF and PACF plots to Plots/arima/acf_pacf.png
+
+===== STATIONARITY TESTING =====
+
+Augmented Dickey-Fuller Test for Stationarity:
+  Test statistic: -2.429366 
+  p-value: 0.3965626 
+  Interpretation: Series is non-stationary 
+
+Series is non-stationary. Differencing the series...
+Saved differenced series plot to Plots/arima/differenced_series.png
+Augmented Dickey-Fuller Test for Differenced Series:
+  Test statistic: -8.901932 
+  p-value: 0.01 
+  Interpretation: Differenced series is stationary 
+
+Saved ACF and PACF plots of differenced series to Plots/arima/acf_pacf_diff.png
+
+===== ARIMA MODEL SELECTION =====
+
+Running auto.arima to find the best ARIMA model...
+Best ARIMA Model:
+Series: train_cpi_ts 
+ARIMA(0,1,0) 
+
+sigma^2 = 0.4871:  log likelihood = -733.05
+AIC=1468.1   AICc=1468.11   BIC=1472.64
+
+ARIMA Order: ( 0 , 1 , 0 )
+Coefficients:
+numeric(0)
+AIC: 1468.1 
+BIC: 1472.64 
+Log Likelihood: -733.0501 
+
+===== ARIMA MODEL DIAGNOSTICS =====
+
+
+	Ljung-Box test
+
+data:  Residuals from ARIMA(0,1,0)
+Q* = 19.643, df = 24, p-value = 0.7169
+
+Model df: 0.   Total lags used: 24
+
+null device 
+          1 
+Saved residual diagnostics plot to Plots/arima/residual_diagnostics.png
+Ljung-Box Test for Residual Autocorrelation:
+  Test statistic: 19.3936 
+  p-value: 0.4963898 
+  Interpretation: Residuals are white noise (good) 
+
+===== ARIMA FORECASTING =====
+
+Forecast horizon: 174 periods
+null device 
+          1 
+Saved ARIMA forecast plot to Plots/arima/arima_forecast.png
+===== NOTE ON ARIMAX MODELING =====
+
+As per project requirements, ARIMAX modeling has been excluded from this analysis.
+The project focuses only on ARIMA, Ridge, Lasso, and Elastic Net models.
+
+===== MODEL EVALUATION =====
+
+Model Accuracy Metrics:
+        Model      MAE     RMSE     MAPE
+arima   ARIMA 8.694828 12.93365 195.7416
+arimax ARIMAX      NaN      NaN      NaN
+
+Saved accuracy metrics to Processed_Data/arima_accuracy.csv
+
+===== FORECAST COMPARISON =====
+
+Saved forecast comparison to Processed_Data/arima_forecast_comparison.csv
+null device 
+          1 
+Saved forecast comparison plot to Plots/arima/forecast_comparison.png
+
+===== SAVING MODELS =====
+
+Saved ARIMA model to Models/arima_model.rds
+Saved ARIMAX model to Models/arimax_model.rds
+Saved forecasts to Models/arima_forecasts.rds
+
+===== FINAL SUMMARY =====
+
+ARIMA modeling completed successfully!
+
+Best ARIMA model: ARIMA 0,1,0 
+
+Model performance on test set:
+        Model      MAE     RMSE     MAPE
+arima   ARIMA 8.694828 12.93365 195.7416
+arimax ARIMAX      NaN      NaN      NaN
+
+Files created:
+1. Models/arima_model.rds - ARIMA model
+2. Models/arimax_model.rds - ARIMAX model
+3. Models/arima_forecasts.rds - Forecasts from all models
+4. Processed_Data/arima_accuracy.csv - Accuracy metrics
+5. Processed_Data/arima_forecast_comparison.csv - Forecast comparison
+6. Various plots in Plots/arima/ directory
+
+Next steps:
+1. Proceed to 05_regularization_modeling.R for Lasso, Ridge, and Elastic-Net Regression
+2. Proceed to 06_model_evaluation.R for model comparison and final forecasting
+
+Completed at: 2025-05-13 08:06:59 

@@ -3,6 +3,15 @@
 # This script compares all models, selects the best one, and generates final forecasts.
 # Author: <Your Name>
 # Date: 2025-05-13
+#
+# NOTES FOR DEMO:
+# - This is the culmination of our entire forecasting pipeline
+# - We'll compare all models (ARIMA, Ridge, Lasso, Elastic Net) using MSE and other metrics
+# - The 80-20 train-test split allows fair evaluation of model performance
+# - We'll identify the best model based on lowest RMSE on the test set
+# - We'll generate forecasts for the next 12 months using the best model
+# - The comprehensive report will summarize all findings and provide actionable insights
+# - This approach ensures we select the most accurate model for Pakistan's inflation dynamics
 
 # --- Load required libraries ---
 suppressPackageStartupMessages({
@@ -20,7 +29,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Set up output file for logging ---
-sink("06_model_evaluation_output.txt")
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
+sink("Logs/06_model_evaluation_output.txt")
 cat("===== MODEL EVALUATION AND FINAL FORECASTING =====\n\n")
 cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 
@@ -93,6 +103,30 @@ reg_accuracy <- tryCatch({
 })
 
 # Combine all accuracy metrics
+# First ensure both dataframes have the same columns
+if (!is.null(arima_accuracy) && !is.null(reg_accuracy)) {
+  # Check if R_Squared is in reg_accuracy but not in arima_accuracy
+  if ("R_Squared" %in% names(reg_accuracy) && !("R_Squared" %in% names(arima_accuracy))) {
+    # Add R_Squared column to arima_accuracy with NA values
+    arima_accuracy$R_Squared <- NA
+  }
+
+  # Check if any columns in arima_accuracy are not in reg_accuracy
+  for (col in names(arima_accuracy)) {
+    if (!(col %in% names(reg_accuracy))) {
+      reg_accuracy[[col]] <- NA
+    }
+  }
+
+  # Check if any columns in reg_accuracy are not in arima_accuracy
+  for (col in names(reg_accuracy)) {
+    if (!(col %in% names(arima_accuracy))) {
+      arima_accuracy[[col]] <- NA
+    }
+  }
+}
+
+# Now combine the dataframes
 all_accuracy <- rbind(
   if (!is.null(arima_accuracy)) arima_accuracy else NULL,
   if (!is.null(reg_accuracy)) reg_accuracy else NULL
@@ -102,7 +136,7 @@ if (nrow(all_accuracy) > 0) {
   cat("Combined accuracy metrics for all models:\n")
   print(all_accuracy)
   cat("\n")
-  
+
   # Save combined accuracy metrics
   write.csv(all_accuracy, "Final_Results/all_model_accuracy.csv", row.names = FALSE)
   cat("Saved combined accuracy metrics to Final_Results/all_model_accuracy.csv\n\n")
@@ -117,13 +151,13 @@ if (nrow(all_accuracy) > 0) {
   # Find best model based on RMSE
   best_model_idx <- which.min(all_accuracy$RMSE)
   best_model_name <- all_accuracy$Model[best_model_idx]
-  
+
   cat("Best model based on RMSE:", best_model_name, "\n")
   cat("Best model RMSE:", all_accuracy$RMSE[best_model_idx], "\n")
-  
+
   # Compare with other metrics
   cat("\nModel ranking by different metrics:\n")
-  
+
   # RMSE ranking
   rmse_ranking <- all_accuracy[order(all_accuracy$RMSE), ]
   cat("RMSE ranking (lower is better):\n")
@@ -131,7 +165,7 @@ if (nrow(all_accuracy) > 0) {
     cat(i, ". ", rmse_ranking$Model[i], " (", rmse_ranking$RMSE[i], ")\n", sep = "")
   }
   cat("\n")
-  
+
   # MAE ranking
   if ("MAE" %in% names(all_accuracy)) {
     mae_ranking <- all_accuracy[order(all_accuracy$MAE), ]
@@ -141,7 +175,7 @@ if (nrow(all_accuracy) > 0) {
     }
     cat("\n")
   }
-  
+
   # MAPE ranking
   if ("MAPE" %in% names(all_accuracy)) {
     mape_ranking <- all_accuracy[order(all_accuracy$MAPE), ]
@@ -151,7 +185,7 @@ if (nrow(all_accuracy) > 0) {
     }
     cat("\n")
   }
-  
+
   # R-squared ranking
   if ("R_Squared" %in% names(all_accuracy)) {
     r2_ranking <- all_accuracy[order(all_accuracy$R_Squared, decreasing = TRUE), ]
@@ -202,9 +236,9 @@ cat("Saved all model predictions to Final_Results/all_model_predictions.csv\n")
 # Plot all predictions
 if (ncol(all_predictions) > 2) {
   # Reshape for plotting
-  predictions_long <- reshape2::melt(all_predictions, id.vars = "Date", 
+  predictions_long <- reshape2::melt(all_predictions, id.vars = "Date",
                                     variable.name = "Model", value.name = "CPI")
-  
+
   # Plot
   png(file.path("Plots/evaluation", "all_model_comparison.png"), width = 1200, height = 800)
   ggplot(predictions_long, aes(x = Date, y = CPI, color = Model)) +
@@ -215,18 +249,18 @@ if (ncol(all_predictions) > 2) {
     theme(legend.position = "bottom")
   dev.off()
   cat("Saved all model comparison plot to Plots/evaluation/all_model_comparison.png\n\n")
-  
+
   # Plot error comparison
   error_df <- all_predictions
   for (col in names(error_df)[-c(1, 2)]) {
     error_df[[paste0(col, "_Error")]] <- error_df$Actual - error_df[[col]]
   }
-  
+
   error_cols <- grep("_Error$", names(error_df), value = TRUE)
   error_df_long <- reshape2::melt(error_df[, c("Date", error_cols)], id.vars = "Date",
                                  variable.name = "Model", value.name = "Error")
   error_df_long$Model <- gsub("_Error$", "", error_df_long$Model)
-  
+
   png(file.path("Plots/evaluation", "error_comparison.png"), width = 1200, height = 800)
   ggplot(error_df_long, aes(x = Date, y = Error, color = Model)) +
     geom_line() +
@@ -250,12 +284,12 @@ forecast_start_date <- max(model_df$date) + months(1)
 forecast_end_date <- forecast_start_date + months(forecast_horizon - 1)
 
 cat("Generating forecasts for", forecast_horizon, "months ahead\n")
-cat("Forecast period:", format(forecast_start_date, "%Y-%m-%d"), "to", 
+cat("Forecast period:", format(forecast_start_date, "%Y-%m-%d"), "to",
     format(forecast_end_date, "%Y-%m-%d"), "\n\n")
 
 # Create forecast dates
-forecast_dates <- seq.Date(from = forecast_start_date, 
-                          by = "month", 
+forecast_dates <- seq.Date(from = forecast_start_date,
+                          by = "month",
                           length.out = forecast_horizon)
 
 # Initialize forecast dataframe
@@ -268,15 +302,15 @@ final_forecasts <- data.frame(
 # Generate ARIMA forecasts
 if (!is.null(arima_models)) {
   cat("Generating ARIMA forecasts...\n")
-  
+
   # Generate forecast
   arima_future <- forecast(arima_models, h = forecast_horizon)
-  
+
   # Add to forecast dataframe
   final_forecasts$ARIMA <- as.numeric(arima_future$mean)
   final_forecasts$ARIMA_Lower <- as.numeric(arima_future$lower[, 2])  # 95% CI
   final_forecasts$ARIMA_Upper <- as.numeric(arima_future$upper[, 2])  # 95% CI
-  
+
   # Plot ARIMA forecast
   png(file.path("Plots/evaluation", "arima_future_forecast.png"), width = 1000, height = 600)
   plot(arima_future, main = "ARIMA Forecast for Next 12 Months",
@@ -294,12 +328,12 @@ if (!is.null(arimax_models)) {
 # Generate regularization forecasts
 if (!is.null(reg_models) && !is.null(best_model_name)) {
   cat("Generating regularization forecasts...\n")
-  
+
   # For regularization models, we need future values of predictors
   # This is a simplified approach - in practice, you would need to forecast these predictors
   cat("Note: Using a simplified approach for regularization forecasts\n")
   cat("      In practice, you would need to forecast the predictor variables\n")
-  
+
   # Use the last available values of predictors as a simple forecast
   if (best_model_name %in% c("Ridge", "Lasso", "Elastic Net")) {
     # Get the model
@@ -310,24 +344,46 @@ if (!is.null(reg_models) && !is.null(best_model_name)) {
     } else if (best_model_name == "Elastic Net") {
       best_reg_model <- reg_models$elastic_net$model
     }
-    
+
     # Get the last row of predictors
     last_predictors <- tail(model_df, 1)
-    
-    # Create a simple forecast of predictors (using last values)
-    future_predictors <- matrix(rep(as.numeric(last_predictors[, names(coef(best_reg_model))[-1]]), 
-                                   each = forecast_horizon), 
-                              nrow = forecast_horizon, 
-                              byrow = TRUE)
-    colnames(future_predictors) <- names(coef(best_reg_model))[-1]
-    
-    # Generate forecast
-    reg_future <- predict(best_reg_model, newx = future_predictors)
-    
-    # Add to forecast dataframe
-    final_forecasts[[best_model_name]] <- as.numeric(reg_future)
-    
-    cat("Generated simple", best_model_name, "forecasts using last available predictor values\n")
+
+    # For regularization models, we need to use a simpler approach
+    cat("Using a simplified approach for regularization forecasts...\n")
+
+    # Get the standardized predictor columns used in the model
+    std_cols <- grep("_std$", names(model_df), value = TRUE)
+
+    if (length(std_cols) > 0) {
+      # Create a matrix with the right dimensions
+      future_predictors <- matrix(0, nrow = forecast_horizon, ncol = length(std_cols))
+      colnames(future_predictors) <- std_cols
+
+      # Use the last available values for each predictor
+      for (i in 1:length(std_cols)) {
+        col <- std_cols[i]
+        if (col %in% names(model_df)) {
+          future_predictors[, i] <- rep(tail(model_df[[col]], 1), forecast_horizon)
+        }
+      }
+
+      # Generate forecast
+      reg_future <- tryCatch({
+        predict(best_reg_model, newx = future_predictors)
+      }, error = function(e) {
+        cat("Error generating regularization forecast:", e$message, "\n")
+        cat("Skipping regularization forecasting\n")
+        return(NULL)
+      })
+
+      if (!is.null(reg_future)) {
+        # Add to forecast dataframe
+        final_forecasts[[best_model_name]] <- as.numeric(reg_future)
+        cat("Generated simple", best_model_name, "forecasts using last available predictor values\n")
+      }
+    } else {
+      cat("No standardized predictor columns found. Skipping regularization forecasting.\n")
+    }
   }
 }
 
@@ -341,11 +397,11 @@ if (ncol(final_forecasts) > 3) {  # More than just Date, Month, Year columns
   historical <- model_df %>%
     select(Date = date, CPI = cpi) %>%
     mutate(Type = "Historical")
-  
+
   # Prepare forecast data
   forecast_cols <- setdiff(names(final_forecasts), c("Date", "Month", "Year"))
   forecast_data <- list()
-  
+
   for (col in forecast_cols) {
     if (!grepl("Lower|Upper", col)) {  # Skip confidence interval columns
       forecast_data[[col]] <- data.frame(
@@ -355,23 +411,23 @@ if (ncol(final_forecasts) > 3) {  # More than just Date, Month, Year columns
       )
     }
   }
-  
+
   # Combine historical and forecast data
   plot_data <- rbind(
     historical,
     do.call(rbind, forecast_data)
   )
-  
+
   # Plot
   png(file.path("Plots/evaluation", "final_forecasts.png"), width = 1200, height = 800)
   ggplot() +
     geom_line(data = historical, aes(x = Date, y = CPI), size = 1) +
     geom_point(data = historical, aes(x = Date, y = CPI), size = 1) +
-    geom_vline(xintercept = as.numeric(max(historical$Date)), 
+    geom_vline(xintercept = as.numeric(max(historical$Date)),
                linetype = "dashed", color = "red") +
-    geom_line(data = do.call(rbind, forecast_data), 
+    geom_line(data = do.call(rbind, forecast_data),
               aes(x = Date, y = CPI, color = Type), size = 1) +
-    geom_point(data = do.call(rbind, forecast_data), 
+    geom_point(data = do.call(rbind, forecast_data),
                aes(x = Date, y = CPI, color = Type), size = 2) +
     labs(title = "Pakistan Inflation Forecast",
          subtitle = paste("Historical data and", forecast_horizon, "month forecast"),
@@ -414,7 +470,7 @@ cat("and domestic economic indicators.\n\n")
 cat("2. DATA OVERVIEW\n")
 cat("===============\n\n")
 
-cat("Time period analyzed:", format(min(model_df$date), "%Y-%m-%d"), "to", 
+cat("Time period analyzed:", format(min(model_df$date), "%Y-%m-%d"), "to",
     format(max(model_df$date), "%Y-%m-%d"), "\n")
 cat("Total observations:", nrow(model_df), "\n")
 cat("Training set size:", nrow(train_df), "observations\n")
@@ -452,7 +508,7 @@ if (nrow(all_accuracy) > 0) {
   cat("Performance metrics for all models on the test set:\n\n")
   print(all_accuracy)
   cat("\n")
-  
+
   cat("Model ranking by RMSE (lower is better):\n")
   rmse_ranking <- all_accuracy[order(all_accuracy$RMSE), ]
   for (i in 1:nrow(rmse_ranking)) {
@@ -467,14 +523,14 @@ cat("==============\n\n")
 # Feature importance if available
 if (!is.null(reg_models)) {
   cat("Key drivers of inflation identified by regularization models:\n\n")
-  
+
   # Try to load feature importance
   feature_importance <- tryCatch({
     read.csv("Processed_Data/feature_importance.csv")
   }, error = function(e) {
     NULL
   })
-  
+
   if (!is.null(feature_importance) && nrow(feature_importance) > 0) {
     top_features <- head(feature_importance, 10)
     print(top_features[, c("Variable", "Avg_Importance")])
@@ -487,14 +543,14 @@ if (!is.null(reg_models)) {
 cat("6. FORECASTS\n")
 cat("===========\n\n")
 
-cat("Forecast period:", format(forecast_start_date, "%Y-%m-%d"), "to", 
+cat("Forecast period:", format(forecast_start_date, "%Y-%m-%d"), "to",
     format(forecast_end_date, "%Y-%m-%d"), "\n\n")
 
 if (ncol(final_forecasts) > 3) {
   cat("Monthly forecasts:\n\n")
   print(final_forecasts)
   cat("\n")
-  
+
   # Calculate average forecast if multiple models
   forecast_cols <- setdiff(names(final_forecasts), c("Date", "Month", "Year", "ARIMA_Lower", "ARIMA_Upper"))
   if (length(forecast_cols) > 1) {
@@ -511,10 +567,10 @@ cat("================================\n\n")
 cat("Based on the analysis, the following conclusions can be drawn:\n\n")
 
 cat("1. Model Performance: The", best_model_name, "model demonstrated the best performance\n")
-cat("   in forecasting Pakistan's inflation, suggesting that", 
-    ifelse(grepl("ARIMA", best_model_name), 
-          "time series patterns and seasonality", 
-          "the relationship between economic indicators and inflation"), 
+cat("   in forecasting Pakistan's inflation, suggesting that",
+    ifelse(grepl("ARIMA", best_model_name),
+          "time series patterns and seasonality",
+          "the relationship between economic indicators and inflation"),
     "are key to accurate forecasting.\n\n")
 
 cat("2. Inflation Drivers: The analysis identified several key drivers of inflation in Pakistan,\n")
@@ -569,7 +625,7 @@ sink()
 
 # Print message to console
 message("Model evaluation and forecasting completed successfully!")
-message("Output saved to 06_model_evaluation_output.txt")
+message("Output saved to Logs/06_model_evaluation_output.txt")
 message("Comprehensive report generated at Final_Results/pakistan_inflation_forecast_report.txt")
 message("Pakistan Inflation Forecasting Project completed!")
 

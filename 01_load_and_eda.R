@@ -10,6 +10,14 @@
 #
 # Author: <Your Name>
 # Date: 2025-05-13
+#
+# NOTES FOR DEMO:
+# - This is the foundation of our entire analysis - careful data loading and cleaning is crucial
+# - Pakistani datasets often have inconsistent missing value representations (hashtags, dots, etc.)
+# - We're implementing thorough validation checks to ensure data quality
+# - The summary statistics will help us understand the distribution of each variable
+# - Box plots and scatter plots will help identify outliers and relationships between variables
+# - We need at least 5 independent variables with 35+ observations for robust modeling
 
 # --- Set working directory to project root (if running interactively) ---
 # This ensures consistent file paths regardless of where the script is run from
@@ -342,46 +350,37 @@ message("Loading combined data files...")
 # Create Logs directory if it doesn't exist
 dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
 
-# Create a detailed log file for data loading
-sink("Logs/01_data_loading_log.txt")
-cat("===== PAKISTAN INFLATION FORECASTING PROJECT =====\n")
-cat("===== DETAILED DATA LOADING LOG =====\n")
-cat("Generated on:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
-cat("This log tracks the loading of all datasets, including success/failure status and basic information.\n\n")
+# For demo purposes, we'll print key information to the console instead of a log file
+message("===== PAKISTAN INFLATION FORECASTING PROJECT =====")
+message("===== DATA LOADING AND EDA =====")
+message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+message("This script loads all datasets, performs EDA, and saves outputs for further analysis.")
 
 # Create a function to safely load files with proper error handling and logging
+# DEMO NOTE: This function handles different file formats and provides detailed error messages
 safe_load <- function(file_path, loader_function, description) {
-  cat("\n--- LOADING:", basename(file_path), "---\n")
-  cat("Description:", description, "\n")
-  cat("Full path:", file_path, "\n")
-  cat("Loader function:", deparse(substitute(loader_function)), "\n")
+  message("Loading:", basename(file_path), " - ", description)
 
   if (file.exists(file_path)) {
-    cat("Status: File exists, attempting to load\n")
     tryCatch({
       result <- loader_function(file_path)
       if (!is.null(result)) {
-        cat("Result: SUCCESS\n")
-        cat("Dimensions:", nrow(result), "rows,", ncol(result), "columns\n")
+        message("  SUCCESS:", nrow(result), "rows,", ncol(result), "columns")
         if ("date" %in% names(result)) {
-          cat("Date range:", format(min(result$date, na.rm = TRUE), "%Y-%m-%d"), "to",
-              format(max(result$date, na.rm = TRUE), "%Y-%m-%d"), "\n")
+          message("  Date range:", format(min(result$date, na.rm = TRUE), "%Y-%m-%d"), "to",
+                format(max(result$date, na.rm = TRUE), "%Y-%m-%d"))
         }
-        cat("Variables:", paste(names(result), collapse = ", "), "\n")
         return(result)
       } else {
-        cat("Result: FAILURE - Loader returned NULL\n")
-        cat("Possible cause: File exists but format is incorrect or data is corrupted\n")
+        message("  FAILURE: Loader returned NULL - possible format issue or data corruption")
         return(NULL)
       }
     }, error = function(e) {
-      cat("Result: ERROR\n")
-      cat("Error message:", e$message, "\n")
+      message("  ERROR:", e$message)
       return(NULL)
     })
   } else {
-    cat("Status: File NOT FOUND\n")
-    cat("Result: FAILURE\n")
+    message("  FAILURE: File not found")
     return(NULL)
   }
 }
@@ -390,7 +389,7 @@ safe_load <- function(file_path, loader_function, description) {
 datasets <- list()
 
 # --- DEPENDENT VARIABLE (TARGET) ---
-cat("\n===== LOADING TARGET VARIABLE =====\n")
+message("\n===== LOADING TARGET VARIABLE =====\n")
 
 # CPI - our primary target variable
 datasets$cpi <- safe_load(
@@ -407,7 +406,7 @@ datasets$core_inflation <- safe_load(
 )
 
 # --- MONETARY VARIABLES ---
-cat("\n===== LOADING MONETARY VARIABLES =====\n")
+message("\n===== LOADING MONETARY VARIABLES =====\n")
 
 # KIBOR - Karachi Interbank Offered Rate
 datasets$kibor <- safe_load(
@@ -438,7 +437,7 @@ datasets$t_bills <- safe_load(
 )
 
 # --- EXTERNAL SECTOR VARIABLES ---
-cat("\n===== LOADING EXTERNAL SECTOR VARIABLES =====\n")
+message("\n===== LOADING EXTERNAL SECTOR VARIABLES =====\n")
 
 # Exchange Rate - PKR/USD
 datasets$exchange_rate <- safe_load(
@@ -469,7 +468,7 @@ datasets$forex_reserves <- safe_load(
 )
 
 # --- REAL SECTOR VARIABLES ---
-cat("\n===== LOADING REAL SECTOR VARIABLES =====\n")
+message("\n===== LOADING REAL SECTOR VARIABLES =====\n")
 
 # Industrial Production (QIM)
 datasets$industrial_production <- safe_load(
@@ -500,7 +499,7 @@ datasets$consumption_investment_gdp <- safe_load(
 )
 
 # --- GLOBAL FACTORS ---
-cat("\n===== LOADING GLOBAL FACTORS =====\n")
+message("\n===== LOADING GLOBAL FACTORS =====\n")
 
 # International Oil Prices
 datasets$oil_prices <- safe_load(
@@ -517,7 +516,7 @@ datasets$global_food <- safe_load(
 )
 
 # --- ADDITIONAL/LEGACY DATASETS ---
-cat("\n===== LOADING ADDITIONAL/LEGACY DATASETS =====\n")
+message("\n===== LOADING ADDITIONAL/LEGACY DATASETS =====\n")
 
 # Check for inflation_base_2015.csv in both locations
 combined_inflation_file <- file.path(combined_data_dir, "inflation_base_2015.csv")
@@ -544,7 +543,7 @@ if (file.exists(combined_inflation_file)) {
 }
 
 # Check for additional datasets in old_data directory
-cat("\n===== CHECKING OLD_DATA DIRECTORY FOR ADDITIONAL DATASETS =====\n")
+message("\n===== CHECKING OLD_DATA DIRECTORY FOR ADDITIONAL DATASETS =====\n")
 
 # T-Bills from old_data
 old_t_bills_path <- file.path(old_data_dir, "t_bills.csv")
@@ -569,22 +568,19 @@ if (!("forex_reserves" %in% names(datasets)) || is.null(datasets$forex_reserves)
 # Remove any NULL datasets
 null_datasets <- names(datasets)[sapply(datasets, is.null)]
 if (length(null_datasets) > 0) {
-  cat("\n===== REMOVING NULL DATASETS =====\n")
-  cat("The following datasets could not be loaded and will be removed:",
-      paste(null_datasets, collapse = ", "), "\n")
+  message("\n===== REMOVING NULL DATASETS =====\n")
+  message("The following datasets could not be loaded and will be removed:",
+      paste(null_datasets, collapse = ", "))
   datasets <- datasets[!sapply(datasets, is.null)]
 }
 
 # Summary of loaded datasets
-cat("\n===== DATA LOADING SUMMARY =====\n")
-cat("Total datasets attempted:", length(null_datasets) + length(datasets), "\n")
-cat("Successfully loaded datasets:", length(datasets), "\n")
-cat("Failed to load datasets:", length(null_datasets), "\n")
-cat("\nSuccessfully loaded dataset names:\n")
-cat(paste("- ", names(datasets), collapse = "\n"), "\n")
-
-# Close the log file
-sink()
+message("\n===== DATA LOADING SUMMARY =====\n")
+message("Total datasets attempted: ", length(null_datasets) + length(datasets))
+message("Successfully loaded datasets: ", length(datasets))
+message("Failed to load datasets: ", length(null_datasets))
+message("\nSuccessfully loaded dataset names:")
+message(paste("- ", names(datasets), collapse = "\n"))
 
 message(paste("Successfully loaded", length(datasets), "datasets"))
 
@@ -1362,23 +1358,125 @@ for (name in c("cpi", "exchange_rate", "oil_prices", "global_food")) {
   }
 }
 
-# Create Output directory if it doesn't exist
+# Create Output and Processed_Data directories if they don't exist
 dir.create("Output", showWarnings = FALSE, recursive = TRUE)
+dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
+
+# Generate comprehensive summary statistics for all numeric variables
+generate_summary_stats <- function(df, name) {
+  cat("\nGenerating comprehensive summary statistics for", name, "...\n")
+
+  # Identify numeric columns
+  numeric_cols <- sapply(df, is.numeric)
+  if (sum(numeric_cols) == 0) return(NULL)
+
+  # Initialize results dataframe
+  result <- data.frame(
+    Dataset = character(),
+    Variable = character(),
+    Mean = numeric(),
+    Median = numeric(),
+    Mode = character(),
+    Min = numeric(),
+    Q1 = numeric(),
+    Q2 = numeric(),
+    Q3 = numeric(),
+    Max = numeric(),
+    SD = numeric(),
+    IQR = numeric(),
+    stringsAsFactors = FALSE
+  )
+
+  # Calculate statistics for each numeric column
+  for (col in names(df)[numeric_cols]) {
+    x <- df[[col]]
+    if (all(is.na(x))) next
+
+    # Calculate mode (most frequent value)
+    tab <- table(x)
+    if (length(tab) > 0) {
+      mode_val <- as.numeric(names(tab)[which.max(tab)])
+      if (length(mode_val) == 0 || is.na(mode_val)) mode_val <- NA
+    } else {
+      mode_val <- NA
+    }
+
+    # Calculate quartiles
+    quants <- quantile(x, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+    # Add to results
+    result <- rbind(result, data.frame(
+      Dataset = name,
+      Variable = col,
+      Mean = mean(x, na.rm = TRUE),
+      Median = median(x, na.rm = TRUE),
+      Mode = as.character(mode_val),
+      Min = min(x, na.rm = TRUE),
+      Q1 = quants[1],
+      Q2 = quants[2],
+      Q3 = quants[3],
+      Max = max(x, na.rm = TRUE),
+      SD = sd(x, na.rm = TRUE),
+      IQR = IQR(x, na.rm = TRUE)
+    ))
+  }
+
+  return(result)
+}
+
+# Generate summary statistics for key datasets
+message("Generating comprehensive summary statistics...")
+all_stats_list <- list()
+
+# CPI dataset
+if (!is.null(datasets$cpi)) {
+  all_stats_list$cpi <- generate_summary_stats(datasets$cpi, "CPI")
+}
+
+# Exchange rate dataset
+if (!is.null(datasets$exchange_rate)) {
+  all_stats_list$exchange_rate <- generate_summary_stats(datasets$exchange_rate, "Exchange_Rate")
+}
+
+# Oil prices dataset
+if (!is.null(datasets$oil_prices)) {
+  all_stats_list$oil_prices <- generate_summary_stats(datasets$oil_prices, "Oil_Prices")
+}
+
+# Global food dataset
+if (!is.null(datasets$global_food)) {
+  all_stats_list$global_food <- generate_summary_stats(datasets$global_food, "Global_Food")
+}
+
+# Policy rate dataset
+if (!is.null(datasets$policy_rate)) {
+  all_stats_list$policy_rate <- generate_summary_stats(datasets$policy_rate, "Policy_Rate")
+}
+
+# KIBOR dataset
+if (!is.null(datasets$kibor)) {
+  all_stats_list$kibor <- generate_summary_stats(datasets$kibor, "KIBOR")
+}
+
+# Combine all statistics
+all_stats <- do.call(rbind, all_stats_list)
+
+# Save summary statistics
+write.csv(all_stats, "Processed_Data/summary_statistics.csv", row.names = FALSE)
+message("Comprehensive summary statistics saved to Processed_Data/summary_statistics.csv")
 
 # Save as RDS for use in subsequent scripts
+dir.create("Output", showWarnings = FALSE, recursive = TRUE)
 saveRDS(datasets, "Output/all_datasets.rds")
 saveRDS(cleaned_datasets, "Output/cleaned_datasets.rds")
 
-# Create a simple output file for the R script
-sink("Logs/01_load_and_eda_output.txt")
-cat("===== PAKISTAN INFLATION FORECASTING PROJECT =====\n")
-cat("===== DATA LOADING AND EDA SUMMARY =====\n")
-cat("Generated on:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
-cat("Successfully loaded", length(datasets), "datasets\n")
-cat("Datasets saved to Output/all_datasets.rds and Output/cleaned_datasets.rds\n")
-cat("EDA results saved to Logs/eda_*.txt files\n")
-cat("Plots saved to Plots/ directory\n")
-sink()
+# Print summary information to console
+message("===== PAKISTAN INFLATION FORECASTING PROJECT =====")
+message("===== DATA LOADING AND EDA SUMMARY =====")
+message("Completed at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+message("Successfully loaded", length(datasets), "datasets")
+message("Datasets saved to Output/all_datasets.rds and Output/cleaned_datasets.rds")
+message("Plots saved to Plots/ directory")
 
 message("Data loading and initial EDA completed successfully!")
 message("Output files saved to Logs/ directory")

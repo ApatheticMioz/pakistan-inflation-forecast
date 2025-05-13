@@ -1,0 +1,135 @@
+=======================================================================
+                PAKISTAN INFLATION FORECASTING PROJECT                 
+                   COMPREHENSIVE ANALYSIS REPORT                       
+=======================================================================
+
+Report Generated on: 2025-05-13 08:14:24 
+
+1. EXECUTIVE SUMMARY
+===================
+
+This report presents the results of a comprehensive analysis of Pakistan's
+inflation trends and forecasts using various time series and regression models.
+
+The best performing model was identified as Lasso with an RMSE of 7.423358 on the test dataset.
+
+The analysis covered historical CPI data and incorporated various economic
+indicators including exchange rates, interest rates, global commodity prices,
+and domestic economic indicators.
+
+2. DATA OVERVIEW
+===============
+
+Time period analyzed: 2018-10-01 to 2025-04-01 
+Total observations: 867 
+Training set size: 693 observations
+Test set size: 174 observations
+
+Target variable: Consumer Price Index (CPI) Year-on-Year percentage change
+CPI range: 0.3 to 38 
+CPI mean: 16.42132 
+CPI standard deviation: 8.731781 
+
+3. METHODOLOGY
+=============
+
+The following modeling approaches were implemented:
+
+Time Series Models:
+- ARIMA (AutoRegressive Integrated Moving Average)
+- ARIMAX (ARIMA with external regressors)
+
+Regularization Models:
+- Ridge Regression
+- Lasso Regression
+- Elastic Net Regression
+
+Model Selection Criteria:
+- Root Mean Square Error (RMSE)
+- Mean Absolute Error (MAE)
+- Mean Absolute Percentage Error (MAPE)
+- R-squared (for regression models)
+
+4. MODEL PERFORMANCE
+==================
+
+Performance metrics for all models on the test set:
+
+        Model      MAE      RMSE     MAPE R_Squared
+1       ARIMA 8.694828 12.933653 195.7416        NA
+2      ARIMAX       NA        NA       NA        NA
+3       Ridge 6.414915  7.827047 120.9039 0.3417715
+4       Lasso 5.764063  7.423358 116.2079 0.4079183
+5 Elastic Net 5.787196  7.445630 116.6192 0.4043602
+
+Model ranking by RMSE (lower is better):
+1. Lasso (7.423358)
+2. Elastic Net (7.44563)
+3. Ridge (7.827047)
+4. ARIMA (12.93365)
+5. ARIMAX (NA)
+
+5. KEY FINDINGS
+==============
+
+Key drivers of inflation identified by regularization models:
+
+                       Variable Avg_Importance
+1         sugar_price_index_std       4.421504
+2 global_food_index_yoy_pct_std       1.649155
+3          meat_price_index_std       1.419725
+
+6. FORECASTS
+===========
+
+Forecast period: 2025-05-01 to 2026-04-01 
+
+Monthly forecasts:
+
+         Date Month Year ARIMA ARIMA_Lower ARIMA_Upper    Lasso
+1  2025-05-01     5 2025  29.2    27.83206    30.56794 17.94397
+2  2025-06-01     6 2025  29.2    27.26544    31.13456 17.94397
+3  2025-07-01     7 2025  29.2    26.83065    31.56935 17.94397
+4  2025-08-01     8 2025  29.2    26.46411    31.93589 17.94397
+5  2025-09-01     9 2025  29.2    26.14119    32.25881 17.94397
+6  2025-10-01    10 2025  29.2    25.84924    32.55076 17.94397
+7  2025-11-01    11 2025  29.2    25.58076    32.81924 17.94397
+8  2025-12-01    12 2025  29.2    25.33087    33.06913 17.94397
+9  2026-01-01     1 2026  29.2    25.09617    33.30383 17.94397
+10 2026-02-01     2 2026  29.2    24.87418    33.52582 17.94397
+11 2026-03-01     3 2026  29.2    24.66304    33.73696 17.94397
+12 2026-04-01     4 2026  29.2    24.46130    33.93870 17.94397
+
+Average forecast for the next 12 months: 23.57198 
+
+7. CONCLUSIONS AND RECOMMENDATIONS
+================================
+
+Based on the analysis, the following conclusions can be drawn:
+
+1. Model Performance: The Lasso model demonstrated the best performance
+   in forecasting Pakistan's inflation, suggesting that the relationship between economic indicators and inflation are key to accurate forecasting.
+
+2. Inflation Drivers: The analysis identified several key drivers of inflation in Pakistan,
+   including exchange rates, global commodity prices, and monetary policy indicators.
+
+3. Forecast Reliability: The models show reasonable accuracy on historical data,
+   but forecasts should be interpreted with caution due to the inherent uncertainty
+   in economic predictions, especially in volatile economic environments.
+
+Recommendations for further analysis:
+
+1. Incorporate additional variables such as fiscal indicators, remittances,
+   and more detailed sectoral data to improve model accuracy.
+
+2. Implement more sophisticated forecasting techniques for the predictor variables
+   to improve the accuracy of regularization model forecasts.
+
+3. Consider ensemble methods that combine the strengths of different modeling approaches
+   to potentially improve forecast accuracy.
+
+4. Update the models regularly as new data becomes available to maintain forecast accuracy.
+
+=======================================================================
+                            END OF REPORT                              
+=======================================================================

@@ -1,0 +1,225 @@
+===== FORECAST UNCERTAINTY QUANTIFICATION =====
+Started at: 2025-05-13 08:14:12 
+
+Loading modeling dataframe...
+Loaded dataframe with 867 rows and 16 columns
+Date range: 2018-10-01 to 2025-04-01 
+
+Loading trained models...
+Loaded trained models
+
+Loading train-test split information...
+Loaded train-test split information
+Training set size: 693 observations
+Test set size: 174 observations
+
+===== DEFINING FORECAST PARAMETERS =====
+
+Forecast horizon: 12 months
+Number of bootstrap samples: 1000 
+Number of Monte Carlo simulations: 1000 
+Confidence levels: 50 %, 80 %, 95 % 
+
+===== METHOD 1: BOOTSTRAP-BASED PREDICTION INTERVALS =====
+
+Generating bootstrap samples for ARIMA model...
+  Completed 100/1000 bootstrap samples
+  Completed 200/1000 bootstrap samples
+  Completed 300/1000 bootstrap samples
+  Completed 400/1000 bootstrap samples
+  Completed 500/1000 bootstrap samples
+  Completed 600/1000 bootstrap samples
+  Completed 700/1000 bootstrap samples
+  Completed 800/1000 bootstrap samples
+  Completed 900/1000 bootstrap samples
+  Completed 1000/1000 bootstrap samples
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 bootstrap samples
+  Completed 200/1000 bootstrap samples
+  Completed 300/1000 bootstrap samples
+  Completed 400/1000 bootstrap samples
+  Completed 500/1000 bootstrap samples
+  Completed 600/1000 bootstrap samples
+  Completed 700/1000 bootstrap samples
+  Completed 800/1000 bootstrap samples
+  Completed 900/1000 bootstrap samples
+  Completed 1000/1000 bootstrap samples
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 bootstrap samples
+  Completed 200/1000 bootstrap samples
+  Completed 300/1000 bootstrap samples
+  Completed 400/1000 bootstrap samples
+  Completed 500/1000 bootstrap samples
+  Completed 600/1000 bootstrap samples
+  Completed 700/1000 bootstrap samples
+  Completed 800/1000 bootstrap samples
+  Completed 900/1000 bootstrap samples
+  Completed 1000/1000 bootstrap samples
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 bootstrap samples
+  Completed 200/1000 bootstrap samples
+  Completed 300/1000 bootstrap samples
+  Completed 400/1000 bootstrap samples
+  Completed 500/1000 bootstrap samples
+  Completed 600/1000 bootstrap samples
+  Completed 700/1000 bootstrap samples
+  Completed 800/1000 bootstrap samples
+  Completed 900/1000 bootstrap samples
+  Completed 1000/1000 bootstrap samples
+Calculating prediction intervals for arima model...
+Calculating prediction intervals for lasso model...
+Calculating prediction intervals for ridge model...
+Calculating prediction intervals for elastic_net model...
+
+===== METHOD 2: MONTE CARLO SIMULATION =====
+
+Generating Monte Carlo simulations for ARIMA model...
+  Completed 100/1000 simulations
+  Completed 200/1000 simulations
+  Completed 300/1000 simulations
+  Completed 400/1000 simulations
+  Completed 500/1000 simulations
+  Completed 600/1000 simulations
+  Completed 700/1000 simulations
+  Completed 800/1000 simulations
+  Completed 900/1000 simulations
+  Completed 1000/1000 simulations
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 simulations
+  Completed 200/1000 simulations
+  Completed 300/1000 simulations
+  Completed 400/1000 simulations
+  Completed 500/1000 simulations
+  Completed 600/1000 simulations
+  Completed 700/1000 simulations
+  Completed 800/1000 simulations
+  Completed 900/1000 simulations
+  Completed 1000/1000 simulations
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 simulations
+  Completed 200/1000 simulations
+  Completed 300/1000 simulations
+  Completed 400/1000 simulations
+  Completed 500/1000 simulations
+  Completed 600/1000 simulations
+  Completed 700/1000 simulations
+  Completed 800/1000 simulations
+  Completed 900/1000 simulations
+  Completed 1000/1000 simulations
+Warning: pred_cols not found in model, using variable names from train_data
+Number of predictor columns: 3 
+First few predictor columns: sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std 
+x_train dimensions: 693 x 3 
+  Completed 100/1000 simulations
+  Completed 200/1000 simulations
+  Completed 300/1000 simulations
+  Completed 400/1000 simulations
+  Completed 500/1000 simulations
+  Completed 600/1000 simulations
+  Completed 700/1000 simulations
+  Completed 800/1000 simulations
+  Completed 900/1000 simulations
+  Completed 1000/1000 simulations
+Calculating prediction intervals for arima model...
+Calculating prediction intervals for lasso model...
+Calculating prediction intervals for ridge model...
+Calculating prediction intervals for elastic_net model...
+
+===== METHOD 3: QUANTILE REGRESSION =====
+
+Using quantiles: 0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975 
+Fitting quantile regression model...
+  Fitting model for 0.02 quantile...
+  Fitting model for 0.10 quantile...
+  Fitting model for 0.25 quantile...
+  Fitting model for 0.50 quantile...
+  Fitting model for 0.75 quantile...
+  Fitting model for 0.90 quantile...
+  Fitting model for 0.97 quantile...
+Making quantile regression forecasts...
+
+===== CREATING VISUALIZATIONS =====
+
+Creating fan chart for arima model...
+Error creating fan chart: could not find function "fan.col" 
+Adding simple confidence intervals instead
+Fan chart saved to Plots/uncertainty/fan_chart_arima.png
+Creating fan chart for lasso model...
+Error creating fan chart: could not find function "fan.col" 
+Adding simple confidence intervals instead
+Fan chart saved to Plots/uncertainty/fan_chart_lasso.png
+Creating fan chart for ridge model...
+Error creating fan chart: could not find function "fan.col" 
+Adding simple confidence intervals instead
+Fan chart saved to Plots/uncertainty/fan_chart_ridge.png
+Creating fan chart for elastic_net model...
+Error creating fan chart: could not find function "fan.col" 
+Adding simple confidence intervals instead
+Fan chart saved to Plots/uncertainty/fan_chart_elastic_net.png
+Creating prediction interval plot for arima model...
+Prediction interval plot saved to Plots/uncertainty/prediction_intervals_arima.png
+Creating prediction interval plot for lasso model...
+Prediction interval plot saved to Plots/uncertainty/prediction_intervals_lasso.png
+Creating prediction interval plot for ridge model...
+Prediction interval plot saved to Plots/uncertainty/prediction_intervals_ridge.png
+Creating prediction interval plot for elastic_net model...
+Prediction interval plot saved to Plots/uncertainty/prediction_intervals_elastic_net.png
+Creating quantile regression plot...
+Quantile regression plot saved to Plots/uncertainty/quantile_regression_forecast.png
+
+===== SAVING RESULTS =====
+
+Saved bootstrap results to Processed_Data/uncertainty/bootstrap_results.rds
+Saved bootstrap prediction intervals to Processed_Data/uncertainty/bootstrap_prediction_intervals.rds
+Saved Monte Carlo results to Processed_Data/uncertainty/monte_carlo_results.rds
+Saved Monte Carlo prediction intervals to Processed_Data/uncertainty/monte_carlo_prediction_intervals.rds
+Saved quantile regression model to Processed_Data/uncertainty/quantile_regression_model.rds
+Saved quantile regression forecasts to Processed_Data/uncertainty/quantile_regression_forecasts.rds
+
+===== SUMMARY =====
+
+Forecast uncertainty quantification completed at: 2025-05-13 08:14:16 
+Files created:
+- Processed_Data/uncertainty/bootstrap_results.rds
+- Processed_Data/uncertainty/bootstrap_prediction_intervals.rds
+- Processed_Data/uncertainty/monte_carlo_results.rds
+- Processed_Data/uncertainty/monte_carlo_prediction_intervals.rds
+- Processed_Data/uncertainty/quantile_regression_model.rds
+- Processed_Data/uncertainty/quantile_regression_forecasts.rds
+
+Plots created:
+- Plots/uncertainty/fan_chart_arima.png
+- Plots/uncertainty/fan_chart_lasso.png
+- Plots/uncertainty/fan_chart_ridge.png
+- Plots/uncertainty/fan_chart_elastic_net.png
+- Plots/uncertainty/prediction_intervals_arima.png
+- Plots/uncertainty/prediction_intervals_lasso.png
+- Plots/uncertainty/prediction_intervals_ridge.png
+- Plots/uncertainty/prediction_intervals_elastic_net.png
+- Plots/uncertainty/quantile_regression_forecast.png
+
+Key findings:
+1. Forecast uncertainty increases with forecast horizon
+2. Different models show different levels of uncertainty
+3. Quantile regression provides a direct way to estimate prediction intervals
+
+Next steps:
+1. Use uncertainty estimates in decision-making
+2. Consider ensemble approaches to combine multiple uncertainty estimates
+3. Update forecasts regularly as new data becomes available
+

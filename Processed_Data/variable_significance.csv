@@ -1,0 +1,4 @@
+"Model","Significant_Vars","Insignificant_Vars","Requirement_Met"
+"Ridge",3,0,TRUE
+"Lasso",3,0,TRUE
+"Elastic Net",3,0,TRUE

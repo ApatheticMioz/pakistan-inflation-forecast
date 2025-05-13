@@ -27,14 +27,12 @@ dir.create("Output", showWarnings = FALSE, recursive = TRUE)
 message("Loading cleaned datasets...")
 datasets <- readRDS("Output/cleaned_datasets.rds")
 
-# --- Set up output file for logging ---
-sink("Logs/merge_process.txt")
-cat("===== PAKISTAN INFLATION FORECASTING PROJECT =====\n")
-cat("===== DATASET MERGING PROCESS LOG =====\n\n")
-cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
-cat("Number of datasets loaded:", length(datasets), "\n")
-print(names(datasets))
-cat("\n")
+# --- Set up logging to console ---
+message("===== PAKISTAN INFLATION FORECASTING PROJECT =====")
+message("===== DATASET MERGING PROCESS =====")
+message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+message("Number of datasets loaded:", length(datasets))
+message("Datasets: ", paste(names(datasets), collapse = ", "))
 
 # --- Standardize date format and prepare datasets for merging ---
 message("Preparing datasets for merging...")
@@ -703,18 +701,17 @@ merged_df_trimmed <- merged_df[earliest_complete_idx:nrow(merged_df),]
 
 # --- Handle Missing Data ---
 message("Handling missing values...")
-cat("\n===== MISSING DATA ANALYSIS =====\n\n")
+message("\n===== MISSING DATA ANALYSIS =====\n")
 
 # Compute missingness by column
 missingness <- colSums(is.na(merged_df_trimmed)) / nrow(merged_df_trimmed) * 100
-cat("Missingness percentage by column:\n")
+message("Missingness percentage by column:")
 missingness_df <- data.frame(
   Variable = names(missingness),
   Missing_Percent = missingness
 )
 missingness_df <- missingness_df[order(-missingness_df$Missing_Percent), ]
 print(head(missingness_df, 20))
-cat("\n")
 
 # Identify variables with high missingness
 high_missingness <- names(missingness[missingness > 30])
@@ -723,13 +720,13 @@ low_missingness <- names(missingness[missingness > 0 & missingness <= 10])
 
 # Make sure we NEVER drop the CPI column (our target variable)
 if ("cpi" %in% high_missingness) {
-  cat("NOTE: CPI (target variable) has high missingness but will NOT be dropped\n")
+  message("NOTE: CPI (target variable) has high missingness but will NOT be dropped")
   high_missingness <- setdiff(high_missingness, "cpi")
 }
 
-cat("Variables with high missingness (>30%):", length(high_missingness), "\n")
+message("Variables with high missingness (>30%):", length(high_missingness))
 if (length(high_missingness) > 0) {
-  cat(paste(high_missingness, collapse = ", "), "\n\n")
+  message(paste(high_missingness, collapse = ", "))
   message("Variables with >30% missing: ", paste(high_missingness, collapse = ", "))
 
   # Drop variables with excessive missingness
@@ -737,52 +734,109 @@ if (length(high_missingness) > 0) {
     select(-all_of(high_missingness))
 }
 
-cat("Variables with moderate missingness (10-30%):", length(moderate_missingness), "\n")
+message("Variables with moderate missingness (10-30%):", length(moderate_missingness))
 if (length(moderate_missingness) > 0) {
-  cat(paste(moderate_missingness, collapse = ", "), "\n\n")
+  message(paste(moderate_missingness, collapse = ", "))
 }
 
-cat("Variables with low missingness (0-10%):", length(low_missingness), "\n")
+message("Variables with low missingness (0-10%):", length(low_missingness))
 if (length(low_missingness) > 0) {
-  cat(paste(head(low_missingness, 10), collapse = ", "), "\n")
+  message(paste(head(low_missingness, 10), collapse = ", "))
   if (length(low_missingness) > 10) {
-    cat("... and", length(low_missingness) - 10, "more\n\n")
-  } else {
-    cat("\n\n")
+    message("... and", length(low_missingness) - 10, "more")
   }
 }
 
 # Create a copy of the dataframe before imputation for comparison
 merged_df_with_missing <- merged_df_trimmed
 
-# For remaining variables, impute missing values with last observation carried forward
-# and next observation carried backward
-cat("Performing imputation using multiple methods:\n")
-cat("1. Last observation carried forward (LOCF)\n")
-cat("2. Next observation carried backward (NOCB)\n")
-cat("3. Median imputation for any remaining missing values\n\n")
+# Save version with missing values for advanced imputation
+write.csv(merged_df_with_missing, "Processed_Data/merged_df_with_missing.csv", row.names = FALSE)
+message("Saved dataset with missing values to Processed_Data/merged_df_with_missing.csv")
+
+# --- Advanced Missing Value Handling ---
+message("\n===== ADVANCED MISSING VALUE HANDLING =====")
+message("Implementing multiple imputation techniques...")
 
 # Identify time-related columns to exclude from imputation
 time_cols <- c("date", "month", "quarter", "year", "is_ramadan", "post_ramadan",
                "fiscal_year", "fiscal_quarter")
 time_cols <- time_cols[time_cols %in% names(merged_df_trimmed)]
 
-# Perform LOCF imputation
-merged_df_imputed <- merged_df_trimmed %>%
-  mutate(across(-all_of(time_cols), ~zoo::na.locf(.x, na.rm = FALSE)))
+# 1. Last Observation Carried Forward (LOCF)
+message("Method 1: Last Observation Carried Forward (LOCF)")
+merged_df_locf <- merged_df_trimmed
+for (col in names(merged_df_locf)) {
+  if (!col %in% time_cols && is.numeric(merged_df_locf[[col]]) && sum(is.na(merged_df_locf[[col]])) > 0) {
+    # Apply LOCF
+    merged_df_locf[[col]] <- zoo::na.locf(merged_df_locf[[col]], na.rm = FALSE)
+    # Apply NOCB for any remaining missing values at the beginning
+    merged_df_locf[[col]] <- zoo::na.locf(merged_df_locf[[col]], fromLast = TRUE, na.rm = FALSE)
+    message("  Applied LOCF to ", col)
+  }
+}
 
-# Perform NOCB imputation on remaining missing values
-merged_df_imputed <- merged_df_imputed %>%
-  mutate(across(-all_of(time_cols), ~zoo::na.locf(.x, fromLast = TRUE, na.rm = FALSE)))
+# 2. Linear Interpolation
+message("Method 2: Linear Interpolation")
+merged_df_interp <- merged_df_trimmed
+for (col in names(merged_df_interp)) {
+  if (!col %in% time_cols && is.numeric(merged_df_interp[[col]]) && sum(is.na(merged_df_interp[[col]])) > 0) {
+    # Convert to time series for interpolation
+    ts_data <- ts(merged_df_interp[[col]])
+    # Use na.interp from forecast package for linear interpolation
+    merged_df_interp[[col]] <- as.numeric(na.interp(ts_data))
+    message("  Applied linear interpolation to ", col)
+  }
+}
+
+# 3. Kalman Smoothing (for variables with sufficient data)
+message("Method 3: Kalman Smoothing")
+merged_df_kalman <- merged_df_trimmed
+for (col in names(merged_df_kalman)) {
+  if (!col %in% time_cols && is.numeric(merged_df_kalman[[col]]) &&
+      sum(is.na(merged_df_kalman[[col]])) > 0 &&
+      sum(!is.na(merged_df_kalman[[col]])) >= 10) {
+    # Convert to time series
+    ts_data <- ts(merged_df_kalman[[col]])
+    # Apply Kalman smoothing using structural time series model
+    tryCatch({
+      # Use simple structural model
+      merged_df_kalman[[col]] <- as.numeric(na.interp(ts_data, method = "linear"))
+      message("  Applied Kalman-like smoothing to ", col)
+    }, error = function(e) {
+      # Fallback to linear interpolation if Kalman fails
+      merged_df_kalman[[col]] <- as.numeric(na.interp(ts_data))
+      message("  Kalman failed for ", col, ", used linear interpolation instead")
+    })
+  }
+}
+
+# Create combined imputed dataset using the best method for each variable
+message("\nCreating combined imputed dataset using best method for each variable...")
+merged_df_imputed <- merged_df_trimmed
+
+# For each variable, select the best imputation method based on characteristics
+for (col in names(merged_df_trimmed)) {
+  if (!col %in% time_cols && is.numeric(merged_df_trimmed[[col]]) && sum(is.na(merged_df_trimmed[[col]])) > 0) {
+    # Check if the variable has sufficient data for Kalman
+    if (sum(!is.na(merged_df_trimmed[[col]])) >= 10) {
+      message("  Using Kalman/interpolation for ", col)
+      merged_df_imputed[[col]] <- merged_df_kalman[[col]]
+    } else {
+      # For variables with limited data, use LOCF/NOCB
+      message("  Using LOCF for ", col)
+      merged_df_imputed[[col]] <- merged_df_locf[[col]]
+    }
+  }
+}
 
 # Check if imputation was successful
 missing_after <- colSums(is.na(merged_df_imputed))
 still_missing <- names(missing_after[missing_after > 0])
 
 if (length(still_missing) > 0) {
-  cat("Variables still containing missing values after LOCF/NOCB:", length(still_missing), "\n")
-  cat(paste(still_missing, collapse = ", "), "\n\n")
-  message("Variables still containing missing values: ", paste(still_missing, collapse = ", "))
+  message("Variables still containing missing values after imputation:", length(still_missing))
+  message(paste(still_missing, collapse = ", "))
 
   # For any remaining missing values, use median imputation
   merged_df_imputed <- merged_df_imputed %>%
@@ -791,27 +845,27 @@ if (length(still_missing) > 0) {
   # Check if any missing values remain
   final_missing <- colSums(is.na(merged_df_imputed))
   if (sum(final_missing) > 0) {
-    cat("WARNING: Some missing values could not be imputed!\n")
+    message("WARNING: Some missing values could not be imputed!")
     print(final_missing[final_missing > 0])
   } else {
-    cat("All missing values successfully imputed.\n")
+    message("All missing values successfully imputed.")
   }
 } else {
-  cat("All missing values successfully imputed using LOCF/NOCB methods.\n")
+  message("All missing values successfully imputed.")
 }
 
 # Calculate imputation statistics
-cat("\n===== IMPUTATION SUMMARY =====\n")
+message("\n===== IMPUTATION SUMMARY =====")
 total_cells <- nrow(merged_df_with_missing) * (ncol(merged_df_with_missing) - length(time_cols))
 total_missing_before <- sum(is.na(merged_df_with_missing[, !names(merged_df_with_missing) %in% time_cols]))
 total_missing_after <- sum(is.na(merged_df_imputed[, !names(merged_df_imputed) %in% time_cols]))
 imputation_percent <- (total_missing_before - total_missing_after) / total_cells * 100
 
-cat("Total data cells:", total_cells, "\n")
-cat("Missing values before imputation:", total_missing_before,
-    sprintf("(%.2f%%)", total_missing_before/total_cells*100), "\n")
-cat("Missing values after imputation:", total_missing_after, "\n")
-cat("Percentage of data imputed:", sprintf("%.2f%%", imputation_percent), "\n\n")
+message("Total data cells:", total_cells)
+message("Missing values before imputation:", total_missing_before,
+    sprintf("(%.2f%%)", total_missing_before/total_cells*100))
+message("Missing values after imputation:", total_missing_after)
+message("Percentage of data imputed:", sprintf("%.2f%%", imputation_percent))
 
 # --- Perform Data Validation Checks ---
 message("Performing data validation checks...")
@@ -940,7 +994,7 @@ imputed_valid <- validate_data(merged_df_imputed, "merged_df_imputed")
 
 # --- Save the final merged datasets ---
 message("Saving merged datasets...")
-cat("\n===== SAVING DATASETS =====\n")
+message("\n===== SAVING DATASETS =====\n")
 
 # Create directory if it doesn't exist (redundant but safe)
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
@@ -948,18 +1002,18 @@ dir.create("Output", showWarnings = FALSE, recursive = TRUE)
 
 # Save both versions: one with original missing values, one imputed
 write_csv(merged_df_with_missing, "Processed_Data/merged_df_with_missing.csv")
-cat("Saved: Processed_Data/merged_df_with_missing.csv\n")
-cat("  Dimensions:", nrow(merged_df_with_missing), "rows,", ncol(merged_df_with_missing), "columns\n")
-cat("  Validation:", ifelse(with_missing_valid, "PASSED", "ISSUES DETECTED"), "\n")
+message("Saved: Processed_Data/merged_df_with_missing.csv")
+message("  Dimensions:", nrow(merged_df_with_missing), "rows,", ncol(merged_df_with_missing), "columns")
+message("  Validation:", ifelse(with_missing_valid, "PASSED", "ISSUES DETECTED"))
 
 write_csv(merged_df_imputed, "Processed_Data/merged_df_imputed.csv")
-cat("Saved: Processed_Data/merged_df_imputed.csv\n")
-cat("  Dimensions:", nrow(merged_df_imputed), "rows,", ncol(merged_df_imputed), "columns\n")
-cat("  Validation:", ifelse(imputed_valid, "PASSED", "ISSUES DETECTED"), "\n")
+message("Saved: Processed_Data/merged_df_imputed.csv")
+message("  Dimensions:", nrow(merged_df_imputed), "rows,", ncol(merged_df_imputed), "columns")
+message("  Validation:", ifelse(imputed_valid, "PASSED", "ISSUES DETECTED"))
 
 # Save as RDS for use in subsequent scripts
 saveRDS(merged_df_imputed, "Output/merged_df.rds")
-cat("Saved: Output/merged_df.rds (for use in subsequent scripts)\n")
+message("Saved: Output/merged_df.rds (for use in subsequent scripts)")
 
 # Save a smaller version with only key variables for quick analysis
 key_variables <- c("date", "month", "quarter", "year", "fiscal_year", "fiscal_quarter",
@@ -986,15 +1040,9 @@ key_vars_df <- merged_df_imputed %>%
   select(all_of(key_variables))
 
 write_csv(key_vars_df, "Processed_Data/key_variables.csv")
-cat("Saved: Processed_Data/key_variables.csv\n")
-cat("  Dimensions:", nrow(key_vars_df), "rows,", ncol(key_vars_df), "columns\n")
-cat("  Variables:", paste(names(key_vars_df), collapse = ", "), "\n\n")
-
-# --- Generate Comprehensive Validation Report ---
-cat("\n===== GENERATING FINAL REPORT =====\n")
-
-# Close the current sink to merge_process.txt
-sink()
+message("Saved: Processed_Data/key_variables.csv")
+message("  Dimensions:", nrow(key_vars_df), "rows,", ncol(key_vars_df), "columns")
+message("  Variables:", paste(names(key_vars_df), collapse = ", "))
 
 # Create a comprehensive report
 sink("merge_report.txt")

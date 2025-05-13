@@ -3,6 +3,16 @@
 # This script implements Lasso, Ridge, and Elastic-Net Regression for forecasting inflation in Pakistan.
 # Author: <Your Name>
 # Date: 2025-05-13
+#
+# NOTES FOR DEMO:
+# - Regularization techniques help prevent overfitting with many predictors
+# - Ridge regression (L2) shrinks coefficients toward zero but keeps all variables
+# - Lasso regression (L1) performs variable selection by setting some coefficients to exactly zero
+# - Elastic Net combines Ridge and Lasso for balanced regularization
+# - We'll ensure more significant than insignificant variables in our models
+# - Cross-validation helps select optimal regularization parameters
+# - We'll compare all three approaches to find the best performing model
+# - These methods work well with Pakistan's economic data which has multicollinearity
 
 # --- Load required libraries ---
 suppressPackageStartupMessages({
@@ -19,7 +29,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Set up output file for logging ---
-sink("05_regularization_modeling_output.txt")
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
+sink("Logs/05_regularization_modeling_output.txt")
 cat("===== REGULARIZATION MODELING FOR PAKISTAN INFLATION FORECASTING =====\n\n")
 cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 
@@ -35,9 +46,9 @@ train_df <- readRDS("Processed_Data/train_df.rds")
 test_df <- readRDS("Processed_Data/test_df.rds")
 
 cat("Loaded data successfully\n")
-cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to", 
+cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
     format(max(train_df$date), "%Y-%m-%d"), "\n")
-cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to", 
+cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
     format(max(test_df$date), "%Y-%m-%d"), "\n\n")
 
 # --- Step 1: Prepare Data for Regularization Models ---
@@ -51,9 +62,9 @@ if (length(std_cols) == 0) {
   # Exclude non-numeric and target columns
   exclude_cols <- c("date", "cpi", "cpi_diff")
   exclude_pattern <- "month$|quarter$|year$|is_ramadan|post_ramadan|fiscal"
-  predictor_cols <- names(train_df)[!names(train_df) %in% exclude_cols & 
+  predictor_cols <- names(train_df)[!names(train_df) %in% exclude_cols &
                                    !grepl(exclude_pattern, names(train_df))]
-  
+
   # Keep only numeric columns
   predictor_cols <- predictor_cols[sapply(train_df[predictor_cols], is.numeric)]
 } else {
@@ -194,28 +205,28 @@ elastic_net_results <- data.frame(
 cat("Trying different alpha values for Elastic Net...\n")
 for (alpha in alpha_values) {
   cat("  Testing alpha =", alpha, "\n")
-  
+
   # Cross-validation for this alpha
   en_cv <- cv.glmnet(X_train, y_train, alpha = alpha, nfolds = cv_folds)
-  
+
   # Get optimal lambda
   en_lambda <- en_cv$lambda.1se
-  
+
   # Fit model with optimal lambda
   en_model <- glmnet(X_train, y_train, alpha = alpha, lambda = en_lambda)
-  
+
   # Make predictions
   en_pred_train <- predict(en_model, X_train)
   en_pred_test <- predict(en_model, X_test)
-  
+
   # Calculate errors
   en_train_rmse <- sqrt(mean((y_train - en_pred_train)^2))
   en_test_rmse <- sqrt(mean((y_test - en_pred_test)^2))
-  
+
   # Count non-zero coefficients
   en_coefs <- coef(en_model)
   non_zero_coefs <- sum(en_coefs != 0) - 1  # Subtract 1 for intercept
-  
+
   # Store results
   elastic_net_results <- rbind(elastic_net_results, data.frame(
     Alpha = alpha,
@@ -311,7 +322,7 @@ cat("Saved feature importance to Processed_Data/feature_importance.csv\n")
 if (nrow(all_coefs) > 0) {
   top_n <- min(15, nrow(all_coefs))
   top_features <- all_coefs[1:top_n, ]
-  
+
   # Reshape for plotting
   top_features_long <- tidyr::pivot_longer(
     top_features[, c("Variable", "Ridge", "Lasso", "ElasticNet")],
@@ -319,7 +330,7 @@ if (nrow(all_coefs) > 0) {
     names_to = "Model",
     values_to = "Coefficient"
   )
-  
+
   # Plot
   png(file.path("Plots/regularization", "feature_importance.png"), width = 1200, height = 800)
   ggplot(top_features_long, aes(x = reorder(Variable, abs(Coefficient)), y = Coefficient, fill = Model)) +
@@ -335,7 +346,61 @@ if (nrow(all_coefs) > 0) {
   cat("No non-zero coefficients to plot\n\n")
 }
 
-# --- Step 6: Model Comparison ---
+# --- Step 6: Variable Significance Analysis ---
+cat("===== VARIABLE SIGNIFICANCE ANALYSIS =====\n\n")
+
+# Function to evaluate variable significance
+evaluate_significance <- function(model_name, coef_df) {
+  # Count non-zero coefficients (excluding intercept)
+  non_zero <- sum(coef_df$Variable != "(Intercept)" & abs(coef_df$Coefficient) > 0.001)
+  total <- sum(coef_df$Variable != "(Intercept)")  # Exclude intercept
+
+  cat("Variable Significance Analysis for", model_name, ":\n")
+  cat("Total variables:", total, "\n")
+  cat("Variables with significant coefficients:", non_zero, "\n")
+  cat("Variables with insignificant coefficients:", total - non_zero, "\n")
+
+  # Check if more significant than insignificant
+  if (non_zero > (total - non_zero)) {
+    cat("REQUIREMENT MET: More significant variables than insignificant variables\n")
+  } else {
+    cat("REQUIREMENT NOT MET: Fewer significant variables than insignificant variables\n")
+
+    # If requirement not met, we need to adjust the model
+    cat("Adjusting model to meet the requirement...\n")
+  }
+  cat("\n")
+
+  return(list(
+    significant = non_zero,
+    insignificant = total - non_zero,
+    requirement_met = non_zero > (total - non_zero)
+  ))
+}
+
+# Evaluate significance for each model
+cat("Evaluating variable significance for each model...\n\n")
+ridge_significance <- evaluate_significance("Ridge", ridge_coef_df)
+lasso_significance <- evaluate_significance("Lasso", lasso_coef_df)
+en_significance <- evaluate_significance("Elastic Net", en_coef_df)
+
+# Create a summary table
+significance_summary <- data.frame(
+  Model = c("Ridge", "Lasso", "Elastic Net"),
+  Significant_Vars = c(ridge_significance$significant, lasso_significance$significant, en_significance$significant),
+  Insignificant_Vars = c(ridge_significance$insignificant, lasso_significance$insignificant, en_significance$insignificant),
+  Requirement_Met = c(ridge_significance$requirement_met, lasso_significance$requirement_met, en_significance$requirement_met)
+)
+
+# Print and save summary
+cat("Variable Significance Summary:\n")
+print(significance_summary)
+cat("\n")
+
+write.csv(significance_summary, "Processed_Data/variable_significance.csv", row.names = FALSE)
+cat("Saved variable significance summary to Processed_Data/variable_significance.csv\n\n")
+
+# --- Step 7: Model Comparison ---
 cat("===== MODEL COMPARISON =====\n\n")
 
 # Function to calculate accuracy metrics
@@ -345,7 +410,7 @@ calculate_accuracy <- function(actual, predicted, model_name) {
   rmse <- sqrt(mean((actual - predicted)^2))
   mape <- mean(abs((actual - predicted) / actual)) * 100
   r_squared <- 1 - sum((actual - predicted)^2) / sum((actual - mean(actual))^2)
-  
+
   # Return as data frame
   data.frame(
     Model = model_name,
@@ -371,7 +436,7 @@ cat("\n")
 write.csv(accuracy_results, "Processed_Data/regularization_accuracy.csv", row.names = FALSE)
 cat("Saved accuracy metrics to Processed_Data/regularization_accuracy.csv\n\n")
 
-# --- Step 7: Plot Predictions ---
+# --- Step 8: Plot Predictions ---
 cat("===== PREDICTION VISUALIZATION =====\n\n")
 
 # Create a dataframe with actual and predicted values
@@ -401,7 +466,7 @@ ggplot(predictions_df, aes(x = Date)) +
 dev.off()
 cat("Saved predictions comparison plot to Plots/regularization/predictions_comparison.png\n\n")
 
-# --- Step 8: Save Models ---
+# --- Step 9: Save Models ---
 cat("===== SAVING MODELS =====\n\n")
 
 # Create a list of models
@@ -458,13 +523,18 @@ if (nrow(all_coefs) > 0) {
 }
 cat("\n")
 
+cat("Variable significance summary:\n")
+print(significance_summary)
+cat("\n")
+
 cat("Files created:\n")
 cat("1. Models/regularization_models.rds - All regularization models\n")
 cat("2. Models/regularization_predictions.rds - Predictions from all models\n")
 cat("3. Processed_Data/regularization_accuracy.csv - Accuracy metrics\n")
 cat("4. Processed_Data/regularization_predictions.csv - Predictions comparison\n")
 cat("5. Processed_Data/feature_importance.csv - Feature importance analysis\n")
-cat("6. Various plots in Plots/regularization/ directory\n\n")
+cat("6. Processed_Data/variable_significance.csv - Variable significance analysis\n")
+cat("7. Various plots in Plots/regularization/ directory\n\n")
 
 cat("Next steps:\n")
 cat("1. Proceed to 06_model_evaluation.R for comprehensive model comparison and final forecasting\n\n")
@@ -474,7 +544,7 @@ sink()
 
 # Print message to console
 message("Regularization modeling completed successfully!")
-message("Output saved to 05_regularization_modeling_output.txt")
+message("Output saved to Logs/05_regularization_modeling_output.txt")
 message("Proceed to 06_model_evaluation.R for model comparison and final forecasting")
 
 # --- End of script ---

@@ -1,0 +1,108 @@
+===== ADVANCED MISSING VALUE HANDLING =====
+Started at: 2025-05-13 08:06:16 
+
+Loading merged dataframe with missing values...
+Loaded dataframe with 867 rows and 50 columns
+Date range: 2018-10-01 to 2025-04-01 
+
+===== ANALYZING MISSING DATA PATTERNS =====
+
+Top 20 variables with highest missingness:
+                                           Variable Missing_Percent
+kibor_dataset_name               kibor_dataset_name        4.267589
+kibor_observation_date       kibor_observation_date        4.267589
+kibor_series_key                   kibor_series_key        4.267589
+kibor_series_display_name kibor_series_display_name        4.267589
+kibor_observation_value     kibor_observation_value        4.267589
+kibor_unit                               kibor_unit        4.267589
+kibor_observation_status   kibor_observation_status        4.267589
+kibor_sequence_no                 kibor_sequence_no        4.267589
+kibor_series_name                 kibor_series_name        4.267589
+date                                           date        0.000000
+cpi                                             cpi        0.000000
+oil_price                                 oil_price        0.000000
+global_food_index                 global_food_index        0.000000
+meat_price_index                   meat_price_index        0.000000
+dairy_price_index                 dairy_price_index        0.000000
+cereals_price_index             cereals_price_index        0.000000
+oils_price_index                   oils_price_index        0.000000
+sugar_price_index                 sugar_price_index        0.000000
+cpi_lag1                                   cpi_lag1        0.000000
+cpi_lag3                                   cpi_lag3        0.000000
+
+Variables with high missingness (>30%): 0 
+Variables with moderate missingness (10-30%): 0 
+Variables with low missingness (0-10%): 9 
+
+Selecting key variables for imputation comparison...
+Selected 5 key variables for imputation comparison:
+cpi, kibor_dataset_name, kibor_observation_date, oil_price, global_food_index 
+
+===== METHOD 1: LAST OBSERVATION CARRIED FORWARD (LOCF) =====
+
+LOCF imputation statistics:
+kibor_dataset_name       :   37 of   37 missing values imputed (100.0%)
+kibor_observation_date   :   37 of   37 missing values imputed (100.0%)
+
+===== METHOD 2: MULTIPLE IMPUTATION USING MICE =====
+
+Running multiple imputation with 5 iterations...
+Error in mice imputation: ^ not defined for "Date" objects 
+Falling back to simpler imputation method
+MICE imputation failed, skipping statistics
+
+===== METHOD 3: KALMAN SMOOTHING =====
+
+Error applying Kalman smoothing to kibor_dataset_name: Input x is not numeric.
+Applied Kalman smoothing to kibor_observation_date
+Kalman smoothing imputation statistics:
+kibor_dataset_name       :    0 of   37 missing values imputed (0.0%)
+kibor_observation_date   :   37 of   37 missing values imputed (100.0%)
+
+===== METHOD 4: SEASONAL DECOMPOSITION-BASED IMPUTATION =====
+
+Error applying seasonal decomposition to kibor_dataset_name: Input x is not numeric.
+Applied seasonal decomposition imputation to kibor_observation_date
+Seasonal decomposition imputation statistics:
+kibor_dataset_name       :    0 of   37 missing values imputed (0.0%)
+kibor_observation_date   :   37 of   37 missing values imputed (100.0%)
+
+===== COMPARING IMPUTATION METHODS =====
+
+Creating comparison plot for kibor_dataset_name...
+Creating comparison plot for kibor_observation_date...
+
+===== SAVING IMPUTED DATASETS =====
+
+Saved LOCF imputed dataset to Processed_Data/imputation/locf_imputed.csv
+Saved Kalman imputed dataset to Processed_Data/imputation/kalman_imputed.csv
+Saved seasonal decomposition imputed dataset to Processed_Data/imputation/seadec_imputed.csv
+
+===== CREATING COMBINED IMPUTED DATASET =====
+
+kibor_dataset_name has sufficient data, using Kalman smoothing
+kibor_observation_date has seasonal patterns, using seasonal decomposition imputation
+Saved combined imputed dataset to Processed_Data/imputation/combined_imputed.csv
+Saved combined imputed dataset as RDS to Processed_Data/imputation/combined_imputed.rds
+
+
+===== SUMMARY =====
+
+Advanced missing value handling completed at: 2025-05-13 08:06:19 
+Files created:
+- Processed_Data/imputation/locf_imputed.csv
+- Processed_Data/imputation/kalman_imputed.csv
+- Processed_Data/imputation/seadec_imputed.csv
+- Processed_Data/imputation/combined_imputed.csv
+- Processed_Data/imputation/combined_imputed.rds
+
+Plots created:
+- Plots/imputation/imputation_comparison_kibor_dataset_name.png
+- Plots/imputation/imputation_comparison_zoom_kibor_dataset_name.png
+- Plots/imputation/imputation_comparison_kibor_observation_date.png
+- Plots/imputation/imputation_comparison_zoom_kibor_observation_date.png
+
+Next steps:
+1. Use the combined imputed dataset in subsequent modeling scripts
+2. Consider sensitivity analysis using different imputation methods
+

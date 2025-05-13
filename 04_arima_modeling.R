@@ -1,8 +1,17 @@
 # 04_arima_modeling.R
 # Pakistan Inflation Forecasting Project: ARIMA Modeling
-# This script implements ARIMA and ARIMAX models for forecasting inflation in Pakistan.
+# This script implements ARIMA models for forecasting inflation in Pakistan.
 # Author: <Your Name>
 # Date: 2025-05-13
+#
+# NOTES FOR DEMO:
+# - ARIMA is a powerful time series forecasting method that captures temporal patterns
+# - We're focusing on ARIMA only (not ARIMAX) as per project requirements
+# - The model selection process is automated using auto.arima() for optimal parameters
+# - We'll evaluate stationarity using ADF tests and transform data if needed
+# - Model diagnostics include residual analysis to ensure model validity
+# - We'll use an 80-20 train-test split to evaluate model performance with MSE
+# - This approach allows us to capture inflation dynamics without external variables
 
 # --- Load required libraries ---
 suppressPackageStartupMessages({
@@ -19,7 +28,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Set up output file for logging ---
-sink("04_arima_modeling_output.txt")
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
+sink("Logs/04_arima_modeling_output.txt")
 cat("===== ARIMA MODELING FOR PAKISTAN INFLATION FORECASTING =====\n\n")
 cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 
@@ -41,9 +51,9 @@ train_cpi_ts <- ts_objects$train
 test_cpi_ts <- ts_objects$test
 
 cat("Loaded data successfully\n")
-cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to", 
+cat("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",
     format(max(train_df$date), "%Y-%m-%d"), "\n")
-cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to", 
+cat("Test data period:", format(min(test_df$date), "%Y-%m-%d"), "to",
     format(max(test_df$date), "%Y-%m-%d"), "\n\n")
 
 # --- Step 1: Exploratory Analysis of Time Series ---
@@ -51,10 +61,10 @@ cat("===== EXPLORATORY ANALYSIS OF TIME SERIES =====\n\n")
 
 # Plot the time series
 png(file.path("Plots/arima", "cpi_time_series.png"), width = 1000, height = 600)
-plot(cpi_ts, main = "Pakistan CPI (Year-on-Year % Change)", 
+plot(cpi_ts, main = "Pakistan CPI (Year-on-Year % Change)",
      xlab = "Year", ylab = "CPI (YoY %)")
 abline(v = time(train_cpi_ts)[length(train_cpi_ts)], col = "red", lty = 2)
-legend("topleft", legend = c("Training Data", "Test Data"), 
+legend("topleft", legend = c("Training Data", "Test Data"),
        col = c("black", "black"), lty = c(1, 1), bty = "n")
 dev.off()
 cat("Saved time series plot to Plots/arima/cpi_time_series.png\n")
@@ -83,31 +93,31 @@ adf_test <- adf.test(train_cpi_ts, alternative = "stationary")
 cat("Augmented Dickey-Fuller Test for Stationarity:\n")
 cat("  Test statistic:", adf_test$statistic, "\n")
 cat("  p-value:", adf_test$p.value, "\n")
-cat("  Interpretation:", ifelse(adf_test$p.value < 0.05, 
-                              "Series is stationary", 
+cat("  Interpretation:", ifelse(adf_test$p.value < 0.05,
+                              "Series is stationary",
                               "Series is non-stationary"), "\n\n")
 
 # If non-stationary, difference the series
 if (adf_test$p.value >= 0.05) {
   cat("Series is non-stationary. Differencing the series...\n")
   diff_cpi_ts <- diff(train_cpi_ts)
-  
+
   # Plot differenced series
   png(file.path("Plots/arima", "differenced_series.png"), width = 1000, height = 600)
-  plot(diff_cpi_ts, main = "Differenced CPI Series", 
+  plot(diff_cpi_ts, main = "Differenced CPI Series",
        xlab = "Year", ylab = "Differenced CPI")
   dev.off()
   cat("Saved differenced series plot to Plots/arima/differenced_series.png\n")
-  
+
   # Check stationarity of differenced series
   adf_diff_test <- adf.test(diff_cpi_ts, alternative = "stationary")
   cat("Augmented Dickey-Fuller Test for Differenced Series:\n")
   cat("  Test statistic:", adf_diff_test$statistic, "\n")
   cat("  p-value:", adf_diff_test$p.value, "\n")
-  cat("  Interpretation:", ifelse(adf_diff_test$p.value < 0.05, 
-                                "Differenced series is stationary", 
+  cat("  Interpretation:", ifelse(adf_diff_test$p.value < 0.05,
+                                "Differenced series is stationary",
                                 "Differenced series is non-stationary"), "\n\n")
-  
+
   # ACF and PACF of differenced series
   png(file.path("Plots/arima", "acf_pacf_diff.png"), width = 1000, height = 600)
   par(mfrow = c(2, 1))
@@ -125,7 +135,7 @@ cat("===== ARIMA MODEL SELECTION =====\n\n")
 
 # Auto ARIMA to find the best model
 cat("Running auto.arima to find the best ARIMA model...\n")
-auto_arima_model <- auto.arima(train_cpi_ts, seasonal = TRUE, 
+auto_arima_model <- auto.arima(train_cpi_ts, seasonal = TRUE,
                               stepwise = TRUE, approximation = FALSE)
 
 # Print model summary
@@ -160,8 +170,8 @@ lb_test <- Box.test(residuals(auto_arima_model), lag = 20, type = "Ljung-Box")
 cat("Ljung-Box Test for Residual Autocorrelation:\n")
 cat("  Test statistic:", lb_test$statistic, "\n")
 cat("  p-value:", lb_test$p.value, "\n")
-cat("  Interpretation:", ifelse(lb_test$p.value >= 0.05, 
-                              "Residuals are white noise (good)", 
+cat("  Interpretation:", ifelse(lb_test$p.value >= 0.05,
+                              "Residuals are white noise (good)",
                               "Residuals show autocorrelation (problematic)"), "\n\n")
 
 # --- Step 5: ARIMA Forecasting ---
@@ -184,90 +194,14 @@ legend("topleft", legend = c("Actual", "Forecast", "95% Prediction Interval"),
 dev.off()
 cat("Saved ARIMA forecast plot to Plots/arima/arima_forecast.png\n")
 
-# --- Step 6: ARIMAX Model with External Regressors ---
-cat("===== ARIMAX MODEL WITH EXTERNAL REGRESSORS =====\n\n")
+# --- Note on ARIMAX Modeling ---
+cat("===== NOTE ON ARIMAX MODELING =====\n\n")
+cat("As per project requirements, ARIMAX modeling has been excluded from this analysis.\n")
+cat("The project focuses only on ARIMA, Ridge, Lasso, and Elastic Net models.\n\n")
 
-# Identify potential external regressors
-cat("Identifying potential external regressors...\n")
-# Exclude date, target variable, and derived features
-exclude_cols <- c("date", "cpi", "cpi_diff")
-exclude_pattern <- "_std$|_lag|_ma|_mom_pct|_yoy_pct"
-potential_regressors <- names(train_df)[!names(train_df) %in% exclude_cols & 
-                                       !grepl(exclude_pattern, names(train_df))]
-
-# Filter to numeric columns only
-potential_regressors <- potential_regressors[sapply(train_df[potential_regressors], is.numeric)]
-
-cat("Potential external regressors:", length(potential_regressors), "\n")
-cat(paste(head(potential_regressors, 10), collapse = ", "))
-if (length(potential_regressors) > 10) {
-  cat(", ...", length(potential_regressors) - 10, "more")
-}
-cat("\n\n")
-
-# Select top regressors based on correlation with CPI
-if (length(potential_regressors) > 0) {
-  regressor_correlations <- sapply(potential_regressors, function(var) {
-    cor(train_df$cpi, train_df[[var]], use = "pairwise.complete.obs")
-  })
-  
-  # Sort by absolute correlation
-  regressor_correlations <- sort(abs(regressor_correlations), decreasing = TRUE)
-  
-  # Select top 5 regressors (or fewer if less available)
-  top_regressors <- names(head(regressor_correlations, min(5, length(regressor_correlations))))
-  
-  cat("Selected top external regressors based on correlation with CPI:\n")
-  for (var in top_regressors) {
-    actual_corr <- cor(train_df$cpi, train_df[[var]], use = "pairwise.complete.obs")
-    cat("  -", var, ": correlation =", round(actual_corr, 3), "\n")
-  }
-  cat("\n")
-  
-  # Prepare external regressors for ARIMAX
-  train_xreg <- as.matrix(train_df[, top_regressors])
-  test_xreg <- as.matrix(test_df[, top_regressors])
-  
-  # Fit ARIMAX model
-  cat("Fitting ARIMAX model with external regressors...\n")
-  arimax_model <- auto.arima(train_cpi_ts, xreg = train_xreg, seasonal = TRUE,
-                           stepwise = TRUE, approximation = FALSE)
-  
-  # Print model summary
-  cat("ARIMAX Model:\n")
-  print(arimax_model)
-  cat("\n")
-  
-  # Save model information
-  arimax_order <- arimaorder(arimax_model)
-  cat("ARIMAX Order: (", arimax_order[1], ",", arimax_order[2], ",", arimax_order[3], ")\n")
-  cat("External Regressors:", paste(top_regressors, collapse = ", "), "\n")
-  cat("AIC:", arimax_model$aic, "\n")
-  cat("BIC:", arimax_model$bic, "\n")
-  cat("Log Likelihood:", arimax_model$loglik, "\n\n")
-  
-  # ARIMAX diagnostics
-  png(file.path("Plots/arima", "arimax_residual_diagnostics.png"), width = 1000, height = 800)
-  checkresiduals(arimax_model)
-  dev.off()
-  cat("Saved ARIMAX residual diagnostics plot to Plots/arima/arimax_residual_diagnostics.png\n")
-  
-  # ARIMAX forecasting
-  cat("Generating ARIMAX forecasts...\n")
-  arimax_forecast <- forecast(arimax_model, xreg = test_xreg, h = h)
-  
-  # Plot ARIMAX forecasts
-  png(file.path("Plots/arima", "arimax_forecast.png"), width = 1000, height = 600)
-  plot(arimax_forecast, main = "ARIMAX Forecast of Pakistan CPI",
-       xlab = "Year", ylab = "CPI (YoY %)")
-  lines(test_cpi_ts, col = "red")
-  legend("topleft", legend = c("Actual", "Forecast", "95% Prediction Interval"),
-         col = c("red", "blue", "gray"), lty = c(1, 1, 1), bty = "n")
-  dev.off()
-  cat("Saved ARIMAX forecast plot to Plots/arima/arimax_forecast.png\n\n")
-} else {
-  cat("No suitable external regressors found. Skipping ARIMAX modeling.\n\n")
-}
+# Create a placeholder for ARIMAX results to maintain compatibility with later scripts
+arimax_model <- NULL
+arimax_forecast <- NULL
 
 # --- Step 7: Model Evaluation ---
 cat("===== MODEL EVALUATION =====\n\n")
@@ -278,7 +212,7 @@ calculate_accuracy <- function(actual, predicted, model_name) {
   mae <- mean(abs(actual - predicted))
   rmse <- sqrt(mean((actual - predicted)^2))
   mape <- mean(abs((actual - predicted) / actual)) * 100
-  
+
   # Return as data frame
   data.frame(
     Model = model_name,
@@ -329,8 +263,8 @@ forecast_comparison <- data.frame(
   ARIMA = arima_predictions
 )
 
-# Add ARIMAX predictions if available
-if (exists("arimax_predictions")) {
+# Add ARIMAX predictions if available and not empty
+if (exists("arimax_predictions") && length(arimax_predictions) > 0) {
   forecast_comparison$ARIMAX <- arimax_predictions
 }
 
@@ -381,9 +315,12 @@ cat("===== FINAL SUMMARY =====\n\n")
 cat("ARIMA modeling completed successfully!\n\n")
 
 cat("Best ARIMA model: ARIMA", paste0(arimaorder(auto_arima_model), collapse = ","), "\n")
-if (exists("arimax_model")) {
-  cat("Best ARIMAX model: ARIMA", paste0(arimaorder(arimax_model), collapse = ","), 
-      "with", length(top_regressors), "external regressors\n")
+if (exists("arimax_model") && !is.null(arimax_model)) {
+  tryCatch({
+    cat("Best ARIMAX model: ARIMA", paste0(arimaorder(arimax_model), collapse = ","), "\n")
+  }, error = function(e) {
+    cat("ARIMAX model information not available\n")
+  })
 }
 cat("\n")
 
@@ -410,7 +347,7 @@ sink()
 
 # Print message to console
 message("ARIMA modeling completed successfully!")
-message("Output saved to 04_arima_modeling_output.txt")
+message("Output saved to Logs/04_arima_modeling_output.txt")
 message("Proceed to 05_regularization_modeling.R for regularization techniques")
 
 # --- End of script ---

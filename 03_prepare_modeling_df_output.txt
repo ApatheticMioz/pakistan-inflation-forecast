@@ -1,110 +1,0 @@
-===== MODELING DATAFRAME PREPARATION =====
-
-Started at: 2025-05-13 05:05:56 
-
-Loading merged dataframe...
-Loaded dataframe with 705 rows and 27 columns
-Date range: 2020-04-01 to 2025-05-01 
-
-indexing CPI National -YoY.csv [=====================================================================] 1.40GB/s, eta:  0s                                                                                                                         indexing Exports and Imports.csv [===================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing Industrial Production Index.csv [===========================================================] 1.88GB/s, eta:  0s                                                                                                                         indexing KIBOR.csv [=================================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing Monthly Monetary Aggregate.csv [============================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing Pakistan Exchange Rate Per USD.csv [========================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing Policy Rate.csv [=========================================================================] 687.31MB/s, eta:  0s                                                                                                                         indexed 167.00B in  0s, 15.23MB/s                                                                                                                       indexed 2.15GB in  0s, 2.15GB/s                                                                                                                       indexed 3.00B in  0s, 299.59kB/s                                                                                                                       indexed 2.15GB in  0s, 2.15GB/s                                                                                                                       indexed 3.00B in  0s, 433.89kB/s                                                                                                                       indexed 2.15GB in  0s, 2.15GB/s                                                                                                                       indexed 3.00B in  0s, 331.13kB/s                                                                                                                       indexed 2.15GB in  0s, 2.15GB/s                                                                                                                       indexed 3.00B in  0s, 267.72kB/s                                                                                                                       indexed 2.15GB in  0s, 2.15GB/s                                                                                                                       indexing International Oil Prices.csv [============================================================] 782.44MB/s, eta:  0s                                                                                                                         indexing borrow_loans.csv [==========================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing country_wise_remittance.csv [===============================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing exchange_rate.csv [=========================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing foreign_invest_countires.csv [==============================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing foreign_invest_sectors.csv [================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing gold_foreign_exchange_reserves.csv [========================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing inflation_base_2015.csv [===================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing kibor_kibid.csv [===========================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing m2_broad_money.csv [========================================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing seasonal_worker_remittance.csv [============================================================] 2.15GB/s, eta:  0s                                                                                                                         indexing t_bills.csv [===============================================================================] 2.15GB/s, eta:  0s                                                                                                                         null device 
-          1 
-
- Variables sorted by number of missings: 
-                   Variable Count
- observation_status_comment     1
-                    dataset     0
-                 series_key     0
-                     series     0
-           observation_date     0
-          observation_value     0
-                       unit     0
-         observation_status     0
-                       date     0
-
- Variables sorted by number of missings: 
-                   Variable Count
- observation_status_comment     1
-                    dataset     0
-                 series_key     0
-                     series     0
-           observation_date     0
-          observation_value     0
-                       unit     0
-         observation_status     0
-                       date     0
-
- Variables sorted by number of missings: 
-         Variable Count
- observation_date     0
-     mcoilbrenteu     0
-             date     0
-
- Variables sorted by number of missings: 
-         Variable     Count
-               x8 1.0000000
-               x9 1.0000000
-              x10 1.0000000
-              x11 1.0000000
-              x12 1.0000000
-              x13 1.0000000
-              x14 1.0000000
-              x15 1.0000000
-              x16 1.0000000
-              x17 1.0000000
-              x18 1.0000000
-              x19 1.0000000
-              x20 1.0000000
-              x21 1.0000000
-              x22 1.0000000
-              x23 1.0000000
-              x24 1.0000000
-              x25 1.0000000
-              x26 1.0000000
-              x27 1.0000000
-              x28 1.0000000
-              x29 1.0000000
-              x30 1.0000000
-              x31 1.0000000
-              x32 1.0000000
-              x33 1.0000000
-              x34 1.0000000
-              x35 1.0000000
-              x36 1.0000000
-              x38 1.0000000
-              x39 1.0000000
-              x40 1.0000000
-              x41 1.0000000
-              x42 1.0000000
-              x43 1.0000000
-              x44 1.0000000
-              x45 1.0000000
-              x46 1.0000000
-              x47 1.0000000
-              x48 1.0000000
-              x49 1.0000000
-              x50 1.0000000
-              x51 1.0000000
-              x52 1.0000000
-              x53 1.0000000
-              x54 1.0000000
-              x55 1.0000000
-              x56 1.0000000
-              x57 1.0000000
-              x58 1.0000000
-              x59 1.0000000
-              x60 1.0000000
-              x61 1.0000000
-              x62 1.0000000
-              x63 1.0000000
-              x64 1.0000000
-              x65 1.0000000
-              x37 0.9976415
-             date 0.6603774
-              x66 0.2995283
- food_price_index 0.0000000
-             meat 0.0000000
-            dairy 0.0000000
-          cereals 0.0000000
-             oils 0.0000000
-            sugar 0.0000000
-           date_2 0.0000000

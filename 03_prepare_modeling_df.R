@@ -24,7 +24,8 @@ suppressPackageStartupMessages({
 })
 
 # --- Set up output file for logging ---
-sink("03_prepare_modeling_df_output.txt")
+dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
+sink("Logs/03_prepare_modeling_df_output.txt")
 cat("===== MODELING DATAFRAME PREPARATION =====\n\n")
 cat("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n\n")
 
@@ -34,7 +35,7 @@ dir.create("Plots/model_prep", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load merged dataframe ---
 cat("Loading merged dataframe...\n")
-merged_df <- readRDS("merged_df.rds")
+merged_df <- readRDS("Output/merged_df.rds")
 cat("Loaded dataframe with", nrow(merged_df), "rows and", ncol(merged_df), "columns\n")
 cat("Date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
     format(max(merged_df$date), "%Y-%m-%d"), "\n\n")
@@ -194,6 +195,82 @@ numeric_cols <- names(merged_df)[sapply(merged_df, is.numeric)]
 numeric_cols <- setdiff(numeric_cols, c("date", "month", "quarter", "year",
                                        "is_ramadan", "post_ramadan", "fiscal_quarter"))
 
+# Create a combined box and whisker plot for all numeric variables
+# This helps in identifying outliers across all variables at once
+create_combined_boxplot <- function(df, vars, max_vars = 15) {
+  # Select top variables if there are too many
+  if (length(vars) > max_vars) {
+    # Prioritize CPI and variables with outliers
+    outlier_counts <- sapply(df[vars], function(x) sum(detect_outliers(x), na.rm = TRUE))
+    # Ensure CPI is included
+    priority_vars <- c("cpi", names(sort(outlier_counts, decreasing = TRUE)))
+    # Remove duplicates and limit to max_vars
+    vars <- unique(priority_vars)[1:min(max_vars, length(unique(priority_vars)))]
+  }
+
+  # Scale the variables for better visualization
+  scaled_df <- df
+  for (var in vars) {
+    if (is.numeric(df[[var]])) {
+      # Use robust scaling to handle outliers
+      median_val <- median(df[[var]], na.rm = TRUE)
+      iqr_val <- IQR(df[[var]], na.rm = TRUE)
+      if (iqr_val > 0) {
+        scaled_df[[var]] <- (df[[var]] - median_val) / iqr_val
+      }
+    }
+  }
+
+  # Reshape data for plotting
+  plot_data <- scaled_df %>%
+    select(all_of(vars)) %>%
+    tidyr::pivot_longer(cols = everything(), names_to = "Variable", values_to = "Value")
+
+  # Create plot with different colors for each variable
+  p <- ggplot(plot_data, aes(x = Variable, y = Value, fill = Variable)) +
+    geom_boxplot() +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.position = "none") +
+    labs(title = "Box and Whisker Plot of Key Variables (Scaled)",
+         subtitle = "Variables are scaled using robust scaling (x-median)/IQR to allow comparison",
+         x = "Variable", y = "Scaled Value") +
+    scale_fill_brewer(palette = "Set3")
+
+  # Save plot
+  ggsave(file.path("Plots/model_prep", "combined_boxplot.png"), p, width = 12, height = 8)
+
+  # Also create an unscaled version for actual values
+  plot_data_unscaled <- df %>%
+    select(all_of(vars)) %>%
+    tidyr::pivot_longer(cols = everything(), names_to = "Variable", values_to = "Value")
+
+  # Create faceted boxplots to show actual values
+  p2 <- ggplot(plot_data_unscaled, aes(x = 1, y = Value, fill = Variable)) +
+    geom_boxplot() +
+    facet_wrap(~ Variable, scales = "free_y", ncol = 3) +
+    theme_minimal() +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          legend.position = "none") +
+    labs(title = "Box and Whisker Plots of Key Variables (Actual Values)",
+         subtitle = "Each variable shown with its actual scale",
+         x = "", y = "Value") +
+    scale_fill_brewer(palette = "Set3")
+
+  ggsave(file.path("Plots/model_prep", "faceted_boxplots.png"), p2, width = 12, height = 10)
+
+  cat("Created combined box and whisker plots for key variables\n")
+  cat("- Scaled version: Plots/model_prep/combined_boxplot.png\n")
+  cat("- Actual values: Plots/model_prep/faceted_boxplots.png\n\n")
+
+  return(p)
+}
+
+# Create combined boxplot for all numeric variables
+combined_boxplot <- create_combined_boxplot(merged_df, numeric_cols)
+
+# Identify variables with outliers
 outlier_counts <- sapply(merged_df[numeric_cols], function(x) sum(detect_outliers(x), na.rm = TRUE))
 outlier_vars <- names(outlier_counts[outlier_counts > 0])
 
@@ -202,7 +279,7 @@ if (length(outlier_vars) > 0) {
   for (var in outlier_vars) {
     cat("  -", var, ":", outlier_counts[var], "outliers\n")
 
-    # Create boxplot to visualize outliers
+    # Create individual boxplot to visualize outliers
     p <- ggplot(merged_df, aes_string(y = var)) +
       geom_boxplot(fill = "skyblue") +
       ggtitle(paste("Boxplot of", var, "showing outliers")) +
@@ -240,6 +317,112 @@ time_cols <- time_cols[time_cols %in% names(merged_df)]
 # Identify numeric columns for correlation analysis
 numeric_cols <- names(merged_df)[sapply(merged_df, is.numeric)]
 numeric_cols <- setdiff(numeric_cols, time_cols)
+
+# Create scatter plots for key variables against CPI (target variable)
+cat("Creating scatter plots to visualize relationships with target variable...\n")
+
+# Function to create scatter plots
+create_scatter_plots <- function(df, target_var, predictor_vars, max_plots = 15) {
+  # Ensure target variable exists
+  if (!(target_var %in% names(df))) {
+    cat("Target variable", target_var, "not found in dataframe\n")
+    return(NULL)
+  }
+
+  # Limit number of plots if too many variables
+  if (length(predictor_vars) > max_plots) {
+    # Calculate correlations with target
+    cors <- sapply(df[predictor_vars], function(x) {
+      if (is.numeric(x)) {
+        return(abs(cor(x, df[[target_var]], use = "pairwise.complete.obs")))
+      } else {
+        return(0)
+      }
+    })
+
+    # Select top correlated variables
+    predictor_vars <- names(sort(cors, decreasing = TRUE))[1:max_plots]
+  }
+
+  # Create directory for scatter plots
+  scatter_dir <- file.path("Plots/model_prep/scatter_plots")
+  dir.create(scatter_dir, showWarnings = FALSE, recursive = TRUE)
+
+  # Create individual scatter plots
+  for (var in predictor_vars) {
+    if (is.numeric(df[[var]])) {
+      p <- ggplot(df, aes_string(x = var, y = target_var)) +
+        geom_point(alpha = 0.5, color = "blue") +
+        geom_smooth(method = "loess", color = "red", se = TRUE) +
+        theme_minimal() +
+        labs(title = paste("Relationship between", var, "and", target_var),
+             subtitle = paste("Correlation:", round(cor(df[[var]], df[[target_var]], use = "pairwise.complete.obs"), 3)),
+             x = var, y = target_var)
+
+      ggsave(file.path(scatter_dir, paste0("scatter_", var, "_vs_", target_var, ".png")),
+             p, width = 8, height = 6)
+    }
+  }
+
+  # Create a scatter plot matrix for the top variables
+  # This provides a comprehensive view of relationships between variables
+  scatter_matrix_vars <- c(target_var, head(predictor_vars, min(8, length(predictor_vars))))
+
+  # Create the scatter plot matrix using GGally
+  # First ensure there are no duplicate column names
+  scatter_df <- df[scatter_matrix_vars]
+  # Check for duplicated column names
+  if (any(duplicated(names(scatter_df)))) {
+    cat("Warning: Duplicate column names detected in scatter matrix variables\n")
+    # Keep only unique column names
+    scatter_df <- scatter_df[, !duplicated(names(scatter_df))]
+    cat("Removed duplicate columns for scatter matrix\n")
+  }
+
+  # Now create the scatter plot matrix
+  scatter_matrix <- tryCatch({
+    GGally::ggpairs(
+      scatter_df,
+      title = "Scatter Plot Matrix of Key Variables",
+      upper = list(continuous = "cor"),
+      lower = list(continuous = "points"),
+      diag = list(continuous = "densityDiag"),
+      progress = FALSE
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  }, error = function(e) {
+    cat("Error creating scatter matrix:", e$message, "\n")
+    cat("Creating simplified scatter matrix instead\n")
+    # Create a simplified version as fallback
+    pairs(scatter_df)
+    NULL
+  })
+
+  # Save the scatter plot matrix if it was created successfully
+  if (!is.null(scatter_matrix)) {
+    ggsave(file.path("Plots/model_prep", "scatter_matrix.png"),
+           scatter_matrix, width = 12, height = 12)
+    cat("Created scatter plot matrix at Plots/model_prep/scatter_matrix.png\n")
+  } else {
+    # Save the base R pairs plot
+    png(file.path("Plots/model_prep", "scatter_matrix_simple.png"), width = 1200, height = 1200)
+    pairs(scatter_df, main = "Simple Scatter Plot Matrix")
+    dev.off()
+    cat("Created simplified scatter plot matrix at Plots/model_prep/scatter_matrix_simple.png\n")
+  }
+
+  cat("Created", length(predictor_vars), "individual scatter plots in", scatter_dir, "\n\n")
+
+  return(scatter_matrix)
+}
+
+# Create scatter plots for CPI against other variables
+if ("cpi" %in% names(merged_df)) {
+  scatter_plots <- create_scatter_plots(merged_df, "cpi", numeric_cols)
+} else {
+  cat("Target variable 'cpi' not found. Scatter plots not created.\n\n")
+}
 
 # Calculate correlation with target variable (CPI)
 if ("cpi" %in% numeric_cols) {
@@ -537,7 +720,7 @@ sink()
 
 # Print message to console
 message("Data preparation completed successfully!")
-message("Output saved to 03_prepare_modeling_df_output.txt")
+message("Output saved to Logs/03_prepare_modeling_df_output.txt")
 message("Proceed to 04_arima_modeling.R for ARIMA model implementation")
 
 # --- End of script ---

@@ -1,0 +1,7 @@
+"     cpi"	"     cpi"	"sugar_price_index"	"meat_price_index"	"global_food_index_yoy_pct"
+""	"Min.   : 0.300  "	"Min.   : 0.300  "	"Min.   : 63.2  "	"Min.   : 91.2  "	"Min.   :-7.2446  "
+""	"1st Qu.: 8.979  "	"1st Qu.: 8.979  "	"1st Qu.: 87.1  "	"1st Qu.:101.1  "	"1st Qu.:-0.8529  "
+""	"Median :12.282  "	"Median :12.282  "	"Median :116.4  "	"Median :111.6  "	"Median : 0.0000  "
+""	"Mean   :16.421  "	"Mean   :16.421  "	"Mean   :113.6  "	"Mean   :109.7  "	"Mean   : 0.4181  "
+""	"3rd Qu.:23.800  "	"3rd Qu.:23.800  "	"3rd Qu.:126.4  "	"3rd Qu.:116.6  "	"3rd Qu.: 1.2777  "
+""	"Max.   :38.000  "	"Max.   :38.000  "	"Max.   :162.7  "	"Max.   :125.4  "	"Max.   : 7.6694  "

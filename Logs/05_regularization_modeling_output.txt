@@ -1,0 +1,194 @@
+===== REGULARIZATION MODELING FOR PAKISTAN INFLATION FORECASTING =====
+
+Started at: 2025-05-13 08:14:03 
+
+Loading prepared data...
+Loaded data successfully
+Training data period: 2018-10-01 to 2023-11-01 
+Test data period: 2023-11-01 to 2025-04-01 
+
+===== PREPARING DATA FOR REGULARIZATION MODELS =====
+
+Using 3 standardized predictor columns
+Selected predictor columns: 3 
+sugar_price_index_std, meat_price_index_std, global_food_index_yoy_pct_std
+
+Prepared matrices for modeling:
+  X_train dimensions: 693 x 3 
+  X_test dimensions: 174 x 3 
+
+===== RIDGE REGRESSION =====
+
+Performing 10 -fold cross-validation for Ridge regression...
+null device 
+          1 
+Saved Ridge cross-validation plot to Plots/regularization/ridge_cv.png
+Ridge optimal lambda (minimum MSE): 0.6150179 
+Ridge optimal lambda (1 standard error rule): 2.061296 
+Ridge model non-zero coefficients: 4 
+Top 10 Ridge coefficients by magnitude:
+                       Variable Coefficient
+1                   (Intercept)   16.628035
+2         sugar_price_index_std    3.941314
+3          meat_price_index_std    1.849683
+4 global_food_index_yoy_pct_std   -1.785527
+
+Ridge RMSE on training data: 4.716274 
+Ridge RMSE on test data: 7.827047 
+
+===== LASSO REGRESSION =====
+
+Performing 10 -fold cross-validation for Lasso regression...
+null device 
+          1 
+Saved Lasso cross-validation plot to Plots/regularization/lasso_cv.png
+Lasso optimal lambda (minimum MSE): 0.03359398 
+Lasso optimal lambda (1 standard error rule): 0.7943262 
+Lasso model non-zero coefficients: 4 
+Top 10 Lasso coefficients by magnitude:
+                       Variable Coefficient
+1                   (Intercept)   16.734090
+2         sugar_price_index_std    4.675547
+4 global_food_index_yoy_pct_std   -1.561273
+3          meat_price_index_std    1.173549
+
+Lasso RMSE on training data: 4.730016 
+Lasso RMSE on test data: 7.423358 
+
+===== ELASTIC NET REGRESSION =====
+
+Trying different alpha values for Elastic Net...
+  Testing alpha = 0.1 
+  Testing alpha = 0.2 
+  Testing alpha = 0.3 
+  Testing alpha = 0.4 
+  Testing alpha = 0.5 
+  Testing alpha = 0.6 
+  Testing alpha = 0.7 
+  Testing alpha = 0.8 
+  Testing alpha = 0.9 
+Elastic Net results for different alpha values:
+  Alpha    Lambda RMSE_Train RMSE_Test NonZero_Coefs
+1   0.1 2.1594459   4.756253  7.846617             3
+2   0.2 2.0708117   4.783521  7.831894             3
+3   0.3 1.2578977   4.699623  7.646439             3
+4   0.4 1.3687456   4.737984  7.660331             3
+5   0.5 1.2017573   4.731192  7.606095             3
+6   0.6 1.2062674   4.756120  7.591170             3
+7   0.7 1.0339435   4.738360  7.531876             3
+8   0.8 0.7510983   4.689577  7.455002             3
+9   0.9 0.8041783   4.716407  7.445630             3
+
+Best alpha value: 0.9 
+Best lambda value: 0.8041783 
+
+null device 
+          1 
+Saved Elastic Net alpha plot to Plots/regularization/elastic_net_alpha.png
+Elastic Net model non-zero coefficients: 4 
+Top 10 Elastic Net coefficients by magnitude:
+                       Variable Coefficient
+1                   (Intercept)   16.734674
+2         sugar_price_index_std    4.647652
+4 global_food_index_yoy_pct_std   -1.600664
+3          meat_price_index_std    1.235941
+
+Elastic Net RMSE on training data: 4.716407 
+Elastic Net RMSE on test data: 7.44563 
+
+===== FEATURE IMPORTANCE ANALYSIS =====
+
+Saved feature importance to Processed_Data/feature_importance.csv
+Saved feature importance plot to Plots/regularization/feature_importance.png
+
+===== VARIABLE SIGNIFICANCE ANALYSIS =====
+
+Evaluating variable significance for each model...
+
+Variable Significance Analysis for Ridge :
+Total variables: 3 
+Variables with significant coefficients: 3 
+Variables with insignificant coefficients: 0 
+REQUIREMENT MET: More significant variables than insignificant variables
+
+Variable Significance Analysis for Lasso :
+Total variables: 3 
+Variables with significant coefficients: 3 
+Variables with insignificant coefficients: 0 
+REQUIREMENT MET: More significant variables than insignificant variables
+
+Variable Significance Analysis for Elastic Net :
+Total variables: 3 
+Variables with significant coefficients: 3 
+Variables with insignificant coefficients: 0 
+REQUIREMENT MET: More significant variables than insignificant variables
+
+Variable Significance Summary:
+        Model Significant_Vars Insignificant_Vars Requirement_Met
+1       Ridge                3                  0            TRUE
+2       Lasso                3                  0            TRUE
+3 Elastic Net                3                  0            TRUE
+
+Saved variable significance summary to Processed_Data/variable_significance.csv
+
+===== MODEL COMPARISON =====
+
+Model Accuracy Metrics on Test Set:
+        Model      MAE     RMSE     MAPE R_Squared
+1       Ridge 6.414915 7.827047 120.9039 0.3417715
+2       Lasso 5.764063 7.423358 116.2079 0.4079183
+3 Elastic Net 5.787196 7.445630 116.6192 0.4043602
+
+Saved accuracy metrics to Processed_Data/regularization_accuracy.csv
+
+===== PREDICTION VISUALIZATION =====
+
+Saved predictions to Processed_Data/regularization_predictions.csv
+null device 
+          1 
+Saved predictions comparison plot to Plots/regularization/predictions_comparison.png
+
+===== SAVING MODELS =====
+
+Saved all regularization models to Models/regularization_models.rds
+Saved predictions to Models/regularization_predictions.rds
+
+===== FINAL SUMMARY =====
+
+Regularization modeling completed successfully!
+
+Model performance on test set:
+        Model      MAE     RMSE     MAPE R_Squared
+1       Ridge 6.414915 7.827047 120.9039 0.3417715
+2       Lasso 5.764063 7.423358 116.2079 0.4079183
+3 Elastic Net 5.787196 7.445630 116.6192 0.4043602
+
+Best performing model based on RMSE: Lasso 
+Best model RMSE: 7.423358 
+
+Feature importance summary:
+Top 10 most important features across all models:
+                       Variable Avg_Importance
+2         sugar_price_index_std       4.421504
+4 global_food_index_yoy_pct_std       1.649155
+3          meat_price_index_std       1.419725
+
+Variable significance summary:
+        Model Significant_Vars Insignificant_Vars Requirement_Met
+1       Ridge                3                  0            TRUE
+2       Lasso                3                  0            TRUE
+3 Elastic Net                3                  0            TRUE
+
+Files created:
+1. Models/regularization_models.rds - All regularization models
+2. Models/regularization_predictions.rds - Predictions from all models
+3. Processed_Data/regularization_accuracy.csv - Accuracy metrics
+4. Processed_Data/regularization_predictions.csv - Predictions comparison
+5. Processed_Data/feature_importance.csv - Feature importance analysis
+6. Processed_Data/variable_significance.csv - Variable significance analysis
+7. Various plots in Plots/regularization/ directory
+
+Next steps:
+1. Proceed to 06_model_evaluation.R for comprehensive model comparison and final forecasting
+
+Completed at: 2025-05-13 08:14:04 
