@@ -4,6 +4,11 @@
 
 This project implements a comprehensive forecasting system for Pakistan's inflation using time series and regularization models. The system analyzes historical Consumer Price Index (CPI) data along with various economic indicators to predict future inflation trends.
 
+### Authors
+- M. Abdullah Ali (23I-2523)
+- Abdullah Aaamir (23I-2538)
+
+### Modeling Approaches
 The project focuses on four specific modeling approaches:
 1. ARIMA (AutoRegressive Integrated Moving Average)
 2. Ridge Regression
@@ -178,16 +183,76 @@ The project requires the following R packages:
 - tseries
 - zoo
 
-## Results
+## Results and Interpretation
 
-The final results include:
+### Model Performance
 
-1. Comparative analysis of different forecasting models (ARIMA, Ridge, Lasso, Elastic Net)
-2. Identification of the best performing model based on MSE
-3. 12-month forecast of Pakistan's inflation with prediction intervals
-4. Comprehensive report with insights and recommendations
-5. Visualizations of historical trends and future forecasts
-6. Feature importance analysis identifying key drivers of inflation
+The models were evaluated using Mean Squared Error (MSE) as the primary metric:
+
+| Model       | MSE      | R-Squared  |
+|-------------|----------|------------|
+| ARIMA       | 206.43   | NA         |
+| Ridge       | 177.86   | -0.904     |
+| Lasso       | 177.86   | -0.904     |
+| Elastic Net | 177.86   | -0.904     |
+
+**Interpretation:**
+- Ridge, Lasso, and Elastic Net models all performed identically with an MSE of 177.86, outperforming the ARIMA model (MSE of 206.43).
+- The negative R-squared values indicate that the models performed worse than a simple mean-based model on the test set, suggesting high volatility in the data.
+- All regularization models converged to the same solution, indicating that the dataset likely has limited predictive features.
+
+### Error Analysis
+
+| Model       | Mean Error | Median Error | Error Variance | Error Range |
+|-------------|------------|--------------|----------------|-------------|
+| ARIMA       | -10.63     | -8.50        | 94.09          | 29.40       |
+| Ridge       | 5.65       | 8.18         | 146.94         | 37.09       |
+| Lasso       | 5.65       | 8.18         | 146.94         | 37.09       |
+| Elastic Net | 5.65       | 8.18         | 146.94         | 37.09       |
+
+**Interpretation:**
+- ARIMA tends to overestimate inflation (negative mean error), while regularization models underestimate it.
+- ARIMA has lower error variance, indicating more consistent predictions, despite having a higher overall MSE.
+- The regularization models show identical error patterns, confirming they converged to the same solution.
+
+### Forecasts
+
+12-month inflation forecasts (May 2025 - April 2026):
+
+| Date       | ARIMA | ARIMA Lower | ARIMA Upper | Ridge  |
+|------------|-------|-------------|-------------|--------|
+| 2025-05-01 | 29.20 | 27.75       | 30.65       | 18.09  |
+| 2025-06-01 | 29.20 | 27.15       | 31.25       | 18.09  |
+| 2025-07-01 | 29.20 | 26.69       | 31.71       | 18.09  |
+| 2025-08-01 | 29.20 | 26.30       | 32.10       | 18.09  |
+| 2025-09-01 | 29.20 | 25.96       | 32.44       | 18.09  |
+| 2025-10-01 | 29.20 | 25.65       | 32.75       | 18.09  |
+| 2025-11-01 | 29.20 | 25.37       | 33.03       | 18.09  |
+| 2025-12-01 | 29.20 | 25.10       | 33.30       | 18.09  |
+| 2026-01-01 | 29.20 | 24.86       | 33.54       | 18.09  |
+| 2026-02-01 | 29.20 | 24.62       | 33.78       | 18.09  |
+| 2026-03-01 | 29.20 | 24.40       | 34.00       | 18.09  |
+| 2026-04-01 | 29.20 | 24.18       | 34.22       | 18.09  |
+
+**Interpretation:**
+- ARIMA forecasts consistently higher inflation (29.20%) compared to Ridge (18.09%).
+- ARIMA prediction intervals widen over time, reflecting increasing uncertainty in longer-term forecasts.
+- Ridge model produces a constant forecast due to limited predictors and the simplified approach used for regularization forecasts.
+- The significant difference between ARIMA and Ridge forecasts highlights the uncertainty in Pakistan's inflation outlook.
+
+### Key Findings
+
+1. **Best Model**: Ridge regression was identified as the best model based on MSE, though all regularization models performed identically.
+2. **Forecast Divergence**: The substantial difference between time series and regression forecasts suggests high uncertainty in Pakistan's economic outlook.
+3. **Prediction Intervals**: ARIMA prediction intervals widen over time, indicating increasing uncertainty for longer-term forecasts.
+4. **Model Limitations**: The negative R-squared values and identical regularization results suggest limitations in the available predictors.
+
+### Recommendations
+
+1. **Data Enhancement**: Incorporate additional economic indicators and higher frequency data to improve model performance.
+2. **Model Refinement**: Explore more sophisticated time series models and feature engineering techniques.
+3. **Regular Updates**: Update models as new data becomes available to maintain forecast accuracy.
+4. **Ensemble Approach**: Consider combining forecasts from different models to potentially improve accuracy.
 
 ## License
 

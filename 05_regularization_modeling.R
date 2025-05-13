@@ -1,7 +1,7 @@
 # 05_regularization_modeling.R
 # Pakistan Inflation Forecasting Project: Regularization Modeling
 # This script implements Lasso, Ridge, and Elastic-Net Regression for forecasting inflation in Pakistan.
-# Author: <Your Name>
+# Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
 # Date: 2025-05-13
 #
 # NOTES FOR DEMO:

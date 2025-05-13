@@ -8,7 +8,7 @@
 # 3. Perform exploratory data analysis
 # 4. Save processed datasets for modeling
 #
-# Author: <Your Name>
+# Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
 # Date: 2025-05-13
 #
 # NOTES FOR DEMO:

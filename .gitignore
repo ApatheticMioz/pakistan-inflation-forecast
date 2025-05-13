@@ -1,16 +1,44 @@
-# R/RStudio
+# R specific
+.Rproj.user/
 .Rhistory
 .RData
-.Rproj.user/
 .Ruserdata
 .Rapp.history
+*.Rproj
 
-# Output and logs
-eda_output.txt
+# Output directories (keep only the Data folder)
+Logs/
+Output/
+Processed_Data/
+Plots/
+Models/
+Final_Results/
+Documentation/
+Analysis_Plots/
+Analysis_Reports/
+Interactive_Visualizations/
+
+# Project summary file
+pakistan_inflation_forecast_project.txt
+
+# Deprecated folders
+Deprecated_Old_Version/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
 *.log
 *.tmp
 *.bak
+*.temp
+*.swp
+*~
 
-# OS/Editor
-.DS_Store
-Thumbs.db
+# IDE files
+.vscode/
+.idea/
+
+# Keep Data folder
+!Data/

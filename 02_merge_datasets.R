@@ -2,7 +2,7 @@
 # Pakistan Inflation Forecasting Project: Merge Datasets
 # This script loads the cleaned datasets, merges them based on date,
 # creates derived features, and saves merged dataset for modeling.
-# Author: <Your Name>
+# Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
 # Date: 2025-05-13
 
 # --- Load required libraries ---

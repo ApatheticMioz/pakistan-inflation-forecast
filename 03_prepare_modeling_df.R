@@ -2,7 +2,7 @@
 # Pakistan Inflation Forecasting Project: Prepare Modeling Dataframe & EDA
 # This script loads the merged dataframe, performs advanced data preparation,
 # conducts feature selection, and creates train/test splits for modeling.
-# Author: <Your Name>
+# Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
 # Date: 2025-05-13
 
 # --- Load required libraries ---

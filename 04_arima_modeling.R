@@ -1,7 +1,7 @@
 # 04_arima_modeling.R
 # Pakistan Inflation Forecasting Project: ARIMA Modeling
 # This script implements ARIMA models for forecasting inflation in Pakistan.
-# Author: <Your Name>
+# Authors: M. Abdullah Ali (23I-2523), Abdullah Aaamir (23I-2538)
 # Date: 2025-05-13
 #
 # NOTES FOR DEMO:
