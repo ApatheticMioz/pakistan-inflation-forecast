@@ -28,6 +28,31 @@ suppressPackageStartupMessages({
   library(Matrix)
 })
 
+# --- Load utility functions if available ---
+if (file.exists("R/utils.R")) {
+  source("R/utils.R")
+  message("Loaded utility functions from R/utils.R")
+}
+
+# --- Load configuration if available ---
+config <- tryCatch({
+  if (file.exists("config.yml")) {
+    yaml::read_yaml("config.yml")
+  } else {
+    NULL
+  }
+}, error = function(e) {
+  message("Could not load config.yml, using defaults")
+  NULL
+})
+
+# Get configuration values with defaults
+cv_folds <- if (!is.null(config)) config$model$cv_folds else 10
+seed <- if (!is.null(config)) config$model$seed else 123
+lambda_selection <- if (!is.null(config)) config$model$regularization$lambda_selection else "1se"
+forecast_horizon <- if (!is.null(config)) config$model$forecast_horizon else 12
+confidence_levels <- if (!is.null(config)) config$model$confidence_levels else c(0.80, 0.95)
+
 # --- Set up logging to console ---
 message("===== REGULARIZATION MODELING FOR PAKISTAN INFLATION FORECASTING =====")
 message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
@@ -40,9 +65,23 @@ dir.create("Models", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load prepared data ---
 message("Loading prepared data...")
-model_df <- readRDS("Processed_Data/model_df.rds")
-train_df <- readRDS("Processed_Data/train_df.rds")
-test_df <- readRDS("Processed_Data/test_df.rds")
+model_df <- tryCatch({
+  readRDS("Processed_Data/model_df.rds")
+}, error = function(e) {
+  stop("Failed to load model_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
+
+train_df <- tryCatch({
+  readRDS("Processed_Data/train_df.rds")
+}, error = function(e) {
+  stop("Failed to load train_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
+
+test_df <- tryCatch({
+  readRDS("Processed_Data/test_df.rds")
+}, error = function(e) {
+  stop("Failed to load test_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
 
 message("Loaded data successfully")
 message("Training data period:", format(min(train_df$date), "%Y-%m-%d"), "to",

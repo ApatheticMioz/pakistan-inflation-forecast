@@ -22,7 +22,11 @@
 # --- Set working directory to project root (if running interactively) ---
 # This ensures consistent file paths regardless of where the script is run from
 if (interactive()) {
-  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+  tryCatch({
+    setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+  }, error = function(e) {
+    message("Could not set working directory automatically. Using current directory.")
+  })
 }
 
 # Load required libraries - I've organized these by purpose for clarity
@@ -47,17 +51,39 @@ suppressPackageStartupMessages({
   library(tools)      # File utilities
 })
 
+# --- Load utility functions if available ---
+if (file.exists("R/utils.R")) {
+  source("R/utils.R")
+  message("Loaded utility functions from R/utils.R")
+}
+if (file.exists("R/validation.R")) {
+  source("R/validation.R")
+  message("Loaded validation functions from R/validation.R")
+}
+
+# --- Load configuration if available ---
+config <- tryCatch({
+  if (file.exists("config.yml")) {
+    yaml::read_yaml("config.yml")
+  } else {
+    NULL
+  }
+}, error = function(e) {
+  message("Could not load config.yml, using defaults")
+  NULL
+})
+
 # Create output directories - for plots and processed data
 dir.create("Plots", showWarnings = FALSE, recursive = TRUE)
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
 
 # --- Set data directory paths ---
 # Organized by data source for clarity during the demo
-main_data_dir <- "Data"
-combined_data_dir <- file.path(main_data_dir, "data_combined")  # Combined datasets
-easydata_dir <- file.path(main_data_dir, "easydata")            # State Bank of Pakistan
-fao_dir <- file.path(main_data_dir, "fao")                      # Food and Agriculture Org
-fred_dir <- file.path(main_data_dir, "fred")                    # Federal Reserve Economic Data
+main_data_dir <- if (!is.null(config)) config$data$main_data_dir else "Data"
+combined_data_dir <- if (!is.null(config)) config$data$combined_data_dir else file.path(main_data_dir, "data_combined")  # Combined datasets
+easydata_dir <- if (!is.null(config)) config$data$easydata_dir else file.path(main_data_dir, "easydata")            # State Bank of Pakistan
+fao_dir <- if (!is.null(config)) config$data$fao_dir else file.path(main_data_dir, "fao")                      # Food and Agriculture Org
+fred_dir <- if (!is.null(config)) config$data$fred_dir else file.path(main_data_dir, "fred")                    # Federal Reserve Economic Data
 finance_dir <- file.path(main_data_dir, "finanaceGovPk")        # Pakistan Ministry of Finance
 old_data_dir <- file.path(main_data_dir, "old_data")            # Legacy datasets
 

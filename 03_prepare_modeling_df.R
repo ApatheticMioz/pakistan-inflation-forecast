@@ -23,6 +23,29 @@ suppressPackageStartupMessages({
   library(stringr)
 })
 
+# --- Load utility functions if available ---
+if (file.exists("R/utils.R")) {
+  source("R/utils.R")
+  message("Loaded utility functions from R/utils.R")
+}
+
+# --- Load configuration if available ---
+config <- tryCatch({
+  if (file.exists("config.yml")) {
+    yaml::read_yaml("config.yml")
+  } else {
+    NULL
+  }
+}, error = function(e) {
+  message("Could not load config.yml, using defaults")
+  NULL
+})
+
+# Get configuration values with defaults
+train_ratio <- if (!is.null(config)) config$model$train_ratio else 0.80
+correlation_threshold <- if (!is.null(config)) config$features$correlation_threshold else 0.3
+outlier_iqr_multiplier <- if (!is.null(config)) config$features$outlier_iqr_multiplier else 3.0
+
 # --- Set up logging to console ---
 message("===== MODELING DATAFRAME PREPARATION =====")
 message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
@@ -34,7 +57,11 @@ dir.create("Plots/model_prep", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load merged dataframe ---
 message("Loading merged dataframe...")
-merged_df <- readRDS("Output/merged_df.rds")
+merged_df <- tryCatch({
+  readRDS("Output/merged_df.rds")
+}, error = function(e) {
+  stop("Failed to load merged dataframe. Please run 02_merge_datasets.R first. Error: ", e$message)
+})
 message("Loaded dataframe with", nrow(merged_df), "rows and", ncol(merged_df), "columns")
 message("Date range:", format(min(merged_df$date), "%Y-%m-%d"), "to",
     format(max(merged_df$date), "%Y-%m-%d"))

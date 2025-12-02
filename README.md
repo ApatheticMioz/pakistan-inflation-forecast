@@ -1,5 +1,9 @@
 # Pakistan Inflation Forecasting Project
 
+[![R CI/CD](https://github.com/ApatheticMioz/pakistan-inflation-forecast/actions/workflows/r-ci.yml/badge.svg)](https://github.com/ApatheticMioz/pakistan-inflation-forecast/actions/workflows/r-ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R Version](https://img.shields.io/badge/R-%3E%3D%204.0.0-blue.svg)](https://www.r-project.org/)
+
 ## Project Overview
 
 This project implements a comprehensive forecasting system for Pakistan's inflation using time series and regularization models. The system analyzes historical Consumer Price Index (CPI) data along with various economic indicators to predict future inflation trends.
@@ -7,6 +11,52 @@ This project implements a comprehensive forecasting system for Pakistan's inflat
 ### Authors
 - M. Abdullah Ali (23I-2523)
 - Abdullah Aaamir (23I-2538)
+
+## Quick Start
+
+### Option 1: Using Docker (Recommended)
+
+```bash
+# Build and run the full analysis pipeline
+docker-compose up forecast
+
+# Or run specific scripts
+docker-compose up run-eda
+docker-compose up run-merge
+docker-compose up run-prep
+docker-compose up run-arima
+docker-compose up run-reg
+docker-compose up run-eval
+
+# Interactive development shell
+docker-compose run dev
+```
+
+### Option 2: Local R Installation
+
+```bash
+# Install dependencies
+Rscript -e "install.packages(c('dplyr', 'ggplot2', 'forecast', 'glmnet', 'readr', 'lubridate', 'stringr', 'gridExtra', 'reshape2', 'knitr', 'tibble', 'tseries', 'zoo', 'tidyr', 'janitor', 'VIM', 'GGally', 'caret', 'corrplot', 'Matrix', 'purrr', 'moments', 'yaml'))"
+
+# Run the pipeline
+Rscript 01_load_and_eda.R
+Rscript 02_merge_datasets.R
+Rscript 03_prepare_modeling_df.R
+Rscript 04_arima_modeling.R
+Rscript 05_regularization_modeling.R
+Rscript 06_model_evaluation.R
+```
+
+## Configuration
+
+The project uses a centralized configuration file (`config.yml`) for all parameters. Key settings include:
+
+- **Train/Test Split**: 80/20 (configurable)
+- **Forecast Horizon**: 12 months
+- **Cross-validation Folds**: 10
+- **Confidence Levels**: 80% and 95%
+
+See [`config.yml`](config.yml) for all available options.
 
 ### Modeling Approaches
 The project focuses on four specific modeling approaches:
@@ -313,4 +363,12 @@ The large difference in forecasts between ARIMA (29.20%) and Elastic Net (1.20%)
 
 ## License
 
-This project is provided for educational and research purposes only.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started.
+
+## Support
+
+For questions or issues, please [open an issue](https://github.com/ApatheticMioz/pakistan-inflation-forecast/issues) on GitHub.
