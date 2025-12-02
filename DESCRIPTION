@@ -1,0 +1,49 @@
+Package: pakistanInflationForecast
+Title: Pakistan Inflation Forecasting Project
+Version: 1.0.0
+Authors@R: c(
+    person("M. Abdullah", "Ali", , "abdullah.ali@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0000-0000-0000")),
+    person("Abdullah", "Aaamir", , "abdullah.aamir@example.com", role = "aut")
+  )
+Description: A comprehensive forecasting system for Pakistan's inflation using 
+    time series and regularization models. The system analyzes historical 
+    Consumer Price Index (CPI) data along with various economic indicators 
+    to predict future inflation trends using ARIMA, Ridge, Lasso, and 
+    Elastic Net regression models.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Depends: 
+    R (>= 4.0.0)
+Imports:
+    dplyr (>= 1.0.0),
+    ggplot2 (>= 3.4.0),
+    forecast (>= 8.21),
+    glmnet (>= 4.1-7),
+    readr (>= 2.1.0),
+    lubridate (>= 1.9.0),
+    stringr (>= 1.5.0),
+    gridExtra (>= 2.3),
+    reshape2 (>= 1.4.4),
+    knitr (>= 1.42),
+    tibble (>= 3.2.0),
+    tseries (>= 0.10-54),
+    zoo (>= 1.8-12),
+    tidyr (>= 1.3.0),
+    janitor (>= 2.2.0),
+    VIM (>= 6.2.2),
+    tools (>= 4.0.0),
+    GGally (>= 2.1.2),
+    caret (>= 6.0-94),
+    corrplot (>= 0.92),
+    Matrix (>= 1.5-4),
+    purrr (>= 1.0.0),
+    moments (>= 0.14.1)
+Suggests:
+    testthat (>= 3.0.0),
+    lintr (>= 3.1.0),
+    covr,
+    rmarkdown
+Config/testthat/edition: 3

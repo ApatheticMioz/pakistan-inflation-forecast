@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  forecast:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    container_name: pakistan-forecast
+    volumes:
+      # Mount data directory (read-only for data integrity)
+      - ./Data:/app/Data:ro
+      # Mount output directories for results
+      - ./Output:/app/Output
+      - ./Processed_Data:/app/Processed_Data
+      - ./Plots:/app/Plots
+      - ./Models:/app/Models
+      - ./Final_Results:/app/Final_Results
+      - ./Logs:/app/Logs
+    environment:
+      - R_LIBS_USER=/usr/local/lib/R/site-library
+    working_dir: /app
+    
+  # Development service with interactive shell
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    container_name: pakistan-forecast-dev
+    volumes:
+      - .:/app
+    environment:
+      - R_LIBS_USER=/usr/local/lib/R/site-library
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    
+  # Run specific script
+  run-eda:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 01_load_and_eda.R
+    
+  run-merge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 02_merge_datasets.R
+    
+  run-prep:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 03_prepare_modeling_df.R
+    
+  run-arima:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 04_arima_modeling.R
+    
+  run-reg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 05_regularization_modeling.R
+    
+  run-eval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript 06_model_evaluation.R
+    
+  # Run tests
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pakistan-inflation-forecast:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: Rscript tests/testthat.R
