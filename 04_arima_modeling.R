@@ -27,6 +27,29 @@ suppressPackageStartupMessages({
   library(gridExtra)
 })
 
+# --- Load utility functions if available ---
+if (file.exists("R/utils.R")) {
+  source("R/utils.R")
+  message("Loaded utility functions from R/utils.R")
+}
+
+# --- Load configuration if available ---
+config <- tryCatch({
+  if (file.exists("config.yml")) {
+    yaml::read_yaml("config.yml")
+  } else {
+    NULL
+  }
+}, error = function(e) {
+  message("Could not load config.yml, using defaults")
+  NULL
+})
+
+# Get configuration values with defaults
+arima_seasonal <- if (!is.null(config)) config$model$arima$seasonal else TRUE
+arima_stepwise <- if (!is.null(config)) config$model$arima$stepwise else TRUE
+arima_approximation <- if (!is.null(config)) config$model$arima$approximation else FALSE
+
 # --- Set up logging to console ---
 message("===== ARIMA MODELING FOR PAKISTAN INFLATION FORECASTING =====")
 message("Started at:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
@@ -39,10 +62,29 @@ dir.create("Models", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load prepared data ---
 message("Loading prepared data...")
-model_df <- readRDS("Processed_Data/model_df.rds")
-train_df <- readRDS("Processed_Data/train_df.rds")
-test_df <- readRDS("Processed_Data/test_df.rds")
-ts_objects <- readRDS("Processed_Data/ts_objects.rds")
+model_df <- tryCatch({
+  readRDS("Processed_Data/model_df.rds")
+}, error = function(e) {
+  stop("Failed to load model_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
+
+train_df <- tryCatch({
+  readRDS("Processed_Data/train_df.rds")
+}, error = function(e) {
+  stop("Failed to load train_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
+
+test_df <- tryCatch({
+  readRDS("Processed_Data/test_df.rds")
+}, error = function(e) {
+  stop("Failed to load test_df. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
+
+ts_objects <- tryCatch({
+  readRDS("Processed_Data/ts_objects.rds")
+}, error = function(e) {
+  stop("Failed to load ts_objects. Please run 03_prepare_modeling_df.R first. Error: ", e$message)
+})
 
 # Extract time series objects
 cpi_ts <- ts_objects$full

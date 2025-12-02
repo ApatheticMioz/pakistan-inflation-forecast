@@ -18,6 +18,24 @@ suppressPackageStartupMessages({
   library(stringr)
 })
 
+# --- Load utility functions if available ---
+if (file.exists("R/utils.R")) {
+  source("R/utils.R")
+  message("Loaded utility functions from R/utils.R")
+}
+
+# --- Load configuration if available ---
+config <- tryCatch({
+  if (file.exists("config.yml")) {
+    yaml::read_yaml("config.yml")
+  } else {
+    NULL
+  }
+}, error = function(e) {
+  message("Could not load config.yml, using defaults")
+  NULL
+})
+
 # --- Create output directories if they don't exist ---
 dir.create("Processed_Data", showWarnings = FALSE, recursive = TRUE)
 dir.create("Logs", showWarnings = FALSE, recursive = TRUE)
@@ -25,7 +43,11 @@ dir.create("Output", showWarnings = FALSE, recursive = TRUE)
 
 # --- Load cleaned datasets from 01_load_and_eda.R ---
 message("Loading cleaned datasets...")
-datasets <- readRDS("Output/cleaned_datasets.rds")
+datasets <- tryCatch({
+  readRDS("Output/cleaned_datasets.rds")
+}, error = function(e) {
+  stop("Failed to load cleaned datasets. Please run 01_load_and_eda.R first. Error: ", e$message)
+})
 
 # --- Set up logging to console ---
 message("===== PAKISTAN INFLATION FORECASTING PROJECT =====")
