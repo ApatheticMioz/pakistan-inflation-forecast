@@ -2,9 +2,8 @@ Package: pakistanInflationForecast
 Title: Pakistan Inflation Forecasting Project
 Version: 1.0.0
 Authors@R: c(
-    person("M. Abdullah", "Ali", , "abdullah.ali@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0000-0000-0000")),
-    person("Abdullah", "Aaamir", , "abdullah.aamir@example.com", role = "aut")
+    person("M. Abdullah", "Ali", role = c("aut", "cre")),
+    person("Abdullah", "Aaamir", role = "aut")
   )
 Description: A comprehensive forecasting system for Pakistan's inflation using 
     time series and regularization models. The system analyzes historical 

@@ -1,6 +1,5 @@
 FROM rocker/r-ver:4.3.2
 
-LABEL maintainer="M. Abdullah Ali <abdullah.ali@example.com>"
 LABEL description="Pakistan Inflation Forecasting Project"
 LABEL version="1.0.0"
 

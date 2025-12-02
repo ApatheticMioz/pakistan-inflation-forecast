@@ -407,12 +407,13 @@ calculate_missingness <- function(df) {
   missing_counts <- colSums(is.na(df))
   missing_pcts <- (missing_counts / nrow(df)) * 100
   
-  data.frame(
+  result <- data.frame(
     Variable = names(missing_counts),
     Missing_Count = missing_counts,
     Missing_Percent = round(missing_pcts, 2),
     stringsAsFactors = FALSE,
     row.names = NULL
-  ) %>%
-    dplyr::arrange(dplyr::desc(Missing_Percent))
+  )
+  result <- result[order(result$Missing_Percent, decreasing = TRUE), ]
+  return(result)
 }
