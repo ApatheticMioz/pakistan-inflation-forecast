@@ -1,43 +1,129 @@
-# Ignore everything
-/*
+# ========================
+# R Language
+# ========================
 
-# Don't ignore the 6 R files
-!01_load_and_eda.R
-!02_merge_datasets.R
-!03_prepare_modeling_df.R
-!04_arima_modeling.R
-!05_regularization_modeling.R
-!06_model_evaluation.R
-
-# Don't ignore README.md
-!README.md
-
-# Don't ignore .gitignore
-!.gitignore
-
-# Don't ignore Data folder
-!Data/
-!Data/**
-
-# R specific files that should be ignored even if in allowed directories
+# R environment files
 .Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
 .Rapp.history
-*.Rproj
 
-# System files
-.DS_Store
-Thumbs.db
+# R project files (optional - uncomment if needed)
+# *.Rproj
 
-# Temporary files
-*.log
-*.tmp
-*.bak
-*.temp
+# Package development artifacts
+*.tar.gz
+*.Rcheck/
+vignettes/*.html
+vignettes/*.pdf
+
+# Packrat
+packrat/lib*/
+packrat/src/
+
+# renv
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
+
+# ========================
+# Build & Output Artifacts
+# ========================
+
+# Generated output directories (created by scripts)
+Logs/
+Output/
+Plots/
+Models/
+Processed_Data/
+Final_Results/
+Documentation/
+
+# Compiled binaries
+*.exe
+*.o
+*.out
+*.so
+*.dll
+
+# Distribution/packaging
+dist/
+build/
+
+# ========================
+# IDE & Editors
+# ========================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+
+# Vim/Neovim
 *.swp
+*.swo
 *~
 
-# Project summary file
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ========================
+# Operating System
+# ========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ========================
+# Temporary Files
+# ========================
+
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# ========================
+# Archives
+# ========================
+
+*.zip
+*.rar
+*.7z
+
+# ========================
+# Project Specific
+# ========================
+
+# Generated summary files
 pakistan_inflation_forecast_project.txt
+
+# Node.js (if any web components)
+node_modules/
+
+# Python (if any Python scripts)
+__pycache__/
+*.pyc
+venv/
+.venv/
