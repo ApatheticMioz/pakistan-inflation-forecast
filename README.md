@@ -1,6 +1,6 @@
 # Pakistan Inflation Forecast
 
-> **Status:** Archived / Refactored
+> ⚠️ **Status:** Archived
 
 A comprehensive forecasting system for Pakistan's inflation using time series and regularization models. The project analyzes historical Consumer Price Index (CPI) data along with various economic indicators to predict future inflation trends.
 
@@ -102,12 +102,12 @@ The scripts generate:
 
 ## Model Performance
 
-| Model       | MSE    | RMSE | R-Squared |
-|-------------|--------|------|-----------|
-| ARIMA       | 202.13 | NA   | NA        |
-| Ridge       | 1.05   | 1.02 | 0.9888    |
-| Lasso       | 0.54   | 0.74 | 0.9942    |
-| Elastic Net | 0.51   | 0.71 | 0.9946    |
+| Model       | MSE    | RMSE | R-Squared     |
+|-------------|--------|------|---------------|
+| ARIMA       | 202.13 | 14.22| Not applicable|
+| Ridge       | 1.05   | 1.02 | 0.9888        |
+| Lasso       | 0.54   | 0.74 | 0.9942        |
+| Elastic Net | 0.51   | 0.71 | 0.9946        |
 
 **Best Model:** Elastic Net (lowest MSE, highest R-squared)
 

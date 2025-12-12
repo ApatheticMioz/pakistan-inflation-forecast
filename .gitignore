@@ -92,7 +92,7 @@ ehthumbs.db
 Desktop.ini
 
 # Linux
-*~
+# (vim/neovim swap files already covered above)
 
 # ========================
 # Temporary Files

@@ -4,7 +4,7 @@ Thank you for your interest in contributing to this project! This document provi
 
 ## Project Status
 
-**Note:** This repository is in an **archived/refactored** state. While contributions are welcome, please be aware that active development may be limited.
+**Note:** This repository is **archived** and not under active development. The codebase is provided as-is for educational and reference purposes. While issues and pull requests may be reviewed, active maintenance is not guaranteed.
 
 ## How to Contribute
 
